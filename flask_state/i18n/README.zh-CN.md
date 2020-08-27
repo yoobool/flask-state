@@ -8,6 +8,7 @@
 
 
 ## Installation
+#### 安装和更新通过使用 [pip](https://pip.pypa.io/en/stable/quickstart/):
 ```
 $ pip install Flask-State
 ```
@@ -82,7 +83,7 @@ default_conf_obj.set_secs(SECS)
 
 
 ## Contributing
-#### 我们非常欢迎[提出问题](https://github.com/yoobool/flask-state/issue/new)!
+#### 我们非常欢迎[提出问题](https://github.com/yoobool/flask-state/issues/new)!
 
 #### Flask-State遵循[《贡献者公约》](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/)行为准则。
 

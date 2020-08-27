@@ -1,4 +1,5 @@
 import json
+import time
 import logging
 from flask import request, current_app
 from concurrent.futures import ThreadPoolExecutor
@@ -20,7 +21,8 @@ def init_app(app):
 
     """
     default_conf_obj.set_id_name((False, 'console_machine_status'))
-    app.add_url_rule('/v0/state/hoststatus', endpoint='state_host_status', view_func=query_console_status, methods=['POST'])
+    app.add_url_rule('/v0/state/hoststatus', endpoint='state_host_status', view_func=query_console_status,
+                     methods=['POST'])
     app.add_url_rule('/v0/state/bindid', endpoint='state_bind_id', view_func=bind_id2element, methods=['POST'])
     app.add_url_rule('/v0/state/language', endpoint='state_language', view_func=get_language, methods=['POST'])
     if not app.config.get('SQLALCHEMY_BINDS') or not app.config['SQLALCHEMY_BINDS'].get('flask_state_sqlite'):
@@ -48,6 +50,7 @@ def init_app(app):
 
     ThreadPoolExecutor(max_workers=1).submit(record_timer)
 
+
 def query_console_status():
     """
     Query the local state and redis status
@@ -72,8 +75,6 @@ def bind_id2element():
     """
     try:
         if request.method == 'POST':
-            if not isinstance(default_conf_obj.ID_NAME, tuple):
-                return make_response_content(MsgCode.ERROR_TYPE)
             return send_id(default_conf_obj.ID_NAME)
     except Exception as e:
         raise e

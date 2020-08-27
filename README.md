@@ -1,12 +1,13 @@
 # Flask-State
 
-##### Flask-States is a visual plug-in based on flash. It can record the local state every minute and read redis status (optional)，and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
+#### Flask-States is a visual plug-in based on flash. It can record the local state every minute and read redis status (optional)，and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
 
 [![](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
 
 
 
 ## Installation
+#### Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):
 ```
 $ pip install Flask-State
 ```
@@ -18,7 +19,7 @@ $ pip install Flask-State
 
 
 #### Firstly：we'll set up a Flask app.
-```
+```diff
 from flask import Flask
 app = flask.Flask(__name__)
 ```
@@ -83,7 +84,7 @@ default_conf_obj.set_secs(SECS)
 
 
 ## Contributing
-#### Welcome to [open an issue](https://github.com/yoobool/flask-state/issue/new)!
+#### Welcome to [open an issue](https://github.com/yoobool/flask-state/issues/new)!
 
 #### Flask-State follows the [Contributor Covenant](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) Code of Conduct.
 
