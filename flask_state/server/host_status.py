@@ -94,7 +94,7 @@ def query_console_host(days=1) -> dict:
         return make_response_content(msg='Search succeeded', data=data)
     except Exception as e:
         logging.error(e)
-        raise e
+        return make_response_content(MsgCode.UNKNOWN_ERROR)
 
 
 def query_one_min_record():
@@ -111,7 +111,7 @@ def query_one_min_record():
         return True
     except Exception as e:
         logging.error(e)
-        raise e
+        return make_response_content(MsgCode.UNKNOWN_ERROR)
 
 
 def row2dict(obj):

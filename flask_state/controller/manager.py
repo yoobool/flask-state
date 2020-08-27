@@ -59,13 +59,12 @@ def query_console_status():
     try:
         if request.method == 'POST':
             time_quantum = json.loads(request.data)['timeQuantum']
-            if not time_quantum:
-                time_quantum = '1'
             return query_console_host(time_quantum)
         else:
             return make_response_content(MsgCode.REQUEST_METHOD_ERROR)
     except Exception as e:
-        raise e
+        logging.error(e)
+        return make_response_content(MsgCode.UNKNOWN_ERROR)
 
 
 def bind_id2element():
@@ -75,11 +74,13 @@ def bind_id2element():
     """
     try:
         if request.method == 'POST':
-            return send_id(default_conf_obj.ID_NAME)
+            id_name = default_conf_obj.ID_NAME
+            return send_id(id_name)
         else:
             return make_response_content(MsgCode.REQUEST_METHOD_ERROR)
     except Exception as e:
-        raise e
+        logging.error(e)
+        return make_response_content(MsgCode.UNKNOWN_ERROR)
 
 
 def get_language():
@@ -90,11 +91,9 @@ def get_language():
     try:
         if request.method == 'POST':
             language = default_conf_obj.LANGUAGE
-            if not language:
-                language = 'Chinese'
             return return_language(language)
         else:
             return make_response_content(MsgCode.REQUEST_METHOD_ERROR)
     except Exception as e:
-        logging.ERROR(e)
-        raise e
+        logging.error(e)
+        return make_response_content(MsgCode.UNKNOWN_ERROR)
