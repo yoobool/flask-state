@@ -1,0 +1,9 @@
+__title__ = 'Flask-State'
+__description__ = 'Monitor host status for Flask'
+__url__ = 'https://github.com/yoobool/flask-state'
+__version_info__ = ('0', '0', '1')
+__version__ = '.'.join(__version_info__)
+__author__ = 'Yoobool'
+__author_email__ = 'leafstormrush@gmail.com'
+__maintainer__ = 'Max Countryman'
+__license__ = 'MIT'
