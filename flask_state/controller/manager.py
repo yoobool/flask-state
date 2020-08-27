@@ -76,6 +76,8 @@ def bind_id2element():
     try:
         if request.method == 'POST':
             return send_id(default_conf_obj.ID_NAME)
+        else:
+            return make_response_content(MsgCode.REQUEST_METHOD_ERROR)
     except Exception as e:
         raise e
 

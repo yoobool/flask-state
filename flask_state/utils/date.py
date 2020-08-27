@@ -23,5 +23,7 @@ def get_query_ms(days):
     :param days: query limited days
     :return: a limited time period of milliseconds
     """
+    if not isinstance(days, str):
+        days = str(days)
     time_stamp = {'1': 86400000, '3': 259200000, '7': 604800000, '30': 2592000000}
     return time_stamp.get(days) or 0

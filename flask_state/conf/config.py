@@ -27,16 +27,16 @@ class DefaultConf:
         # The default value is 60
         self.SECS = 60
 
-    def set_id_name(self, value):
+    def set_id_name(self, value=None):
         self.ID_NAME = value
 
-    def set_language(self, value):
+    def set_language(self, value=None):
         self.LANGUAGE = value
 
-    def set_address(self, value):
+    def set_address(self, value=None):
         self.ADDRESS = value
 
-    def set_secs(self, value):
+    def set_secs(self, value=None):
         self.SECS = value
 
 

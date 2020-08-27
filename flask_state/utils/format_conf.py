@@ -1,16 +1,16 @@
-def format_language(language):
+def format_language(language=None):
     if not isinstance(language, str):
         language = str(language)
     return language
 
 
-def format_id_name(id_name):
+def format_id_name(id_name=None):
     if not isinstance(id_name, tuple):
         id_name = (True, '')
     return id_name
 
 
-def format_sec(secs):
+def format_sec(secs=None):
     """
     Format incoming time
     :param secs: initial time
@@ -22,7 +22,7 @@ def format_sec(secs):
         return secs
 
 
-def format_address(address):
+def format_address(address=None):
     """
     Format incoming database address
     :param address: initial database address
