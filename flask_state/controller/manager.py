@@ -4,7 +4,7 @@ import logging
 from flask import request, current_app
 from concurrent.futures import ThreadPoolExecutor
 from ..models import model_init_app
-from ..utils.auth import auth
+from ..utils.auth import auth_user, auth_method
 from ..utils.file_lock import Lock
 from ..server import RedisObj, default_conf_obj
 from ..server.host_status import query_console_host, MsgCode, record_console_host
@@ -49,59 +49,50 @@ def init_app(app):
     ThreadPoolExecutor(max_workers=1).submit(record_timer)
 
 
+@auth_user
+@auth_method
 def query_console_status():
     """
     Query the local state and redis status
     :return: flask response
     """
     try:
-        if request.method == 'POST':
-            if not auth():
-                make_response_content(MsgCode.AUTH_FAIL)
-            b2d = json.loads(request.data)
-            if not isinstance(b2d, dict):
-                return make_response_content(MsgCode.JSON_FORMAT_ERROR)
-            time_quantum = b2d.get('timeQuantum')
-            return query_console_host(time_quantum)
-        else:
-            return make_response_content(MsgCode.REQUEST_METHOD_ERROR)
+        b2d = json.loads(request.data)
+        if not isinstance(b2d, dict):
+            return make_response_content(MsgCode.JSON_FORMAT_ERROR)
+        time_quantum = b2d.get('timeQuantum')
+        return query_console_host(time_quantum)
     except Exception as e:
         print(e)
         logging.error(e)
         return make_response_content(MsgCode.UNKNOWN_ERROR)
 
 
+@auth_user
+@auth_method
 def bind_id2element():
     """
     Bind triggers to observe the element ID of the native window
     :return: flask response
     """
     try:
-        if request.method == 'POST':
-            if not auth():
-                make_response_content(MsgCode.AUTH_FAIL)
-            id_name = default_conf_obj.ID_NAME
-            return send_id(id_name)
-        else:
-            return make_response_content(MsgCode.REQUEST_METHOD_ERROR)
+        id_name = default_conf_obj.ID_NAME
+        return send_id(id_name)
     except Exception as e:
         logging.error(e)
         return make_response_content(MsgCode.UNKNOWN_ERROR)
 
 
+@auth_user
+@auth_method
 def get_language():
     """
     Select presentation language
     :return: flask response
     """
     try:
-        if request.method == 'POST':
-            if not auth():
-                make_response_content(MsgCode.AUTH_FAIL)
-            language = default_conf_obj.LANGUAGE
-            return return_language(language)
-        else:
-            return make_response_content(MsgCode.REQUEST_METHOD_ERROR)
+        language = default_conf_obj.LANGUAGE
+        return return_language(language)
     except Exception as e:
         logging.error(e)
         return make_response_content(MsgCode.UNKNOWN_ERROR)
