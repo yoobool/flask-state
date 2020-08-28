@@ -7,7 +7,7 @@
 
 
 ## Installation
-#### Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):
+Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):
 ```
 $ pip install Flask-State
 ```
@@ -15,7 +15,7 @@ $ pip install Flask-State
 
 ## Usage
 
-#### After the Flask-State is installed, you also need to import JavaScript files and CSS files to bind a convention ID value for your element, which can be used easily. In some configurations, you can also choose to modify them.
+After the Flask-State is installed, you also need to import JavaScript files and CSS files to bind a convention ID value for your element, which can be used easily. In some configurations, you can also choose to modify them.
 
 
 #### Firstly：we'll set up a Flask app.
@@ -24,13 +24,13 @@ from flask import Flask
 app = flask.Flask(__name__)
 ```
 
-#### Secondly：Call the init_app method of the Flask-State to initialize the relevant configuration. It will add several routes for you to access some configurations and databases.
+Secondly：Call the init_app method of the Flask-State to initialize the relevant configuration. It will add several routes for you to access some configurations and databases.
 ```
 import flask_state
 init_app(app)
 ```
 
-#### Thirdly：Introduce related files into your HTML file and bind ID values for an element.
+Thirdly：Introduce related files into your HTML file and bind ID values for an element.
 ```
 <link href="http://yoobool.test.upcdn.net/flask_state.css" rel="stylesheet">
 
@@ -41,7 +41,7 @@ init_app(app)
 <script src="http://yoobool.test.upcdn.net/flask_state.js"></script>
 ```
 
-#### Extra：You can also customize some configuration files.
+Extra：You can also customize some configuration files.
 ```
 # If you still need to monitor the redis status, you need to configure your redis status on the Flask app
 app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'REDIS_PORT':16379, 'REDIS_PASSWORD': 'fish09'}
@@ -84,9 +84,9 @@ default_conf_obj.set_secs(SECS)
 
 
 ## Contributing
-#### Welcome to [open an issue](https://github.com/yoobool/flask-state/issues/new)!
+Welcome to [open an issue](https://github.com/yoobool/flask-state/issues/new)!
 
-#### Flask-State follows the [Contributor Covenant](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) Code of Conduct.
+Flask-State follows the [Contributor Covenant](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) Code of Conduct.
 
 
 ## License
