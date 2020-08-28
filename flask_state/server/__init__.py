@@ -1,6 +1,6 @@
 import redis
 from enum import unique, Enum
-
+from ..utils.format_conf import format_id_name, format_sec, format_address, format_language
 # Query time range
 DAYS_SCOPE = {'1': 1, '3': 3, '7': 7, '30': 30}
 
@@ -23,6 +23,40 @@ LANGUAGE = {
                 'connected_clients': 'connected_clients', 'days': 'days', 'hours': 'hours', 'minutes': 'minutes',
                 'seconds': 'seconds', 'today': 'today'}
 }
+
+
+class DefaultConf:
+    def __init__(self):
+        # Set the ID of the binding element in HTML, or select the suspension ball binding
+        # The default value is(False, 'console_machine_status')
+        self.ID_NAME = (True, 'console_machine_status')
+
+        # Set plugin language
+        self.LANGUAGE = 'Chinese'
+
+        # Enter the database name, address and conf directory or superior directory, the default is 0
+        # If the project has a console_host database, it is not created
+        # The default value is('console_host', 0)
+        self.ADDRESS = 'sqlite:///console_host'
+
+        # Set the interval to record the local state, with a minimum interval of 10 seconds
+        # The default value is 60
+        self.SECS = 60
+
+    def set_id_name(self, value=None):
+        self.ID_NAME = format_id_name(value)
+
+    def set_language(self, value=None):
+        self.LANGUAGE = format_language(value)
+
+    def set_address(self, value=None):
+        self.ADDRESS = format_address(value)
+
+    def set_secs(self, value=None):
+        self.SECS = format_sec(value)
+
+
+default_conf_obj = DefaultConf()
 
 
 # Create redis object
@@ -61,4 +95,6 @@ class MsgCode(ResponseMsg):
     REQUEST_METHOD_ERROR = {'msg': 'The request method cannot be get', 'code': '10002'}
     NOT_SUPPORT_LANGUAGE = {'msg': 'Language not supported', 'code': '10003'}
     ERROR_TYPE = {'msg': 'Wrong parameter type', 'code': '10004'}
-    UNKNOWN_ERROR = {'msg': 'Unknown error', 'code': '10005'}
+    JSON_FORMAT_ERROR = {'msg': 'JSON format is required', 'code': '10005'}
+    AUTH_FAIL = {'msg': 'Validation failed', 'code': '10006'}
+    UNKNOWN_ERROR = {'msg': 'Unknown error', 'code': '10007'}

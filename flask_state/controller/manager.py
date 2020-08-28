@@ -4,10 +4,9 @@ import logging
 from flask import request, current_app
 from concurrent.futures import ThreadPoolExecutor
 from ..models import model_init_app
+from ..utils.auth import auth
 from ..utils.file_lock import Lock
-from ..utils.format_conf import format_sec, format_address
-from ..conf.config import default_conf_obj
-from ..server import RedisObj
+from ..server import RedisObj, default_conf_obj
 from ..server.host_status import query_console_host, MsgCode, record_console_host
 from ..server.language import return_language
 from ..server.bind_id import send_id
@@ -20,14 +19,13 @@ def init_app(app):
     :param app: Flask app
 
     """
-    default_conf_obj.set_id_name((False, 'console_machine_status'))
     app.add_url_rule('/v0/state/hoststatus', endpoint='state_host_status', view_func=query_console_status,
                      methods=['POST'])
     app.add_url_rule('/v0/state/bindid', endpoint='state_bind_id', view_func=bind_id2element, methods=['POST'])
     app.add_url_rule('/v0/state/language', endpoint='state_language', view_func=get_language, methods=['POST'])
     if not app.config.get('SQLALCHEMY_BINDS') or not app.config['SQLALCHEMY_BINDS'].get('flask_state_sqlite'):
         app.config['SQLALCHEMY_BINDS'] = app.config.get('SQLALCHEMY_BINDS') or {}
-        app.config['SQLALCHEMY_BINDS']['flask_state_sqlite'] = format_address(default_conf_obj.ADDRESS)
+        app.config['SQLALCHEMY_BINDS']['flask_state_sqlite'] = default_conf_obj.ADDRESS
     if app.config.get('REDIS_CONF') and app.config['REDIS_CONF'].get('REDIS_REDIS_STATUS'):
         redis_state = app.config['REDIS_CONF']
         redis_obj = {'REDIS_HOST': redis_state.get('REDIS_HOST'), 'REDIS_PORT': redis_state.get('REDIS_PORT'),
@@ -43,7 +41,7 @@ def init_app(app):
                 current_app.lock.acquire()
                 while True:
                     record_console_host()
-                    time.sleep(format_sec(default_conf_obj.SECS) - 0.02)
+                    time.sleep(default_conf_obj.SECS - 0.02)
             except Exception as e:
                 current_app.lock.release()
                 raise e
@@ -58,11 +56,17 @@ def query_console_status():
     """
     try:
         if request.method == 'POST':
-            time_quantum = json.loads(request.data)['timeQuantum']
+            if not auth():
+                make_response_content(MsgCode.AUTH_FAIL)
+            b2d = json.loads(request.data)
+            if not isinstance(b2d, dict):
+                return make_response_content(MsgCode.JSON_FORMAT_ERROR)
+            time_quantum = b2d.get('timeQuantum')
             return query_console_host(time_quantum)
         else:
             return make_response_content(MsgCode.REQUEST_METHOD_ERROR)
     except Exception as e:
+        print(e)
         logging.error(e)
         return make_response_content(MsgCode.UNKNOWN_ERROR)
 
@@ -74,6 +78,8 @@ def bind_id2element():
     """
     try:
         if request.method == 'POST':
+            if not auth():
+                make_response_content(MsgCode.AUTH_FAIL)
             id_name = default_conf_obj.ID_NAME
             return send_id(id_name)
         else:
@@ -90,6 +96,8 @@ def get_language():
     """
     try:
         if request.method == 'POST':
+            if not auth():
+                make_response_content(MsgCode.AUTH_FAIL)
             language = default_conf_obj.LANGUAGE
             return return_language(language)
         else:

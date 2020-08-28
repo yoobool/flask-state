@@ -68,7 +68,7 @@ def record_console_host():
         raise e
 
 
-def query_console_host(days=1) -> dict:
+def query_console_host(days='1') -> dict:
     """
     Query the local status and redis status of [1,3,7,30] days
     :param days: the query days
@@ -91,7 +91,7 @@ def query_console_host(days=1) -> dict:
             for field in fields:
                 statistics_item.append(item[field])
             data["items"].append(statistics_item)
-        return make_response_content(msg='Search succeeded', data=data)
+        return make_response_content(msg='Search success', data=data)
     except Exception as e:
         logging.error(e)
         return make_response_content(MsgCode.UNKNOWN_ERROR)

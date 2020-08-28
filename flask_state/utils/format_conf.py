@@ -28,14 +28,19 @@ def format_address(address=None):
     :param address: initial database address
     :return: format database address
     """
-    if not isinstance(address, tuple) or not isinstance(address[0], str) or not isinstance(address[1], int):
-        return 'sqlite:///console_host.db'
-    res = ''
-    for i in range(len(address[0])):
-        if address[0][i].isalnum():
-            res += address[0][i:]
-            break
-    res = res.replace('/', '').replace('?', '')
-    parent = '../' if address[1] == 1 else ''
-    res = 'sqlite:///' + parent + res + '.db'
-    return res
+    if isinstance(address, str):
+        res = address.replace('/', '').replace('?', '')
+        res = 'sqlite:///' + res + '.db'
+        return res
+    else:
+        if not isinstance(address, tuple) or not isinstance(address[0], str) or not isinstance(address[1], int):
+            return 'sqlite:///console_host.db'
+        res = ''
+        for i in range(len(address[0])):
+            if address[0][i].isalnum():
+                res += address[0][i:]
+                break
+        res = res.replace('/', '').replace('?', '')
+        parent = '../' if address[1] == 1 else ''
+        res = 'sqlite:///' + parent + res + '.db'
+        return res

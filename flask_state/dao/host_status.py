@@ -3,7 +3,7 @@ from ..models.console_host import ConsoleHost, db
 from ..utils.date import get_current_ms, get_query_ms
 
 
-def retrieve_host_status(days=1) -> list:
+def retrieve_host_status(days='1') -> list:
     """
     Query the status within the time period and flashback
 
@@ -33,7 +33,7 @@ def create_host_status(kwargs):
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        logging.ERROR(e)
+        logging.error(e)
         raise e
 
 
