@@ -42,17 +42,56 @@ def test_file_lock():
 
 def test_format_conf():
     fl = format_conf.format_language()
-    fa = format_conf.format_address()
-    fi = format_conf.format_id_name()
-    fs = format_conf.format_sec()
-
     assert isinstance(fl, str)
+    fl = format_conf.format_language(123)
+    assert isinstance(fl, str)
+    fl = format_conf.format_language(None)
+    assert isinstance(fl, str)
+    fl = format_conf.format_language(True)
+    assert isinstance(fl, str)
+
+    fa = format_conf.format_address()
     assert isinstance(fa, str)
+    fa = format_conf.format_address('asd?')
+    assert fa == 'sqlite:///asd'
+    fa = format_conf.format_address('aa/aa/a?a/aas?d')
+    assert fa == 'sqlite:///aaaaaaaasd'
+    fa = format_conf.format_address('!asd')
+    assert fa == 'sqlite:///asd'
+    fa = format_conf.format_address('!asd', 1)
+    assert fa == 'sqlite:///../asd'
+    fa = format_conf.format_address('asdd/d', 2)
+    assert fa == 'sqlite:///asddd'
+
+    fi = format_conf.format_id_name()
     assert isinstance(fi, tuple)
+    fi = format_conf.format_id_name(True, 'asdsa')
+    assert fi == (True, 'True')
+    fi = format_conf.format_id_name(None, 'asd')
+    assert fi == (True, 'None')
+    fi = format_conf.format_id_name('asd')
+    assert fi == (True, 'asd')
+    fi = format_conf.format_id_name('asd', 'asd')
+    assert fi == (True, 'asd')
+
+    fs = format_conf.format_sec()
     assert isinstance(fs, int)
+    fs = format_conf.format_sec('123123')
+    assert fs == 60
+    fs = format_conf.format_sec(True)
+    assert fs == 60
+    fs = format_conf.format_sec(None)
+    assert fs == 60
+    fs = format_conf.format_sec(-1)
+    assert fs == 60
+    fs = format_conf.format_sec(100)
+    assert fs == 100
+    fs = format_conf.format_sec(50)
+    assert fs == 50
 
 
 def test_auth_user():
     def func():
         return True
+
     assert auth.auth_user(func)

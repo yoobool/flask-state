@@ -1,6 +1,7 @@
 import redis
 from enum import unique, Enum
 from ..utils.format_conf import format_id_name, format_sec, format_address, format_language
+
 # Query time range
 DAYS_SCOPE = {'1': 1, '3': 3, '7': 7, '30': 30}
 
@@ -43,17 +44,17 @@ class DefaultConf:
         # The default value is 60
         self.SECS = 60
 
-    def set_id_name(self, value=None):
-        self.ID_NAME = format_id_name(value)
+    def set_id_name(self, element=None, ball=True):
+        self.ID_NAME = format_id_name(element, ball)
 
-    def set_language(self, value=None):
-        self.LANGUAGE = format_language(value)
+    def set_language(self, language=None):
+        self.LANGUAGE = format_language(language)
 
-    def set_address(self, value=None):
-        self.ADDRESS = format_address(value)
+    def set_address(self, address=None, catalogue=0):
+        self.ADDRESS = format_address(address, catalogue)
 
-    def set_secs(self, value=None):
-        self.SECS = format_sec(value)
+    def set_secs(self, secs=None):
+        self.SECS = format_sec(secs)
 
 
 default_conf_obj = DefaultConf()

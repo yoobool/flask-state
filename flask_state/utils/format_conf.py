@@ -1,13 +1,15 @@
-def format_language(language=None):
+def format_language(language='English'):
     if not isinstance(language, str):
         language = str(language)
     return language
 
 
-def format_id_name(id_name=None):
-    if not isinstance(id_name, tuple):
-        id_name = (True, '')
-    return id_name
+def format_id_name(element=None, ball=True):
+    if ball not in (True, False):
+        ball = True
+    if not isinstance(element, str):
+        element = str(element)
+    return ball, element
 
 
 def format_sec(secs=None):
@@ -22,25 +24,22 @@ def format_sec(secs=None):
         return secs
 
 
-def format_address(address=None):
+def format_address(address=None, catalogue=0):
     """
     Format incoming database address
     :param address: initial database address
     :return: format database address
     """
-    if isinstance(address, str):
-        res = address.replace('/', '').replace('?', '')
-        res = 'sqlite:///' + res + '.db'
-        return res
-    else:
-        if not isinstance(address, tuple) or not isinstance(address[0], str) or not isinstance(address[1], int):
-            return 'sqlite:///console_host.db'
-        res = ''
-        for i in range(len(address[0])):
-            if address[0][i].isalnum():
-                res += address[0][i:]
-                break
-        res = res.replace('/', '').replace('?', '')
-        parent = '../' if address[1] == 1 else ''
-        res = 'sqlite:///' + parent + res + '.db'
-        return res
+    if not isinstance(address, str):
+        address = str(address)
+    if catalogue not in (0, 1):
+        catalogue = 0
+    res = ''
+    for i in range(len(address)):
+        if address[i].isalnum():
+            res += address[i:]
+            break
+    res = res.replace('/', '').replace('?', '')
+    parent = '../' if catalogue == 1 else ''
+    res = 'sqlite:///' + parent + res
+    return res
