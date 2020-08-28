@@ -1,6 +1,6 @@
 # Flask-State
 
-Flask-States is a visual plug-in based on flash. It can record the local state every minute and read redis status (optional)，and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
+Flask-States is a visual plugin based on flask. It can record the local state every minute and read redis status (optional)，and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
 
 [![](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
 
