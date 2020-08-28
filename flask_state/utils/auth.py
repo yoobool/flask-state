@@ -16,7 +16,7 @@ def auth_user(func):
         try:
             cr = current_app.login_manager
         except Exception as e:
-            logging.error(e)
+            print(e)
             return func()
         current_user = LocalProxy(lambda: get_user())
 

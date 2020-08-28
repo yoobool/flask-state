@@ -30,7 +30,7 @@ class DefaultConf:
     def __init__(self):
         # Set the ID of the binding element in HTML, or select the suspension ball binding
         # The default value is(False, 'console_machine_status')
-        self.ID_NAME = (True, 'console_machine_status')
+        self.ID_NAME = ('console_machine_status', True)
 
         # Set plugin language
         self.LANGUAGE = 'Chinese'

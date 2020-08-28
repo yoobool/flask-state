@@ -9,7 +9,7 @@ def format_id_name(element=None, ball=True):
         ball = True
     if not isinstance(element, str):
         element = str(element)
-    return ball, element
+    return element, ball
 
 
 def format_sec(secs=None):

@@ -77,7 +77,7 @@ def bind_id2element():
     """
     try:
         id_name = default_conf_obj.ID_NAME
-        return send_id(id_name)
+        return send_id(id_name[0], id_name[1])
     except Exception as e:
         logging.error(e)
         return make_response_content(MsgCode.UNKNOWN_ERROR)

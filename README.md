@@ -53,9 +53,9 @@ app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'R
 from flask_state import default_conf_obj
 
 # ID_NAME is the ID of the binding element in HTML
-# Set to false to use page element binding, and true to float ball binding
+# NEED_BALL is set to false to use page element binding, and true to float ball binding
 ID_NAME = (False, 'console_machine_status')
-default_conf_obj.set_id_name(ID_NAME)
+default_conf_obj.set_id_name(ID_NAME, NEED_BALL)
 ```
 
 ```python
@@ -70,9 +70,9 @@ default_conf_obj.set_language(LANGUAGE)
 from flask_state import default_conf_obj
 
 # ADDRESS is the database name
-# 0 is the same level directory as Flask config, and 1 is the superior directory of Flask config
+# CATALOGUE 0 is the same level directory as Flask config, and 1 is the superior directory of Flask config
 ADDRESS = 'console_host'
-default_conf_obj.set_address(ADDRESS)
+default_conf_obj.set_address(ADDRESS, CATALOGUE)
 ```
 
 ```python
