@@ -18,6 +18,5 @@ setup(
         "Flask>=1.0",
         "SQLAlchemy>=1.2",
         "Flask-SQLAlchemy>=1.0"
-    ],
-    extras_require=['Echarts>=3.0.2'],
+    ]
 )
