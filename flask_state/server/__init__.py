@@ -33,7 +33,7 @@ class DefaultConf:
         self.ID_NAME = ('console_machine_status', True)
 
         # Set plugin language
-        self.LANGUAGE = 'Chinese'
+        self.LANGUAGE = 'English'
 
         # Enter the database name, address and conf directory or superior directory, the default is 0
         # If the project has a console_host database, it is not created
@@ -44,16 +44,16 @@ class DefaultConf:
         # The default value is 60
         self.SECS = 60
 
-    def set_id_name(self, element=None, ball=True):
+    def set_id_name(self, element, ball=True):
         self.ID_NAME = format_id_name(element, ball)
 
-    def set_language(self, language=None):
+    def set_language(self, language):
         self.LANGUAGE = format_language(language)
 
-    def set_address(self, address=None, catalogue=0):
+    def set_address(self, address, catalogue=0):
         self.ADDRESS = format_address(address, catalogue)
 
-    def set_secs(self, secs=None):
+    def set_secs(self, secs):
         self.SECS = format_sec(secs)
 
 

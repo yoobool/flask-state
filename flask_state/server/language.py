@@ -4,7 +4,7 @@ from . import MsgCode, LANGUAGE
 from .response_methods import make_response_content
 
 
-def return_language(language='English') -> dict:
+def return_language(language) -> dict:
     """
     Return to custom language
     :param language: response data
