@@ -94,4 +94,4 @@ Flask-State follows the [Contributor Covenant](https://www.contributor-covenant.
 
 
 ## License
-#### ......
+Flask-State is available under the BSD-3-Clause License.
