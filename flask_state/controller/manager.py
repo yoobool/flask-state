@@ -26,7 +26,7 @@ def init_app(app):
     if not app.config.get('SQLALCHEMY_BINDS') or not app.config['SQLALCHEMY_BINDS'].get('flask_state_sqlite'):
         app.config['SQLALCHEMY_BINDS'] = app.config.get('SQLALCHEMY_BINDS') or {}
         app.config['SQLALCHEMY_BINDS']['flask_state_sqlite'] = default_conf_obj.ADDRESS
-    if app.config.get('REDIS_CONF') and app.config['REDIS_CONF'].get('REDIS_REDIS_STATUS'):
+    if app.config.get('REDIS_CONF') and app.config['REDIS_CONF'].get('REDIS_STATUS'):
         redis_state = app.config['REDIS_CONF']
         redis_obj = {'REDIS_HOST': redis_state.get('REDIS_HOST'), 'REDIS_PORT': redis_state.get('REDIS_PORT'),
                      'REDIS_PASSWORD': redis_state.get('REDIS_PASSWORD')}
