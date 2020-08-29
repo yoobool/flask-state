@@ -2,7 +2,7 @@
 
 Flask-States is a visual plugin based on flask. It can record the local state every minute and read redis status (optional)，and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
 
-[![](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
+[![](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
 
 
 
@@ -34,13 +34,13 @@ flask_state.init_app(app)
 
 #### Thirdly：Introduce related files into your HTML file and bind ID values for an element.
 ```html
-<link href="http://yoobool.test.upcdn.net/flask_state.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v0.0.1/flask_state/static/flask_state.css" rel="stylesheet">
 
 <!-- Any element: div/button/a/span -->
 <a id='console_machine_status'></a>
 
 <script src="https://cdn.staticfile.org/echarts/4.2.1/echarts.min.js"></script>
-<script src="http://yoobool.test.upcdn.net/flask_state.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v0.0.1/flask_state/static/flask_state.js"></script>
 ```
 
 #### Extra：You can also customize some configuration files.
