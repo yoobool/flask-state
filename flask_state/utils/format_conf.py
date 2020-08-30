@@ -1,3 +1,7 @@
+import os
+import platform
+
+
 def format_language(language):
     if not isinstance(language, str):
         language = str(language)
@@ -24,7 +28,7 @@ def format_sec(secs):
         return secs
 
 
-def format_address(address, catalogue=0):
+def format_address(address):
     """
     Format incoming database address
     :param address: initial database address
@@ -32,14 +36,12 @@ def format_address(address, catalogue=0):
     """
     if not isinstance(address, str):
         address = str(address)
-    if catalogue not in (0, 1):
-        catalogue = 0
-    res = ''
-    for i in range(len(address)):
-        if address[i].isalnum():
-            res += address[i:]
-            break
-    res = res.replace('/', '').replace('?', '')
-    parent = '../' if catalogue == 1 else ''
-    res = 'sqlite:///' + parent + res
-    return res
+    if platform.system() == 'Windows':
+        index = max(address.rfind('\\'), address.rfind('/'))
+    else:
+        index = address.rfind('/')
+    if os.access(address[:index] if index != -1 else './', os.W_OK):
+        path = address
+    else:
+        path = './'
+    return 'sqlite:///' + path
