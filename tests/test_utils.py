@@ -1,5 +1,5 @@
-from flask_state.utils import date, file_lock, format_conf, auth
 import time
+from flask_state.utils import date, file_lock, format_conf, auth
 
 
 def test_get_current_ms():
@@ -41,8 +41,10 @@ def test_file_lock():
 
 
 def test_format_conf():
-    fl = format_conf.format_language()
-    assert isinstance(fl, str)
+    try:
+        format_conf.format_language()
+    except TypeError as t:
+        assert isinstance(t, TypeError)
     fl = format_conf.format_language(123)
     assert isinstance(fl, str)
     fl = format_conf.format_language(None)
@@ -50,21 +52,23 @@ def test_format_conf():
     fl = format_conf.format_language(True)
     assert isinstance(fl, str)
 
-    fa = format_conf.format_address()
-    assert isinstance(fa, str)
+    try:
+        format_conf.format_address()
+    except TypeError as t:
+        assert isinstance(t, TypeError)
     fa = format_conf.format_address('asd?')
-    assert fa == 'sqlite:///asd'
+    assert fa == 'sqlite:///asd?'
     fa = format_conf.format_address('aa/aa/a?a/aas?d')
-    assert fa == 'sqlite:///aaaaaaaasd'
+    assert fa == 'sqlite:///./'
     fa = format_conf.format_address('!asd')
-    assert fa == 'sqlite:///asd'
-    fa = format_conf.format_address('!asd', 1)
-    assert fa == 'sqlite:///../asd'
-    fa = format_conf.format_address('asdd/d', 2)
-    assert fa == 'sqlite:///asddd'
+    assert fa == 'sqlite:///!asd'
+    fa = format_conf.format_address('asdd/d')
+    assert fa == 'sqlite:///./'
 
-    fi = format_conf.format_id_name()
-    assert isinstance(fi, tuple)
+    try:
+        format_conf.format_id_name()
+    except TypeError as t:
+        assert isinstance(t, TypeError)
     fi = format_conf.format_id_name(True, 'asdsa')
     assert fi == ('True', True)
     fi = format_conf.format_id_name(None, 'asd')
@@ -74,8 +78,10 @@ def test_format_conf():
     fi = format_conf.format_id_name('asd', 'asd')
     assert fi == ('asd', True)
 
-    fs = format_conf.format_sec()
-    assert isinstance(fs, int)
+    try:
+        format_conf.format_sec()
+    except TypeError as t:
+        assert isinstance(t, TypeError)
     fs = format_conf.format_sec('123123')
     assert fs == 60
     fs = format_conf.format_sec(True)
