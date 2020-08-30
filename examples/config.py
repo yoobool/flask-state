@@ -16,7 +16,11 @@ def settint_app():
     # set conf
     default_conf_obj.set_id_name('console_machine_status', True)
     default_conf_obj.set_language('English')
-    default_conf_obj.set_address('console_machine_status', 0)
+
+    import os
+    path_ = os.getcwd() + '/test.db'
+    default_conf_obj.set_address(path_)
+
     default_conf_obj.set_secs(20)
 
     # use init_app initial configuration
