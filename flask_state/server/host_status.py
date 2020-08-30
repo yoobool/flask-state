@@ -60,8 +60,8 @@ def record_console_host():
                                   keyspace_misses=keyspace_misses,
                                   hits_ratio=hits_ratio,
                                   delta_hits_ratio=delta_hits_ratio)
-            except redis.exceptions.ConnectionError as e:
-                logging.error(e)
+            except Exception as t:
+                logging.error(t)
         create_host_status(result_obj)
     except Exception as e:
         logging.error(e)
