@@ -50,8 +50,8 @@ class DefaultConf:
     def set_language(self, language):
         self.LANGUAGE = format_language(language)
 
-    def set_address(self, address, catalogue=0):
-        self.ADDRESS = format_address(address, catalogue)
+    def set_address(self, address):
+        self.ADDRESS = format_address(address)
 
     def set_secs(self, secs):
         self.SECS = format_sec(secs)
