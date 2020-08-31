@@ -1,34 +1,7 @@
-from flask_state.server.bind_id import send_id
-from flask_state.server.language import return_language
 from flask_state.server.response_methods import make_response_content
 from flask_state.server.host_status import row2dict
-from flask_state.server import MsgCode
 from flask import json
 import flask
-
-
-def test_bind_id(app):
-    with app.test_request_context():
-        assert json.loads(send_id(1, 1).data) == json.loads(make_response_content(MsgCode.ERROR_TYPE).data)
-
-        assert json.loads(send_id().data).get('code') == json.loads(make_response_content().data).get('code')
-
-
-def test_make_response_content(app):
-    with app.test_request_context():
-        assert type(make_response_content(MsgCode.SUCCESS)) == flask.Response
-
-
-def test_return_language(app):
-    with app.test_request_context():
-        assert json.loads(return_language(1).data) == json.loads(
-            make_response_content(MsgCode.NOT_SUPPORT_LANGUAGE).data)
-
-        assert json.loads(return_language('a').data) == json.loads(
-            make_response_content(MsgCode.NOT_SUPPORT_LANGUAGE).data)
-
-        assert json.loads(return_language('English').data).get('code') == json.loads(
-            make_response_content(MsgCode.SUCCESS).data).get('code')
 
 
 def test_query_console_host(app, db, host):
