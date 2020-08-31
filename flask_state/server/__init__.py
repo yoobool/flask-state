@@ -8,13 +8,6 @@ DAYS_SCOPE = {'1': 1, '3': 3, '7': 7, '30': 30}
 
 class DefaultConf:
     def __init__(self):
-        # Set the ID of the binding element in HTML, or select the suspension ball binding
-        # The default value is(False, 'console_machine_status')
-        self.ID_NAME = ('console_machine_status', True)
-
-        # Set plugin language
-        self.LANGUAGE = 'English'
-
         # Enter the database name, address and conf directory or superior directory, the default is 0
         # If the project has a console_host database, it is not created
         # The default value is('console_host', 0)
@@ -23,12 +16,6 @@ class DefaultConf:
         # Set the interval to record the local state, with a minimum interval of 10 seconds
         # The default value is 60
         self.SECS = 60
-
-    def set_id_name(self, element, ball=True):
-        self.ID_NAME = format_id_name(element, ball)
-
-    def set_language(self, language):
-        self.LANGUAGE = format_language(language)
 
     def set_address(self, address):
         self.ADDRESS = format_address(address)

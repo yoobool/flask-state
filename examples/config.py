@@ -13,9 +13,6 @@ def settint_app():
         'REDIS_PASSWORD': 'fish09'
     }
 
-    # set conf
-    default_conf_obj.set_language('English')
-
     import os
     path_ = os.getcwd() + '/test.db'
     default_conf_obj.set_address(path_)
