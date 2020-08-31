@@ -10,7 +10,7 @@ def test_default_conf_obj():
     assert isinstance(class_obj.ADDRESS, str)
 
     class_obj.set_id_name(1)
-    assert class_obj.ID_NAME == (True, '')
+    assert class_obj.ID_NAME == ('1', True)
 
     class_obj.set_language(1)
     assert class_obj.LANGUAGE == '1'
@@ -19,4 +19,4 @@ def test_default_conf_obj():
     assert class_obj.SECS == 60
 
     class_obj.set_address(1)
-    assert class_obj.ADDRESS == 'sqlite:///console_host.db'
+    assert class_obj.ADDRESS == 'sqlite:///1'
