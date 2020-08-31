@@ -2,20 +2,6 @@ import os
 import platform
 
 
-def format_language(language):
-    if not isinstance(language, str):
-        language = str(language)
-    return language
-
-
-def format_id_name(element, ball=True):
-    if ball not in (True, False):
-        ball = True
-    if not isinstance(element, str):
-        element = str(element)
-    return element, ball
-
-
 def format_sec(secs):
     """
     Format incoming time
