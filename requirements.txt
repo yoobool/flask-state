@@ -5,4 +5,4 @@ click>=5.1
 Flask>=1.0
 SQLAlchemy>=1.2
 Flask-SQLAlchemy>=1.0
-redis>=3.5.0
+redis>=3.3.7

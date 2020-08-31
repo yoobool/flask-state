@@ -74,7 +74,7 @@ from flask_state import default_conf_obj
 # ADDRESS is the database name
 # CATALOGUE 0 is the same level directory as Flask config, and 1 is the superior directory of Flask config
 ADDRESS = 'console_host'
-default_conf_obj.set_address(ADDRESS, CATALOGUE)
+default_conf_obj.set_address(ADDRESS)
 ```
 
 ```python
