@@ -1,6 +1,9 @@
 class MachineStatus {
-    showConsoleDetail() {
+    constructor(language) {
+        this.language = language;
+    };
 
+    showConsoleDetail() {
 
         MachineStatus.addConsoleInfoContainer();
 
@@ -46,253 +49,244 @@ class MachineStatus {
         consoleInfo.style.height = 'fit-content';
         consoleInfo.style.top = String(5) + 'rem';
 
+        consoleInfo.getElementsByTagName('h4')[0].innerHTML = this.language.host_status;
+        consoleInfo.getElementsByTagName('h4')[1].innerHTML = this.language.redis_status;
+        document.getElementById('cpu').innerHTML = this.language.cpu;
+        document.getElementById('memory').innerHTML = this.language.memory;
+        document.getElementById('disk_usage').innerHTML = this.language.disk_usage;
+        document.getElementById('load_avg').innerHTML = this.language.load_avg;
+        document.getElementById('boot_seconds').innerHTML = this.language.boot_seconds;
+        document.getElementById('used_memory').innerHTML = this.language.used_memory;
+        document.getElementById('used_memory_rss').innerHTML = this.language.used_memory_rss;
+        document.getElementById('mem_fragmentation_ratio').innerHTML = this.language.mem_fragmentation_ratio;
+        document.getElementById('hits_ratio').innerHTML = this.language.hits_ratio;
+        document.getElementById('delta_hits_ratio').innerHTML = this.language.delta_hits_ratio;
+        document.getElementById('uptime_in_seconds').innerHTML = this.language.uptime_in_seconds;
+        document.getElementById('connected_clients').innerHTML = this.language.connected_clients;
+        document.getElementById('days').innerHTML = this.language.days;
+
+        let hostInfoSpan = consoleInfo.getElementsByTagName('div')[0].getElementsByClassName('badge-style');
+        let hostInfoExtendSpan = consoleInfo.getElementsByTagName('div')[1].getElementsByClassName('badge-style');
+        for (let item of hostInfoSpan) {
+            item.innerText = '';
+        }
+        for (let item of hostInfoExtendSpan) {
+            item.innerText = '';
+        }
+
+        let consoleCpuChart = echarts.init(document.getElementById('console_info_cpu_chart'), null, {renderer: 'svg'});
+        let consoleMemoryChart = echarts.init(document.getElementById('console_info_memory_chart'), null, {renderer: 'svg'});
+        let consoleLoadavgChart = echarts.init(document.getElementById('console_info_loadavg_chart'), null, {renderer: 'svg'});
+        let consoleDiskusageChart = echarts.init(document.getElementById('console_info_diskusage_chart'), null, {renderer: 'svg'});
+
+        let cpuOption = MachineStatus.generateChatOption(this.language.cpu, '', this.language.today);
+        let memoryOption = MachineStatus.generateChatOption(this.language.memory, '', this.language.today);
+        let diskusageOption = MachineStatus.generateChatOption(this.language.disk_usage, '', this.language.today);
+        let loadavgOption = MachineStatus.generateChatOption('Load Avg', 'loadavg', this.language.minutes, this.language.language);
+
+        consoleCpuChart.showLoading();
+        consoleMemoryChart.showLoading();
+        consoleLoadavgChart.showLoading();
+        consoleDiskusageChart.showLoading();
+        let viewData = this.language;
         let ajax = new Ajax();
         ajax.send({
             type: 'POST',
-            url: '/v0/state/language',
-            success: renderView
+            url: '/v0/state/hoststatus',
+            data: {'timeQuantum': '1'},
+            success: ajaxSuccess,
+            complete: ajaxComplete,
         });
 
-        function renderView(data) {
-            consoleInfo.getElementsByTagName('h4')[0].innerHTML = data.data.host_status;
-            consoleInfo.getElementsByTagName('h4')[1].innerHTML = data.data.redis_status;
-            document.getElementById('cpu').innerHTML = data.data.cpu;
-            document.getElementById('memory').innerHTML = data.data.memory;
-            document.getElementById('disk_usage').innerHTML = data.data.disk_usage;
-            document.getElementById('load_avg').innerHTML = data.data.load_avg;
-            document.getElementById('boot_seconds').innerHTML = data.data.boot_seconds;
-            document.getElementById('used_memory').innerHTML = data.data.used_memory;
-            document.getElementById('used_memory_rss').innerHTML = data.data.used_memory_rss;
-            document.getElementById('mem_fragmentation_ratio').innerHTML = data.data.mem_fragmentation_ratio;
-            document.getElementById('hits_ratio').innerHTML = data.data.hits_ratio;
-            document.getElementById('delta_hits_ratio').innerHTML = data.data.delta_hits_ratio;
-            document.getElementById('uptime_in_seconds').innerHTML = data.data.uptime_in_seconds;
-            document.getElementById('connected_clients').innerHTML = data.data.connected_clients;
-            document.getElementById('days').innerHTML = data.data.days;
+        function ajaxSuccess(data) {
+            const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
 
-            let hostInfoSpan = consoleInfo.getElementsByTagName('div')[0].getElementsByClassName('badge-style');
-            let hostInfoExtendSpan = consoleInfo.getElementsByTagName('div')[1].getElementsByClassName('badge-style');
-            for (let item of hostInfoSpan) {
-                item.innerText = '';
+            data.data.items = data.data.items.map(item => {
+                let element = {};
+                fields.forEach((field, index) => {
+                    if (field === "ts") return element[field] = 1000 * item[index];
+                    element[field] = item[index];
+                });
+                return element;
+            });
+
+            let currentStatistic = data.data.currentStatistic;
+            if (Object.keys(currentStatistic).length) {
+                hostInfoSpan[0].innerHTML = currentStatistic.memory + '%';
+                hostInfoSpan[1].innerHTML = currentStatistic.cpu + '%';
+                hostInfoSpan[2].innerHTML = currentStatistic.disk_usage + '%';
+                let loadavgStr = currentStatistic.load_avg[0] + "，" + currentStatistic.load_avg[1] + "，" + currentStatistic.load_avg[2];
+                hostInfoSpan[3].innerHTML = loadavgStr;
+                if (currentStatistic.boot_seconds)
+                    hostInfoSpan[4].innerHTML = MachineStatus.consoleFormatSeconds(currentStatistic.boot_seconds, viewData.days, viewData.hours, viewData.minutes, viewData.seconds);
+
+                if (currentStatistic.memory >= 85) {
+                    let hostInfoSpanClass = hostInfoSpan[0].classList;
+                    hostInfoSpanClass.remove('bg-orange', 'background-green');
+                    hostInfoSpanClass.add('background-red');
+                } else if (currentStatistic.memory >= 75 && currentStatistic.memory < 85) {
+                    let hostInfoSpanClass = hostInfoSpan[0].classList;
+                    hostInfoSpanClass.remove('background-green', 'background-red');
+                    hostInfoSpanClass.add('bg-orange');
+                } else {
+                    let hostInfoSpanClass = hostInfoSpan[0].classList;
+                    hostInfoSpanClass.remove('bg-orange', 'background-red');
+                    hostInfoSpanClass.add('background-green');
+                }
+                if (currentStatistic.cpu >= 85) {
+                    let hostInfoSpanClass = hostInfoSpan[1].classList;
+                    hostInfoSpanClass.remove('background-green', 'bg-orange');
+                    hostInfoSpanClass.add('background-red');
+                } else if (currentStatistic.cpu >= 75 && currentStatistic.cpu < 85) {
+                    let hostInfoSpanClass = hostInfoSpan[1].classList;
+                    hostInfoSpanClass.remove('background-green', 'background-red');
+                    hostInfoSpanClass.add('bg-orange');
+                } else {
+                    let hostInfoSpanClass = hostInfoSpan[1].classList;
+                    hostInfoSpanClass.remove('bg-orange', 'background-red');
+                    hostInfoSpanClass.add('background-green');
+                }
+                if (currentStatistic.disk_usage >= 85) {
+                    let hostInfoSpanClass = hostInfoSpan[2].classList;
+                    hostInfoSpanClass.remove('background-green', 'bg-orange');
+                    hostInfoSpanClass.add('background-red');
+                } else if (currentStatistic.disk_usage >= 75 && currentStatistic.disk_usage < 85) {
+                    let hostInfoSpanClass = hostInfoSpan[2].classList;
+                    hostInfoSpanClass.remove('background-green', 'background-red');
+                    hostInfoSpanClass.add('bg-orange');
+                } else {
+                    let hostInfoSpanClass = hostInfoSpan[2].classList;
+                    hostInfoSpanClass.remove('bg-orange', 'background-red');
+                    hostInfoSpanClass.add('background-green');
+                }
+                let loadavgAvg = (currentStatistic.load_avg[0] + currentStatistic.load_avg[1] + currentStatistic.load_avg[2]) / 3;
+                if (loadavgAvg >= 10) {
+                    let hostInfoSpanClass = hostInfoSpan[3].classList;
+                    hostInfoSpanClass.remove('background-green', 'bg-orange');
+                    hostInfoSpanClass.add('background-red');
+                } else if (loadavgAvg >= 5 && loadavgAvg < 10) {
+                    let hostInfoSpanClass = hostInfoSpan[3].classList;
+                    hostInfoSpanClass.remove('background-green', 'background-red');
+                    hostInfoSpanClass.add('bg-orange');
+                } else {
+                    let hostInfoSpanClass = hostInfoSpan[3].classList;
+                    hostInfoSpanClass.remove('bg-orange', 'background-red');
+                    hostInfoSpanClass.add('background-green');
+                }
+
+                let hostInfoKeysList = ['used_memory', 'used_memory_rss', 'mem_fragmentation_ratio', 'hits_ratio', 'delta_hits_ratio', 'uptime_in_seconds', 'connected_clients'];
+                {
+                    let counter = 0;
+                    for (let item of hostInfoExtendSpan) {
+                        item.innerText = String(currentStatistic[hostInfoKeysList[counter]]);
+                        if (counter < 2) {
+                            item.innerHTML = Math.ceil(currentStatistic[hostInfoKeysList[counter]] / 1024 / 1024) + 'M';
+                        } else if (counter === 2) {
+                            let ratio = currentStatistic[hostInfoKeysList[counter]];
+                            if (ratio !== null && ratio !== undefined && ratio > 1) {
+                                let hostInfoExtendSpanClass = hostInfoExtendSpan[counter].classList;
+                                hostInfoExtendSpanClass.remove('background-green');
+                                hostInfoExtendSpanClass.add('background-red');
+                            }
+                            counter++;
+                            continue;
+                        } else if (counter > 2 && counter < 5) {
+                            item.innerHTML = currentStatistic[hostInfoKeysList[counter]] + '%';
+                        } else if (counter == 5) {
+                            if (currentStatistic[hostInfoKeysList[counter]])
+                                item.innerHTML = MachineStatus.consoleFormatSeconds(currentStatistic[hostInfoKeysList[counter]], viewData.days, viewData.hours, viewData.minutes, viewData.seconds);
+                        }
+                        if (counter >= 2) {
+                            item.classList.add('background-green');
+                        }
+                        counter++;
+                    }
+                }
             }
-            for (let item of hostInfoExtendSpan) {
-                item.innerText = '';
+
+            data.data.items.reverse();
+            let dataMap = MachineStatus.refactorRawData(data.data.items);
+
+            let ts_list = dataMap.ts_list;
+            let cpu_list = dataMap.cpu_list;
+            let memory_list = dataMap.memory_list;
+            let loadavg_list = dataMap.load_avg_list[0];
+            let loadavg_5min_list = dataMap.load_avg_list[1];
+            let loadavg_15min_list = dataMap.load_avg_list[2];
+            let diskusage_list = dataMap.disk_usage_list;
+
+            memoryOption.xAxis.data = ts_list;
+            cpuOption.xAxis.data = ts_list;
+            loadavgOption.xAxis.data = ts_list;
+            diskusageOption.xAxis.data = ts_list;
+
+            memoryOption.series[0].data = memory_list;
+            cpuOption.series[0].data = cpu_list;
+            diskusageOption.series[0].data = diskusage_list;
+            loadavgOption.series[0].data = loadavg_list;
+            loadavgOption.series[1].data = loadavg_5min_list;
+            loadavgOption.series[2].data = loadavg_15min_list;
+
+            consoleMemoryChart.setOption(memoryOption);
+            consoleCpuChart.setOption(cpuOption);
+            consoleLoadavgChart.setOption(loadavgOption);
+            consoleDiskusageChart.setOption(diskusageOption);
+            consoleMemoryChart.resize();
+            consoleCpuChart.resize();
+            consoleLoadavgChart.resize();
+            consoleDiskusageChart.resize();
+
+            window.onresize = () => MachineStatus.resizeChart([consoleMemoryChart, consoleCpuChart, consoleLoadavgChart, consoleDiskusageChart]);
+            if (document.getElementById('console_info_tab')) {
+                let liArr = document.getElementById('console_info_tab').getElementsByTagName('li');
+                let index = 0;
+                let node = document.getElementById('console_info_tab_memory');
+                let node_li = liArr[0];
+                for (let item of liArr) {
+                    let now = null;
+                    if (index === 0) {
+                        now = document.getElementById('console_info_tab_memory');
+                    } else if (index === 1) {
+                        now = document.getElementById('console_info_tab_cpu');
+                    } else if (index === 2) {
+                        now = document.getElementById('console_info_tab_diskusage');
+                    } else {
+                        now = document.getElementById('console_info_tab_loadavg');
+                    }
+                    item.children[0].addEventListener('click', function () {
+                        item.classList.add('active');
+                        node_li.classList.remove('active');
+                        node.classList.remove('show');
+                        now.classList.add('show');
+                        consoleMemoryChart.resize();
+                        consoleCpuChart.resize();
+                        consoleLoadavgChart.resize();
+                        consoleDiskusageChart.resize();
+                        node = now;
+                        node_li = item;
+                    });
+                    index++;
+                }
             }
+        }
 
-            let consoleCpuChart = echarts.init(document.getElementById('console_info_cpu_chart'), null, {renderer: 'svg'});
-            let consoleMemoryChart = echarts.init(document.getElementById('console_info_memory_chart'), null, {renderer: 'svg'});
-            let consoleLoadavgChart = echarts.init(document.getElementById('console_info_loadavg_chart'), null, {renderer: 'svg'});
-            let consoleDiskusageChart = echarts.init(document.getElementById('console_info_diskusage_chart'), null, {renderer: 'svg'});
+        function ajaxComplete() {
+            consoleMemoryChart.hideLoading();
+            consoleCpuChart.hideLoading();
+            consoleLoadavgChart.hideLoading();
+            consoleDiskusageChart.hideLoading();
+        }
 
-            let cpuOption = MachineStatus.generateChatOption(data.data.cpu, '', data.data.today);
-            let memoryOption = MachineStatus.generateChatOption(data.data.memory, '', data.data.today);
-            let diskusageOption = MachineStatus.generateChatOption(data.data.disk_usage, '', data.data.today);
-            let loadavgOption = MachineStatus.generateChatOption('Load Avg', 'loadavg', data.data.minutes, data.data.language);
-
-            consoleCpuChart.showLoading();
-            consoleMemoryChart.showLoading();
-            consoleLoadavgChart.showLoading();
-            consoleDiskusageChart.showLoading();
-            let viewData = data.data;
-            ajax = new Ajax();
+        let selectContainer = document.getElementById('select_days');
+        selectContainer.onchange = function () {
             ajax.send({
                 type: 'POST',
                 url: '/v0/state/hoststatus',
-                data: {'timeQuantum': '1'},
+                data: {'timeQuantum': selectContainer.value},
                 success: ajaxSuccess,
                 complete: ajaxComplete,
             });
-
-            function ajaxSuccess(data) {
-                const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
-
-                data.data.items = data.data.items.map(item => {
-                    let element = {};
-                    fields.forEach((field, index) => {
-                        if (field === "ts") return element[field] = 1000 * item[index];
-                        element[field] = item[index];
-                    });
-                    return element;
-                });
-
-                let currentStatistic = data.data.currentStatistic;
-                if (Object.keys(currentStatistic).length) {
-                    hostInfoSpan[0].innerHTML = currentStatistic.memory + '%';
-                    hostInfoSpan[1].innerHTML = currentStatistic.cpu + '%';
-                    hostInfoSpan[2].innerHTML = currentStatistic.disk_usage + '%';
-                    let loadavgStr = currentStatistic.load_avg[0] + "，" + currentStatistic.load_avg[1] + "，" + currentStatistic.load_avg[2];
-                    hostInfoSpan[3].innerHTML = loadavgStr;
-                    if (currentStatistic.boot_seconds)
-                        hostInfoSpan[4].innerHTML = MachineStatus.consoleFormatSeconds(currentStatistic.boot_seconds, viewData.days, viewData.hours, viewData.minutes, viewData.seconds);
-
-                    if (currentStatistic.memory >= 85) {
-                        let hostInfoSpanClass = hostInfoSpan[0].classList;
-                        hostInfoSpanClass.remove('bg-orange', 'background-green');
-                        hostInfoSpanClass.add('background-red');
-                    } else if (currentStatistic.memory >= 75 && currentStatistic.memory < 85) {
-                        let hostInfoSpanClass = hostInfoSpan[0].classList;
-                        hostInfoSpanClass.remove('background-green', 'background-red');
-                        hostInfoSpanClass.add('bg-orange');
-                    } else {
-                        let hostInfoSpanClass = hostInfoSpan[0].classList;
-                        hostInfoSpanClass.remove('bg-orange', 'background-red');
-                        hostInfoSpanClass.add('background-green');
-                    }
-                    if (currentStatistic.cpu >= 85) {
-                        let hostInfoSpanClass = hostInfoSpan[1].classList;
-                        hostInfoSpanClass.remove('background-green', 'bg-orange');
-                        hostInfoSpanClass.add('background-red');
-                    } else if (currentStatistic.cpu >= 75 && currentStatistic.cpu < 85) {
-                        let hostInfoSpanClass = hostInfoSpan[1].classList;
-                        hostInfoSpanClass.remove('background-green', 'background-red');
-                        hostInfoSpanClass.add('bg-orange');
-                    } else {
-                        let hostInfoSpanClass = hostInfoSpan[1].classList;
-                        hostInfoSpanClass.remove('bg-orange', 'background-red');
-                        hostInfoSpanClass.add('background-green');
-                    }
-                    if (currentStatistic.disk_usage >= 85) {
-                        let hostInfoSpanClass = hostInfoSpan[2].classList;
-                        hostInfoSpanClass.remove('background-green', 'bg-orange');
-                        hostInfoSpanClass.add('background-red');
-                    } else if (currentStatistic.disk_usage >= 75 && currentStatistic.disk_usage < 85) {
-                        let hostInfoSpanClass = hostInfoSpan[2].classList;
-                        hostInfoSpanClass.remove('background-green', 'background-red');
-                        hostInfoSpanClass.add('bg-orange');
-                    } else {
-                        let hostInfoSpanClass = hostInfoSpan[2].classList;
-                        hostInfoSpanClass.remove('bg-orange', 'background-red');
-                        hostInfoSpanClass.add('background-green');
-                    }
-                    let loadavgAvg = (currentStatistic.load_avg[0] + currentStatistic.load_avg[1] + currentStatistic.load_avg[2]) / 3;
-                    if (loadavgAvg >= 10) {
-                        let hostInfoSpanClass = hostInfoSpan[3].classList;
-                        hostInfoSpanClass.remove('background-green', 'bg-orange');
-                        hostInfoSpanClass.add('background-red');
-                    } else if (loadavgAvg >= 5 && loadavgAvg < 10) {
-                        let hostInfoSpanClass = hostInfoSpan[3].classList;
-                        hostInfoSpanClass.remove('background-green', 'background-red');
-                        hostInfoSpanClass.add('bg-orange');
-                    } else {
-                        let hostInfoSpanClass = hostInfoSpan[3].classList;
-                        hostInfoSpanClass.remove('bg-orange', 'background-red');
-                        hostInfoSpanClass.add('background-green');
-                    }
-
-                    let hostInfoKeysList = ['used_memory', 'used_memory_rss', 'mem_fragmentation_ratio', 'hits_ratio', 'delta_hits_ratio', 'uptime_in_seconds', 'connected_clients'];
-                    {
-                        let counter = 0;
-                        for (let item of hostInfoExtendSpan) {
-                            item.innerText = String(currentStatistic[hostInfoKeysList[counter]]);
-                            if (counter < 2) {
-                                item.innerHTML = Math.ceil(currentStatistic[hostInfoKeysList[counter]] / 1024 / 1024) + 'M';
-                            } else if (counter === 2) {
-                                let ratio = currentStatistic[hostInfoKeysList[counter]];
-                                if (ratio !== null && ratio !== undefined && ratio > 1) {
-                                    let hostInfoExtendSpanClass = hostInfoExtendSpan[counter].classList;
-                                    hostInfoExtendSpanClass.remove('background-green');
-                                    hostInfoExtendSpanClass.add('background-red');
-                                }
-                                counter++;
-                                continue;
-                            } else if (counter > 2 && counter < 5) {
-                                item.innerHTML = currentStatistic[hostInfoKeysList[counter]] + '%';
-                            } else if (counter == 5) {
-                                if (currentStatistic[hostInfoKeysList[counter]])
-                                    item.innerHTML = MachineStatus.consoleFormatSeconds(currentStatistic[hostInfoKeysList[counter]], viewData.days, viewData.hours, viewData.minutes, viewData.seconds);
-                            }
-                            if (counter >= 2) {
-                                item.classList.add('background-green');
-                            }
-                            counter++;
-                        }
-                    }
-                }
-
-                data.data.items.reverse();
-                let dataMap = MachineStatus.refactorRawData(data.data.items);
-
-                let ts_list = dataMap.ts_list;
-                let cpu_list = dataMap.cpu_list;
-                let memory_list = dataMap.memory_list;
-                let loadavg_list = dataMap.load_avg_list[0];
-                let loadavg_5min_list = dataMap.load_avg_list[1];
-                let loadavg_15min_list = dataMap.load_avg_list[2];
-                let diskusage_list = dataMap.disk_usage_list;
-
-                memoryOption.xAxis.data = ts_list;
-                cpuOption.xAxis.data = ts_list;
-                loadavgOption.xAxis.data = ts_list;
-                diskusageOption.xAxis.data = ts_list;
-
-                memoryOption.series[0].data = memory_list;
-                cpuOption.series[0].data = cpu_list;
-                diskusageOption.series[0].data = diskusage_list;
-                loadavgOption.series[0].data = loadavg_list;
-                loadavgOption.series[1].data = loadavg_5min_list;
-                loadavgOption.series[2].data = loadavg_15min_list;
-
-                consoleMemoryChart.setOption(memoryOption);
-                consoleCpuChart.setOption(cpuOption);
-                consoleLoadavgChart.setOption(loadavgOption);
-                consoleDiskusageChart.setOption(diskusageOption);
-                consoleMemoryChart.resize();
-                consoleCpuChart.resize();
-                consoleLoadavgChart.resize();
-                consoleDiskusageChart.resize();
-
-                window.onresize = () => MachineStatus.resizeChart([consoleMemoryChart, consoleCpuChart, consoleLoadavgChart, consoleDiskusageChart]);
-                if (document.getElementById('console_info_tab')) {
-                    let liArr = document.getElementById('console_info_tab').getElementsByTagName('li');
-                    let index = 0;
-                    let node = document.getElementById('console_info_tab_memory');
-                    let node_li = liArr[0];
-                    for (let item of liArr) {
-                        let now = null;
-                        if (index === 0) {
-                            now = document.getElementById('console_info_tab_memory');
-                        } else if (index === 1) {
-                            now = document.getElementById('console_info_tab_cpu');
-                        } else if (index === 2) {
-                            now = document.getElementById('console_info_tab_diskusage');
-                        } else {
-                            now = document.getElementById('console_info_tab_loadavg');
-                        }
-                        item.children[0].addEventListener('click', function () {
-                            item.classList.add('active');
-                            node_li.classList.remove('active');
-                            node.classList.remove('show');
-                            now.classList.add('show');
-                            consoleMemoryChart.resize();
-                            consoleCpuChart.resize();
-                            consoleLoadavgChart.resize();
-                            consoleDiskusageChart.resize();
-                            node = now;
-                            node_li = item;
-                        });
-                        index++;
-                    }
-                }
-            }
-
-            function ajaxComplete() {
-                consoleMemoryChart.hideLoading();
-                consoleCpuChart.hideLoading();
-                consoleLoadavgChart.hideLoading();
-                consoleDiskusageChart.hideLoading();
-            }
-
-            let selectContainer = document.getElementById('select_days');
-            selectContainer.onchange = function () {
-                ajax.send({
-                    type: 'POST',
-                    url: '/v0/state/hoststatus',
-                    data: {'timeQuantum': selectContainer.value},
-                    success: ajaxSuccess,
-                    complete: ajaxComplete,
-                });
-            };
-        }
+        };
 
     }
 
@@ -561,7 +555,6 @@ class MachineStatus {
 }
 
 
-
 class Ajax {
     constructor(xhr) {
         xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -620,48 +613,6 @@ class Ajax {
         });
     }
 }
-
-
-
-let whenReady = (function () {
-    let funcs = [];
-    let ready = false;
-
-    function handler(e) {
-        if (ready) return;
-
-
-        if (e.type === 'onreadystatechange' && document.readyState !== 'complete') {
-            return;
-        }
-
-
-        for (let i = 0; i < funcs.length; i++) {
-            funcs[i].call(document);
-        }
-        ready = true;
-        funcs = null;
-    }
-
-    if (document.addEventListener) {
-        document.addEventListener('DOMContentLoaded', handler, false);
-        document.addEventListener('readystatechange', handler, false);
-        window.addEventListener('load', handler, false);
-    } else if (document.attachEvent) {
-        document.attachEvent('onreadystatechange', handler);
-        window.attachEvent('onload', handler);
-    }
-
-    return function whenReady(fn) {
-        if (ready) {
-            fn.call(document);
-        } else {
-            funcs.push(fn);
-        }
-    }
-})();
-
-
 
 function fn() {
     let ajax = new Ajax();
@@ -738,5 +689,58 @@ function fn() {
     }
 }
 
-whenReady(fn);
+export default function Machine_state(language, floatball=false) {
+    const MachineObj = new MachineStatus(language);
+    if (floatball) {
+        let str = "<div id='console_state_circular' class='circular circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
+        let bodyObj = document.getElementsByTagName('body')[0];
+        bodyObj.insertAdjacentHTML('afterbegin', str);
+        let circularObj = document.getElementById('console_state_circular');
+        circularObj.onclick = function () {
+            this.classList.add('circular-out');
+            window.scroll(0, 0);
+            MachineObj.showConsoleDetail();
+        };
+        let timeOutId;
+        let mousePosition;
+        circularObj.onmousedown = function (downEvent) {
+            mousePosition = mousePosition || downEvent.clientY;
+            circularObj.classList.remove('circular-animation');
+            timeOutId = setTimeout(function () {
+                circularObj.style.cursor = 'move';
+                bodyObj.style.cursor = 'move';
+                bodyObj.onmousemove = function (moveEvent) {
+                    circularObj.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
+                }
+            }, 1500)
+        };
+        bodyObj.onmouseup = function () {
+            circularObj.style.cursor = 'pointer';
+            circularObj.classList.add('circular-animation');
+            bodyObj.onmousemove = null;
+            this.style.cursor = 'default';
+            clearTimeout(timeOutId);
+        };
+        circularObj.ontouchstart = function (downEvent) {
+            mousePosition = mousePosition || downEvent.clientY;
+            circularObj.classList.remove('circular-animation');
+            timeOutId = setTimeout(function () {
+                circularObj.style.cursor = 'move';
+                bodyObj.style.cursor = 'move';
+                bodyObj.ontouchmove = function (moveEvent) {
+                    circularObj.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
+                }
+            }, 1500)
+        };
+        bodyObj.ontouchend = function () {
+            circularObj.style.cursor = 'pointer';
+            circularObj.classList.add('circular-animation');
+            bodyObj.ontouchmove = null;
+            this.style.cursor = 'default';
+            clearTimeout(timeOutId);
+        };
+    } else {
+        MachineObj.showConsoleDetail();
+    }
+}
 
