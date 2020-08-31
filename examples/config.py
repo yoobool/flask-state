@@ -14,7 +14,6 @@ def settint_app():
     }
 
     # set conf
-    default_conf_obj.set_id_name('console_machine_status', True)
     default_conf_obj.set_language('English')
 
     import os
