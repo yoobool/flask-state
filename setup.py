@@ -7,7 +7,7 @@ with open('flask_state/__about__.py') as f:
 setup(
     name=about['__title__'],
     version=about['__version__'],
-    packages=find_packages(),
+    packages=find_packages(exclude=["examples", "tests"]),
     install_requires=[
         "Werkzeug>=0.15",
         "Jinja2>=2.10.1",
