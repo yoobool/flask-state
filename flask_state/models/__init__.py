@@ -1,4 +1,6 @@
-from .base import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
 def model_init_app(app):

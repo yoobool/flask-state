@@ -1,6 +1,6 @@
 from sqlalchemy import func
 from sqlalchemy.sql import text
-from .base import db
+from . import db
 
 
 # model

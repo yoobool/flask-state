@@ -1,5 +1,6 @@
 import logging
-from ..models.console_host import ConsoleHost, db
+from ..models import db
+from ..models.console_host import ConsoleHost
 from ..utils.date import get_current_ms, get_query_ms
 
 
