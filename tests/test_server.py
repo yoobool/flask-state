@@ -1,5 +1,5 @@
-from flask_state.server.response_methods import make_response_content
-from flask_state.server.host_status import row2dict
+from src.flask_state import make_response_content
+from src.flask_state import row2dict
 from flask import json
 import flask
 

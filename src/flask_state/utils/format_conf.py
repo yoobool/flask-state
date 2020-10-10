@@ -29,5 +29,5 @@ def format_address(address):
     if os.access(address[:index] if index != -1 else './', os.W_OK):
         path = address
     else:
-        path = './'
+        path = '/'
     return 'sqlite:///' + path

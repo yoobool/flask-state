@@ -1,5 +1,5 @@
 import time
-from flask_state.utils import date, file_lock, format_conf, auth
+from src.flask_state.utils import auth, date, file_lock, format_conf
 
 
 def test_get_current_ms():

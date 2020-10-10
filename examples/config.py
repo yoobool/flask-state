@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_state import init_app, default_conf
+from src.flask_state import init_app, default_conf
 
 
 def settint_app():

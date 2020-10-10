@@ -1,7 +1,6 @@
 from flask import json
 
-from flask_state.controller.manager import bind_id2element, get_language, query_console_status
-from flask_state.server import default_conf
+from src.flask_state import query_console_status
 
 
 def test_query_host(app, host):

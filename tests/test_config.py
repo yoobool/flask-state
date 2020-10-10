@@ -1,4 +1,4 @@
-from flask_state.server import default_conf
+from src.flask_state import default_conf
 
 
 def test_default_conf():

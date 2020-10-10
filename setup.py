@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 about = {}
-with open('flask_state/__about__.py') as f:
+with open('src/flask_state/__about__.py') as f:
     exec(f.read(), about)
 # Metadata goes in setup.cfg. These are here for GitHub's dependency graph.
 setup(
