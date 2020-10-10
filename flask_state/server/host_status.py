@@ -2,8 +2,7 @@ import psutil
 import os
 import platform
 import logging
-import redis
-from . import RedisObj, MsgCode, DAYS_SCOPE
+from . import redis_conn, MsgCode, DAYS_SCOPE
 from .response_methods import make_response_content
 from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday, \
     retrieve_one_host_status
@@ -24,10 +23,10 @@ def record_console_host():
             load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
         disk_usage = psutil.disk_usage('/').percent
         boot_ts = psutil.boot_time()
-        result_obj = {'ts': get_current_ms(), 'cpu': cpu, 'memory': memory, 'load_avg': load_avg,
-                      'disk_usage': disk_usage,
-                      'boot_seconds': int(get_current_s() - boot_ts)}
-        console_handler = RedisObj.get_redis()
+        result_conf = {'ts': get_current_ms(), 'cpu': cpu, 'memory': memory, 'load_avg': load_avg,
+                       'disk_usage': disk_usage,
+                       'boot_seconds': int(get_current_s() - boot_ts)}
+        console_handler = redis_conn.get_redis()
         if console_handler:
             try:
                 redis_info = console_handler.info()
@@ -51,18 +50,18 @@ def record_console_host():
                         delta_hits_ratio = float(
                             '%.2f' % ((keyspace_hits - yesterday_keyspace_hits) * 100 / be_divided_num)) \
                             if be_divided_num != 0 else 100
-                result_obj.update(used_memory=used_memory,
-                                  used_memory_rss=used_memory_rss,
-                                  connected_clients=connected_clients,
-                                  uptime_in_seconds=uptime_in_seconds,
-                                  mem_fragmentation_ratio=mem_fragmentation_ratio,
-                                  keyspace_hits=keyspace_hits,
-                                  keyspace_misses=keyspace_misses,
-                                  hits_ratio=hits_ratio,
-                                  delta_hits_ratio=delta_hits_ratio)
+                result_conf.update(used_memory=used_memory,
+                                   used_memory_rss=used_memory_rss,
+                                   connected_clients=connected_clients,
+                                   uptime_in_seconds=uptime_in_seconds,
+                                   mem_fragmentation_ratio=mem_fragmentation_ratio,
+                                   keyspace_hits=keyspace_hits,
+                                   keyspace_misses=keyspace_misses,
+                                   hits_ratio=hits_ratio,
+                                   delta_hits_ratio=delta_hits_ratio)
             except Exception as t:
                 logging.error(t)
-        create_host_status(result_obj)
+        create_host_status(result_conf)
     except Exception as e:
         logging.error(e)
         raise e
@@ -114,14 +113,14 @@ def query_one_min_record():
         return make_response_content(MsgCode.UNKNOWN_ERROR)
 
 
-def row2dict(obj):
+def row2dict(field):
     """
     Model class to dictionary class
-    :param obj: database query results
+    :param field: database query results
     :return: database query results dictionary
     """
     d = {}
-    for column in obj.__table__.columns:
+    for column in field.__table__.columns:
         if column.name not in ('create_time', 'update_time'):
-            d[column.name] = getattr(obj, column.name)
+            d[column.name] = getattr(field, column.name)
     return d

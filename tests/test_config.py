@@ -1,14 +1,14 @@
-from flask_state.server import default_conf_obj
+from flask_state.server import default_conf
 
 
-def test_default_conf_obj():
-    class_obj = default_conf_obj
+def test_default_conf():
+    test_conf = default_conf
 
-    assert isinstance(class_obj.SECS, int)
-    assert isinstance(class_obj.ADDRESS, str)
+    assert isinstance(test_conf.SECS, int)
+    assert isinstance(test_conf.ADDRESS, str)
 
-    class_obj.set_secs(1)
-    assert class_obj.SECS == 60
+    test_conf.set_secs(1)
+    assert test_conf.SECS == 60
 
-    class_obj.set_address(1)
-    assert class_obj.ADDRESS == 'sqlite:///1'
+    test_conf.set_address(1)
+    assert test_conf.ADDRESS == 'sqlite:///1'

@@ -13,13 +13,13 @@ except:
     SYSTEM = WINDOWS
 
 
-class Lock(object):
+class Lock:
     @staticmethod
     def get_file_lock():
         return FileLock()
 
 
-class FileLock(object):
+class FileLock:
     def __init__(self):
         lock_file = 'MONITOR_LOCK'
         if SYSTEM == WINDOWS:

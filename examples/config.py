@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_state import init_app, default_conf_obj
+from flask_state import init_app, default_conf
 
 
 def settint_app():
@@ -15,9 +15,9 @@ def settint_app():
 
     import os
     path_ = os.getcwd() + '/test.db'
-    default_conf_obj.set_address(path_)
+    default_conf.set_address(path_)
 
-    default_conf_obj.set_secs(20)
+    default_conf.set_secs(20)
 
     # use init_app initial configuration
     init_app(app)

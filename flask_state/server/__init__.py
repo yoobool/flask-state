@@ -24,11 +24,11 @@ class DefaultConf:
         self.SECS = format_sec(secs)
 
 
-default_conf_obj = DefaultConf()
+default_conf = DefaultConf()
 
 
 # Create redis object
-class RedisConn(object):
+class RedisConn:
     def __init__(self):
         self.redis = None
 
@@ -40,7 +40,7 @@ class RedisConn(object):
         return self.redis
 
 
-RedisObj = RedisConn()
+redis_conn = RedisConn()
 
 
 # Enumeration function

@@ -29,8 +29,8 @@ def test_basic_insert(app, db, host):
 
 def test_query_recording(app, db, host):
     with app.test_request_context():
-        host_obj = host('1', '2')
-        db.session.add(host_obj)
+        host_conf = host('1', '2')
+        db.session.add(host_conf)
         db.session.flush()
         host.load_avg = '3'
         db.session.commit()
