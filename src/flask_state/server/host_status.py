@@ -2,11 +2,19 @@ import psutil
 import os
 import platform
 import logging
-from . import redis_conn, MsgCode, DAYS_SCOPE
+from . import redis_conn, MsgCode
 from .response_methods import make_response_content
 from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday, \
     retrieve_one_host_status
 from ..utils.date import get_current_ms, get_current_s
+from ..conf.config import CPU_Percent_Interval, DAYS_SCOPE
+
+One_Minute_Seconds = 60000  # One minute milliseconds
+Seconds_To_Millisecond_Multiple = 1000  # Second to millisecond multiple
+Default_Hits_Ratio = 100  # Default hits ratio value
+Default_Delta_Hits_Ratio = 100  # Default 24h hits ratio value
+Default_Windows_Load_Avg = '0, 0, 0'  # Windows system cannot calculate load AVG
+Percentage = 100  # Percentage calculation
 
 
 def record_console_host():
@@ -15,10 +23,10 @@ def record_console_host():
 
     """
     try:
-        cpu = psutil.cpu_percent(interval=0)
+        cpu = psutil.cpu_percent(interval=CPU_Percent_Interval)
         memory = psutil.virtual_memory().percent
         if platform.system() == 'Windows':
-            load_avg = '0, 0, 0'
+            load_avg = Default_Windows_Load_Avg
         else:
             load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
         disk_usage = psutil.disk_usage('/').percent
@@ -37,8 +45,8 @@ def record_console_host():
                 mem_fragmentation_ratio = redis_info.get('mem_fragmentation_ratio')
                 keyspace_hits = redis_info.get('keyspace_hits')
                 keyspace_misses = redis_info.get('keyspace_misses')
-                hits_ratio = float('%.2f' % (keyspace_hits * 100 / (keyspace_hits + keyspace_misses))) if \
-                    (keyspace_hits + keyspace_misses) != 0 else 100
+                hits_ratio = float('%.2f' % (keyspace_hits * Percentage / (keyspace_hits + keyspace_misses))) if \
+                    (keyspace_hits + keyspace_misses) != 0 else Default_Hits_Ratio
                 delta_hits_ratio = hits_ratio
                 yesterday_current_statistic = retrieve_host_status_yesterday()
                 if yesterday_current_statistic:
@@ -48,8 +56,8 @@ def record_console_host():
                         be_divided_num = keyspace_hits + keyspace_misses - (
                                 yesterday_keyspace_hits + yesterday_keyspace_misses)
                         delta_hits_ratio = float(
-                            '%.2f' % ((keyspace_hits - yesterday_keyspace_hits) * 100 / be_divided_num)) \
-                            if be_divided_num != 0 else 100
+                            '%.2f' % ((keyspace_hits - yesterday_keyspace_hits) * Percentage / be_divided_num)) \
+                            if be_divided_num != 0 else Default_Delta_Hits_Ratio
                 result_conf.update(used_memory=used_memory,
                                    used_memory_rss=used_memory_rss,
                                    connected_clients=connected_clients,
@@ -67,7 +75,7 @@ def record_console_host():
         raise e
 
 
-def query_console_host(days='1') -> dict:
+def query_console_host(days) -> dict:
     """
     Query the local status and redis status of [1,3,7,30] days
     :param days: the query days
@@ -86,7 +94,7 @@ def query_console_host(days='1') -> dict:
         data = {"currentStatistic": arr[0] if arr else {}, "items": []}
         fields = ["cpu", "memory", "load_avg", "disk_usage"]
         for item in arr:
-            statistics_item = [int(item['ts'] / 1000)]
+            statistics_item = [int(item['ts'] / Seconds_To_Millisecond_Multiple)]
             for field in fields:
                 statistics_item.append(item[field])
             data["items"].append(statistics_item)
@@ -105,7 +113,7 @@ def query_one_min_record():
         data = retrieve_one_host_status()
         if not data:
             return True
-        if (get_current_ms() - data.ts) < 60000:
+        if (get_current_ms() - data.ts) < One_Minute_Seconds:
             return False
         return True
     except Exception as e:

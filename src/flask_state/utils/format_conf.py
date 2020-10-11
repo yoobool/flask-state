@@ -1,5 +1,8 @@
 import os
 import platform
+from ..conf.config import Default_Seconds
+
+Min_Seconds = 10  # Optional minimum number of seconds
 
 
 def format_sec(secs):
@@ -8,8 +11,8 @@ def format_sec(secs):
     :param secs: initial time
     :return: format time
     """
-    if not isinstance(secs, int) or secs < 10:
-        return 60
+    if not isinstance(secs, int) or secs < Min_Seconds:
+        return Default_Seconds
     else:
         return secs
 
