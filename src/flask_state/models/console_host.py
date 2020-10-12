@@ -4,9 +4,9 @@ from . import db
 
 
 # model
-class ConsoleHost(db.Model):
+class FlaskStateHost(db.Model):
     __bind_key__ = 'flask_state_sqlite'
-    __tablename__ = "console_host"
+    __tablename__ = "flask_state_host"
 
     __table_args__ = (
         db.PrimaryKeyConstraint('id'),
@@ -38,5 +38,5 @@ class ConsoleHost(db.Model):
     delta_hits_ratio = db.Column(db.Float, server_default=text("0"))
 
     def __repr__(self):
-        return "<ConsoleHost cpu: %s, memory:%s, load_avg:%s, disk_usage:%s, boot_seconds:%s, ts:%s>" % (
+        return "<FlaskStateHost cpu: %s, memory:%s, load_avg:%s, disk_usage:%s, boot_seconds:%s, ts:%s>" % (
             self.cpu, self.memory, self.load_avg, self.disk_usage, self.boot_seconds, self.ts)
