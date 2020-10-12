@@ -28,12 +28,12 @@ class DaysMilliseconds(Enum):
     Thirty_Day = 2592000000
 
 
-DAYS_SCOPE = {str(DaysScope.One_Day): DaysScope.One_Day,
-              str(DaysScope.Three_Day): DaysScope.Three_Day,
-              str(DaysScope.Seven_Day): DaysScope.Seven_Day,
-              str(DaysScope.Thirty_Day): DaysScope.Thirty_Day}
+DAYS_SCOPE = {str(DaysScope.One_Day.value): DaysScope.One_Day.value,
+              str(DaysScope.Three_Day.value): DaysScope.Three_Day.value,
+              str(DaysScope.Seven_Day.value): DaysScope.Seven_Day.value,
+              str(DaysScope.Thirty_Day.value): DaysScope.Thirty_Day.value}
 
-DAYS_SCOPE_MILLISECONDS = {str(DaysScope.One_Day): DaysMilliseconds.One_Day,
-                           str(DaysScope.Three_Day): DaysMilliseconds.Three_Day,
-                           str(DaysScope.Seven_Day): DaysMilliseconds.Seven_Day,
-                           str(DaysScope.Thirty_Day): DaysMilliseconds.Thirty_Day}
+DAYS_SCOPE_MILLISECONDS = {str(DaysScope.One_Day.value): DaysMilliseconds.One_Day.value,
+                           str(DaysScope.Three_Day.value): DaysMilliseconds.Three_Day.value,
+                           str(DaysScope.Seven_Day.value): DaysMilliseconds.Seven_Day.value,
+                           str(DaysScope.Thirty_Day.value): DaysMilliseconds.Thirty_Day.value}
