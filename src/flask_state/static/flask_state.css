@@ -131,9 +131,10 @@
 }
 
 .fs-select-container {
+    z-index: 3;
     position: absolute;
-    top: -3rem;
-    right: .3rem;
+    top: 10px;
+    right: 5rem;
 }
 
 
@@ -252,6 +253,18 @@
 
 .margin-top-m3 {
     margin-top: -3px;
+}
+
+.margin-right-3 {
+    margin-right: 3px;
+}
+
+.margin-right-5 {
+    margin-right: 5px;
+}
+
+.margin-right-10 {
+    margin-right: 10px;
 }
 
 .fontsize-18 {
