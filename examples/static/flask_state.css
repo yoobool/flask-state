@@ -1,21 +1,21 @@
-.all-elem {
+.flask-state-elem {
+    font-size: 14px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    font-size: 14px;
 }
 
-.div-style {
+.console-info-container-style > div {
     display: block;
 }
 
-.h4-style {
+.fs-h4-style {
+    margin-top: 10px;
+    margin-bottom: 10px;
     font-family: inherit;
     font-weight: 500;
     font-size: 18px;
     line-height: 1.1;
-    margin-top: 10px;
-    margin-bottom: 10px;
     color: inherit;
 }
 
@@ -30,7 +30,6 @@
 .box-style {
     position: relative;
     padding: 0 15px 0 15px;
-    min-height: 1px;
 }
 
 .background-green {
@@ -41,9 +40,8 @@
     background-color: #dd4b39 !important;
 }
 
-.badge-style {
+.fs-badge-style {
     display: inline-block;
-    min-width: 10px;
     padding: 3px 7px;
     font-size: 12px;
     font-weight: 700;
@@ -56,55 +54,48 @@
     border-radius: 10px;
 }
 
-.console_info_container_style {
-    background: #ffffff;
-    height: fit-content;
-    border-top: 3px solid #d2d6de;
+.console-info-container-style {
+    z-index: 1003;
     position: absolute;
-    box-shadow: 0 0 5px #ccc;
     left: 0;
     right: 0;
+    height: fit-content;
     margin: 0 auto 20px auto;
+    background: #ffffff;
+    border-top: 3px solid #d2d6de;
     border-radius: 3px;
-    z-index: 1003;
+    box-shadow: 0 0 5px #ccc;
 }
 
-.console_info_close_style {
+.console-info-close-style {
+    z-index: 2;
     position: absolute;
     top: 10px;
     right: 15px;
-    border: 0;
     padding: 0;
-    background: 0 0;
     font-size: 21px;
     font-weight: 700;
     line-height: 1;
-    cursor: pointer;
     opacity: .2;
-    z-index: 2;
+    background: 0 0;
+    border: 0;
+    cursor: pointer;
 }
 
-#console_info_back {
-    display: none;
+.console-info-back-style {
+    z-index: 1002;
     position: fixed;
-    width: 100%;
-    height: 100%;
     top: 0;
     left: 0;
-    z-index: 1002;
+    display: none;
+    width: 100%;
+    height: 100%;
     background: rgba(255, 255, 255, .6);
 }
 
-#console_info_line {
+.console-info-line-style {
     margin: -6px -15px 6px -15px;
     border-top: 1px solid #ddd;
-}
-
-.container {
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
 }
 
 .console-info-border-r {
@@ -112,14 +103,14 @@
 }
 
 .console-info-memory-text {
-    background-color: transparent;
     font-weight: bold;
-    color: #ff851b
+    color: #ff851b;
+    background-color: transparent;
 }
 
-.circular {
-    position: fixed;
+.fs-circular {
     z-index: 2000;
+    position: fixed;
     top: 300px;
     right: 15px;
     width: 3rem;
@@ -128,42 +119,42 @@
     cursor: pointer;
 }
 
-.circular-animation{
+.fs-circular-animation {
     transition: .3s;
 }
 
-.circular-out {
+.fs-circular-out {
     transform: translateX(100px);
     -ms-transform: translateX(100px);
     -webkit-transform: translateX(100px);
     transition: .3s;
 }
 
-.select_container {
+.fs-select-container {
+    z-index: 3;
     position: absolute;
-    top: -3rem;
-    right: .3rem;
+    top: 10px;
+    right: 5rem;
 }
 
 
-.ul-tabs-box {
+.fs-ul-tabs-box {
     margin-bottom: 20px;
     background: #fff;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     border-radius: 3px;
 }
 
-.ul-tabs {
+.fs-ul-tabs {
+    padding-left: 0;
     margin: 0;
-    border-bottom-color: #f4f4f4;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
     border-bottom: 1px solid #f4f4f4;
-    padding-left: 0;
     list-style: none;
 }
 
-.ul-tabs:after{
+.fs-ul-tabs:after {
     clear: both;
     display: table;
     content: ' ';
@@ -172,88 +163,82 @@
     box-sizing: border-box;
 }
 
-.ul-tabs-box > .ul-tabs > li.active {
+.fs-ul-tabs-box > .fs-ul-tabs > li.active {
     border-top-color: #3c8dbc;
 }
 
-.ul-tabs-box > .ul-tabs > li {
-    border-top: 3px solid transparent;
-    margin: 0 5px -2px 0;
-    float: left;
-    position: relative;
+.fs-ul-tabs-box > .fs-ul-tabs > li {
     display: block;
+    position: relative;
+    float: left;
+    margin: 0 5px -2px 0;
+    border-top: 3px solid transparent;
 }
 
-.ul-tabs > li.active > a {
+.fs-ul-tabs > li.active > a {
+    color: #444;
     background-color: #fff;
     border-left-color: #f4f4f4;
     border-right-color: #f4f4f4;
-    color: #444;
 }
 
-.ul-tabs > li:first-of-type.active>a{
+.fs-ul-tabs > li:first-of-type.active > a {
     border-left-color: transparent;
 }
 
-.ul-tabs > li > a {
-    background: transparent;
-    margin: 0;
-    border-radius: 0;
-    line-height: 1.42857143;
-    border: 1px solid transparent;
+.fs-ul-tabs > li > a {
     position: relative;
     display: block;
     padding: 10px 15px;
+    margin: 0;
+    line-height: 1.42857143;
     text-decoration: none;
     color: #444;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0;
 }
 
 
-#console_info_memory_chart,
-#console_info_cpu_chart,
-#console_info_diskusage_chart,
-#console_info_loadavg_chart {
+.fs-chart-style {
     height: 320px;
 }
 
-.console_info_container_box {
+.console-info-container-box {
     width: 91.66666667%;
 }
 
 @media (min-width: 768px) {
-    .console_info_container_box {
+    .console-info-container-box {
         width: 75%;
     }
 
-    .charts_box {
-        width: 100%;
+    .fs-charts-box {
         float: left;
+        width: 100%;
     }
 }
 
 @media (min-width: 992px) {
-    .console_info_container_box {
+    .console-info-container-box {
+        float: left;
         width: 75%;
-        float: left;
     }
 
-    .charts_box {
+    .fs-charts-box {
+        float: left;
         width: 50%;
-        float: left;
     }
 
-    .font_box {
-        width: 100%;
+    .fs-font-box {
         float: left;
+        width: 100%;
     }
 }
 
 
 @media (max-width: 768px) {
-    #console_info_memory_chart,
-    #console_info_cpu_chart,
-    #console_info_diskusage_chart,
-    #console_info_loadavg_chart {
+    .fs-chart-style {
         height: 370px;
     }
 }
@@ -270,27 +255,39 @@
     margin-top: -3px;
 }
 
+.margin-right-3 {
+    margin-right: 3px;
+}
+
+.margin-right-5 {
+    margin-right: 5px;
+}
+
+.margin-right-10 {
+    margin-right: 10px;
+}
+
 .fontsize-18 {
     font-size: 18px;
 }
 
 
-.state-tab-content>.state-tab-pane{
+.state-tab-content > .state-tab-pane {
     display: none;
 }
 
-.show{
-    display: block!important;
+.fs-show {
+    display: block !important;
 }
 
-.charts-box-info{
+.charts-box-info {
     position: relative;
-    border-radius: 3px;
+    width: 100%;
+    margin-bottom: 20px;
     background: #ffffff;
     border-top: 3px solid #00c0ef;
-    margin-bottom: 20px;
-    width: 100%;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 
