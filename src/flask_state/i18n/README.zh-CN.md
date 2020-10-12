@@ -42,7 +42,7 @@ init_app(app)
 ```
 
 #### 额外的：你也可以自定义某些配置文件（非必须）。
-```
+```python
 # 如果你还需要监控REDIS状态，你需要在Flask app上配置你的redis情况
 app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'REDIS_PORT':16379, 'REDIS_PASSWORD': 'fish09'}
 ```
@@ -50,26 +50,8 @@ app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'R
 ```
 from flask_state import flask_state_conf
 
-# ID_NAME 为html中绑定元素的id
-# 设置为False使用页面元素绑定，True为悬浮球绑定
-ID_NAME = (False, 'console_machine_status')
-flask_state_conf.set_id_name(ID_NAME)
-```
-
-```
-from flask_state import flask_state_conf
-
-# LANGUAGE 为插件展示语言，当前有中文，English
-LANGUAGE = 'English'
-flask_state_conf.set_language(LANGUAGE)
-```
-
-```
-from flask_state import flask_state_conf
-
-# ADDRESS为数据库名称
-# 0为与Flask config同级目录， 1为Flask config的上级目录
-ADDRESS = ('console_host', 0)
+# ADDRESS为数据库地址名称
+ADDRESS = 'console_host'
 flask_state_conf.set_address(ADDRESS)
 ```
 
