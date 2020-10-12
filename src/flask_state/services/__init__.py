@@ -5,9 +5,8 @@ from ..conf.config import DEFAULT_SECONDS, REDIS_TIMEOUT
 
 class FlaskStateConf:
     def __init__(self):
-        # Enter the database name, address and conf directory or superior directory, the default is 0
-        # If the project has a console_host database, it is not created
-        # The default value is('console_host', 0)
+        # Set database address and name
+        # If the address is not allowed, the default address and name will be used
         self.ADDRESS = 'sqlite:///console_host'
 
         # Set the interval to record the local state, with a minimum interval of 10 seconds

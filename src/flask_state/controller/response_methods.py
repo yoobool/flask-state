@@ -1,5 +1,4 @@
 from flask import make_response, jsonify
-from ..exceptions import SuccessResponse
 
 
 def make_response_content(resp, msg=None):
