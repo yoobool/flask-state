@@ -52,20 +52,20 @@ app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'R
 ```
 
 ```python
-from flask_state import default_conf
+from flask_state import flask_state_conf
 
 # ADDRESS is the database name
 # CATALOGUE 0 is the same level directory as Flask config, and 1 is the superior directory of Flask config
 ADDRESS = 'console_host'
-default_conf.set_address(ADDRESS)
+flask_state_conf.set_address(ADDRESS)
 ```
 
 ```python
-from flask_state import default_conf
+from flask_state import flask_state_conf
 
 # SECS is the time interval for recording the local state, with a minimum interval of 10 seconds
 SECS = 60
-default_conf.set_secs(SECS)
+flask_state_conf.set_secs(SECS)
 ```
 
 

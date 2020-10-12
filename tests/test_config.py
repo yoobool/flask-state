@@ -1,8 +1,8 @@
-from src.flask_state import default_conf
+from src.flask_state import flask_state_conf
 
 
-def test_default_conf():
-    test_conf = default_conf
+def test_flask_state_conf():
+    test_conf = flask_state_conf
 
     assert isinstance(test_conf.SECS, int)
     assert isinstance(test_conf.ADDRESS, str)

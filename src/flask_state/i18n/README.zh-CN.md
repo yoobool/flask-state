@@ -48,37 +48,37 @@ app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'R
 ```
 
 ```
-from flask_state import default_conf
+from flask_state import flask_state_conf
 
 # ID_NAME 为html中绑定元素的id
 # 设置为False使用页面元素绑定，True为悬浮球绑定
 ID_NAME = (False, 'console_machine_status')
-default_conf.set_id_name(ID_NAME)
+flask_state_conf.set_id_name(ID_NAME)
 ```
 
 ```
-from flask_state import default_conf
+from flask_state import flask_state_conf
 
 # LANGUAGE 为插件展示语言，当前有中文，English
 LANGUAGE = 'English'
-default_conf.set_language(LANGUAGE)
+flask_state_conf.set_language(LANGUAGE)
 ```
 
 ```
-from flask_state import default_conf
+from flask_state import flask_state_conf
 
 # ADDRESS为数据库名称
 # 0为与Flask config同级目录， 1为Flask config的上级目录
 ADDRESS = ('console_host', 0)
-default_conf.set_address(ADDRESS)
+flask_state_conf.set_address(ADDRESS)
 ```
 
 ```
-from flask_state import default_conf
+from flask_state import flask_state_conf
 
 # SECS为记录本机状态时间间隔, 最少间隔为10秒
 SECS = 60
-default_conf.set_secs(SECS)
+flask_state_conf.set_secs(SECS)
 ```
 
 

@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from flask import request, current_app
 
 from ..models import model_init_app
-from ..server import redis_conn, default_conf
+from ..server import redis_conn, flask_state_conf
 from ..server.host_status import query_console_host, MsgCode, record_console_host
 from ..server.response_methods import make_response_content
 from ..utils.auth import auth_user, auth_method
@@ -24,7 +24,7 @@ def init_app(app):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     if not app.config.get('SQLALCHEMY_BINDS') or not app.config['SQLALCHEMY_BINDS'].get('flask_state_sqlite'):
         app.config['SQLALCHEMY_BINDS'] = app.config.get('SQLALCHEMY_BINDS') or {}
-        app.config['SQLALCHEMY_BINDS']['flask_state_sqlite'] = default_conf.ADDRESS
+        app.config['SQLALCHEMY_BINDS']['flask_state_sqlite'] = flask_state_conf.ADDRESS
     if app.config.get('REDIS_CONF') and app.config['REDIS_CONF'].get('REDIS_STATUS'):
         redis_state = app.config['REDIS_CONF']
         redis_conf = {'REDIS_HOST': redis_state.get('REDIS_HOST'), 'REDIS_PORT': redis_state.get('REDIS_PORT'),
@@ -40,7 +40,7 @@ def init_app(app):
                 current_app.lock.acquire()
                 while True:
                     record_console_host()
-                    time.sleep(default_conf.SECS - 0.02)
+                    time.sleep(flask_state_conf.SECS - 0.02)
             except Exception as e:
                 current_app.lock.release()
                 raise e

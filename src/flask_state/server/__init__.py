@@ -4,7 +4,7 @@ from ..utils.format_conf import format_sec, format_address
 from ..conf.config import DEFAULT_SECONDS, REDIS_TIMEOUT
 
 
-class DefaultConf:
+class FlaskStateConf:
     def __init__(self):
         # Enter the database name, address and conf directory or superior directory, the default is 0
         # If the project has a console_host database, it is not created
@@ -22,7 +22,7 @@ class DefaultConf:
         self.SECS = format_sec(secs)
 
 
-default_conf = DefaultConf()
+flask_state_conf = FlaskStateConf()
 
 
 # Create redis object
