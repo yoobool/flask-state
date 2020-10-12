@@ -9,40 +9,40 @@ class MachineStatus {
 
         if (window.addEventListener) {
             document.getElementById('console_info_close').addEventListener('click', function clickClose() {
-                document.getElementById('console_info_back').click();
+                document.getElementById('console-info-back').click();
                 document.getElementById('console_info_close').removeEventListener('click', clickClose);
                 if (document.getElementById('console_state_circular')) {
-                    document.getElementById('console_state_circular').classList.remove('circular-out');
+                    document.getElementById('console_state_circular').classList.remove('fs-circular-out');
                 }
             });
 
-            document.getElementById('console_info_back').addEventListener('click', function clickBack() {
-                document.getElementById('console_info_back').style.display = 'none';
+            document.getElementById('console-info-back').addEventListener('click', function clickBack() {
+                document.getElementById('console-info-back').style.display = 'none';
                 document.getElementById('console_info_container').style.display = 'none';
-                document.getElementById('console_info_back').removeEventListener('click', clickBack);
+                document.getElementById('console-info-back').removeEventListener('click', clickBack);
                 if (document.getElementById('console_state_circular')) {
-                    document.getElementById('console_state_circular').classList.remove('circular-out');
+                    document.getElementById('console_state_circular').classList.remove('fs-circular-out');
                 }
             });
 
         } else if (window.attachEvent) {
             document.getElementById('console_info_close').attachEvent('onclick', function () {
-                document.getElementById('console_info_back').click();
+                document.getElementById('console-info-back').click();
                 if (document.getElementById('console_state_circular')) {
-                    document.getElementById('console_state_circular').classList.remove('circular-out');
+                    document.getElementById('console_state_circular').classList.remove('fs-circular-out');
                 }
             });
 
-            document.getElementById('console_info_back').attachEvent('onclick', function () {
-                document.getElementById('console_info_back').style.display = 'none';
+            document.getElementById('console-info-back').attachEvent('onclick', function () {
+                document.getElementById('console-info-back').style.display = 'none';
                 document.getElementById('console_info_container').style.display = 'none';
                 if (document.getElementById('console_state_circular')) {
-                    document.getElementById('console_state_circular').classList.remove('circular-out');
+                    document.getElementById('console_state_circular').classList.remove('fs-circular-out');
                 }
             }, false);
         }
 
-        document.getElementById('console_info_back').style.display = 'block';
+        document.getElementById('console-info-back').style.display = 'block';
 
         let consoleInfo = document.getElementById('console_info_container');
         consoleInfo.style.display = 'block';
@@ -65,8 +65,8 @@ class MachineStatus {
         document.getElementById('connected_clients').innerHTML = this.language.connected_clients;
         document.getElementById('days').innerHTML = this.language.days;
 
-        let hostInfoSpan = consoleInfo.getElementsByTagName('div')[0].getElementsByClassName('badge-style');
-        let hostInfoExtendSpan = consoleInfo.getElementsByTagName('div')[1].getElementsByClassName('badge-style');
+        let hostInfoSpan = consoleInfo.getElementsByTagName('div')[0].getElementsByClassName('fs-badge-style');
+        let hostInfoExtendSpan = consoleInfo.getElementsByTagName('div')[1].getElementsByClassName('fs-badge-style');
         for (let item of hostInfoSpan) {
             item.innerText = '';
         }
@@ -74,10 +74,10 @@ class MachineStatus {
             item.innerText = '';
         }
 
-        let consoleCpuChart = echarts.init(document.getElementById('console_info_cpu_chart'), null, {renderer: 'svg'});
-        let consoleMemoryChart = echarts.init(document.getElementById('console_info_memory_chart'), null, {renderer: 'svg'});
-        let consoleLoadavgChart = echarts.init(document.getElementById('console_info_loadavg_chart'), null, {renderer: 'svg'});
-        let consoleDiskusageChart = echarts.init(document.getElementById('console_info_diskusage_chart'), null, {renderer: 'svg'});
+        let consoleCpuChart = echarts.init(document.getElementById('console-info-cpu-chart'), null, {renderer: 'svg'});
+        let consoleMemoryChart = echarts.init(document.getElementById('console-info-memory-chart'), null, {renderer: 'svg'});
+        let consoleLoadavgChart = echarts.init(document.getElementById('console-info-loadavg-chart'), null, {renderer: 'svg'});
+        let consoleDiskusageChart = echarts.init(document.getElementById('console-info-diskusage-chart'), null, {renderer: 'svg'});
 
         let cpuOption = MachineStatus.generateChatOption(this.language.cpu, '', this.language.today);
         let memoryOption = MachineStatus.generateChatOption(this.language.memory, '', this.language.today);
@@ -256,8 +256,8 @@ class MachineStatus {
                     item.children[0].addEventListener('click', function () {
                         item.classList.add('active');
                         node_li.classList.remove('active');
-                        node.classList.remove('show');
-                        now.classList.add('show');
+                        node.classList.remove('fs-show');
+                        now.classList.add('fs-show');
                         consoleMemoryChart.resize();
                         consoleCpuChart.resize();
                         consoleLoadavgChart.resize();
@@ -302,64 +302,64 @@ class MachineStatus {
 
 
     static addConsoleInfoContainer() {
-        let str = '<div class="all-elem layer div-style" id="console_info_back" disabled="disabled" xmlns="http://www.w3.org/1999/html">' +
+        let str = '<div class="flask-state-elem layer console-info-back-style" id="console-info-back" disabled="disabled" xmlns="http://www.w3.org/1999/html">' +
             '</div>' +
-            '<div class="all-elem div-style">' +
-            '<div class="all-elem console_info_container_style console_info_container_box box-style div-style" id="console_info_container">' +
-            '<button type="button" class="all-elem console_info_close_style" id="console_info_close"><span>&times;</span></button>' +
-            '<h4 class="all-elem font_box box-style no-padding margin-top-10 h4-style">host_status</h4>' +
-            '<div class="all-elem font_box box-style no-padding div-style">' +
-            '<span id="memory">memory</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="cpu">cpu</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="disk_usage">disk_usage</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="load_avg">LoadAvg</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="boot_seconds">boot_seconds</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>' +
+            '<div class="flask-state-elem ">' +
+            '<div class="flask-state-elem console-info-container-style console-info-container-box box-style " id="console_info_container">' +
+            '<button type="button" class="flask-state-elem console-info-close-style" id="console_info_close"><span>&times;</span></button>' +
+            '<h4 class="flask-state-elem fs-font-box box-style no-padding margin-top-10 fs-h4-style">host_status</h4>' +
+            '<div class="flask-state-elem fs-font-box box-style no-padding ">' +
+            '<span id="memory">memory</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
+            '<span id="cpu">cpu</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
+            '<span id="disk_usage">disk_usage</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
+            '<span id="load_avg">LoadAvg</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
+            '<span id="boot_seconds">boot_seconds</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>' +
             '</div>' +
-            '<h4 class="all-elem font_box box-style no-padding h4-style">redis_status</h4>' +
-            '<div class="all-elem font_box box-style no-padding margin-bottom-10 div-style">' +
-            '<span id="used_memory">used_memory</span>:&nbsp;<span class="all-elem badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text"></span>&nbsp;&nbsp;' +
-            '<span id="used_memory_rss">used_memory_rss</span>:&nbsp;<span class="all-elem badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text"></span>&nbsp;&nbsp;' +
-            '<span id="mem_fragmentation_ratio">mem_fragmentation_ratio</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="hits_ratio">hits_ratio</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="delta_hits_ratio">24h_hits_ratio</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="uptime_in_seconds">uptime_in_seconds</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="connected_clients">connected_clients</span>:&nbsp;<span class="all-elem badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<div class="all-elem select_container div-style"><select id="select_days">' +
+            '<h4 class="flask-state-elem fs-font-box box-style no-padding fs-h4-style">redis_status</h4>' +
+            '<div class="flask-state-elem fs-font-box box-style no-padding margin-bottom-10 ">' +
+            '<span id="used_memory">used_memory</span>:&nbsp;<span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text"></span>&nbsp;&nbsp;' +
+            '<span id="used_memory_rss">used_memory_rss</span>:&nbsp;<span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text"></span>&nbsp;&nbsp;' +
+            '<span id="mem_fragmentation_ratio">mem_fragmentation_ratio</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
+            '<span id="hits_ratio">hits_ratio</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
+            '<span id="delta_hits_ratio">24h_hits_ratio</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
+            '<span id="uptime_in_seconds">uptime_in_seconds</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
+            '<span id="connected_clients">connected_clients</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
+            '<div class="flask-state-elem fs-select-container "><select id="select_days">' +
             '<option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><span id="days">days</span></div>' +
             '</div>';
         if (MachineStatus.checkMobile()) {
-            str += '<hr width="109%" size="1" align="center" noshade="" id="console_info_line">' +
-                '<div class="all-elem ul-tabs-box no-margin div-style">' +
-                '<ul id="console_info_tab" class="all-elem ul-tabs">' +
-                '<li class="all-elem active"><a href="#console_info_tab_memory" data-toggle="tab">' +
+            str += '<hr width="109%" size="1" align="center" noshade="" id="console-info-line" class="console-info-line-style">' +
+                '<div class="flask-state-elem fs-ul-tabs-box no-margin ">' +
+                '<ul id="console_info_tab" class="flask-state-elem fs-ul-tabs">' +
+                '<li class="flask-state-elem active"><a href="#console_info_tab_memory" data-toggle="tab">' +
                 '<strong>memory</strong></a></li>' +
-                '<li class="all-elem "><a href="#console_info_tab_cpu" data-toggle="tab">' +
+                '<li class="flask-state-elem"><a href="#console_info_tab_cpu" data-toggle="tab">' +
                 '<strong>cpu</strong></a></li>' +
-                '<li class="all-elem "><a href="#console_info_tab_diskusage" data-toggle="tab">' +
+                '<li class="flask-state-elem"><a href="#console_info_tab_diskusage" data-toggle="tab">' +
                 '<strong>disk_usage</strong></a></li>' +
-                '<li class="all-elem "><a href="#console_info_tab_loadavg" data-toggle="tab">' +
+                '<li class="flask-state-elem"><a href="#console_info_tab_loadavg" data-toggle="tab">' +
                 '<strong>LoadAvg</strong></a></li>' +
                 '</ul>' +
-                '<div class="all-elem form-group no-margin div-style">' +
-                '<div class="all-elem state-tab-content div-style">' +
-                '<div class="all-elem state-tab-pane show div-style" id="console_info_tab_memory">' +
+                '<div class="flask-state-elem form-group no-margin ">' +
+                '<div class="flask-state-elem state-tab-content ">' +
+                '<div class="flask-state-elem state-tab-pane fs-show" id="console_info_tab_memory">' +
                 '<div>' +
-                '<div id="console_info_memory_chart" class="all-elem margin-top-10 div-style"></div>' +
+                '<div id="console-info-memory-chart" class="flask-state-elem margin-top-10 fs-chart-style"></div>' +
                 '</div>' +
                 '</div>' +
-                '<div class="all-elem state-tab-pane div-style" id="console_info_tab_cpu">' +
+                '<div class="flask-state-elem state-tab-pane " id="console_info_tab_cpu">' +
                 '<div>' +
-                '<div id="console_info_cpu_chart" class="all-elem margin-top-10 div-style"></div>' +
+                '<div id="console-info-cpu-chart" class="flask-state-elem margin-top-10 fs-chart-style"></div>' +
                 '</div>' +
                 '</div>' +
-                '<div class="all-elem state-tab-pane div-style" id="console_info_tab_diskusage">' +
+                '<div class="flask-state-elem state-tab-pane " id="console_info_tab_diskusage">' +
                 '<div>' +
-                '<div id="console_info_diskusage_chart" class="all-elem margin-top-10 div-style"></div>' +
+                '<div id="console-info-diskusage-chart" class="flask-state-elem margin-top-10 fs-chart-style"></div>' +
                 '</div>' +
                 '</div>' +
-                '<div class="all-elem state-tab-pane div-style" id="console_info_tab_loadavg">' +
+                '<div class="flask-state-elem state-tab-pane " id="console_info_tab_loadavg">' +
                 '<div>' +
-                '<div id="console_info_loadavg_chart" class="all-elem margin-top-10 div-style"></div>' +
+                '<div id="console-info-loadavg-chart" class="flask-state-elem margin-top-10 fs-chart-style"></div>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -368,24 +368,24 @@ class MachineStatus {
                 '</div>' +
                 '</div>';
         } else {
-            str += '<div class="all-elem charts_box box-style  no-padding console-info-border-r div-style">' +
-                '<div class="all-elem charts-box-info div-style">' +
-                '<div id="console_info_memory_chart" class="all-elem margin-top-10 div-style"></div>' +
+            str += '<div class="flask-state-elem fs-charts-box box-style no-padding console-info-border-r">' +
+                '<div class="flask-state-elem charts-box-info ">' +
+                '<div id="console-info-memory-chart" class="flask-state-elem margin-top-10 fs-chart-style"></div>' +
                 '</div>' +
                 '</div>' +
-                '<div class="all-elem charts_box box-style no-padding div-style">' +
-                '<div class="all-elem charts-box-info div-style">' +
-                '<div id="console_info_cpu_chart" class="all-elem margin-top-10 div-style"></div>' +
+                '<div class="flask-state-elem fs-charts-box box-style no-padding ">' +
+                '<div class="flask-state-elem charts-box-info ">' +
+                '<div id="console-info-cpu-chart" class="flask-state-elem margin-top-10 fs-chart-style"></div>' +
                 '</div>' +
                 '</div>' +
-                '<div class="all-elem charts_box box-style no-padding console-info-border-r div-style">' +
-                '<div class="all-elem charts-box-info div-style">' +
-                '<div id="console_info_diskusage_chart" class="all-elem margin-top-10 div-style"></div>' +
+                '<div class="flask-state-elem fs-charts-box box-style no-padding console-info-border-r ">' +
+                '<div class="flask-state-elem charts-box-info ">' +
+                '<div id="console-info-diskusage-chart" class="flask-state-elem margin-top-10 fs-chart-style"></div>' +
                 '</div>' +
                 '</div>' +
-                '<div class="all-elem charts_box box-style no-padding div-style">' +
-                '<div class="all-elem charts-box-info div-style">' +
-                '<div id="console_info_loadavg_chart" class="all-elem margin-top-10 div-style"></div>' +
+                '<div class="flask-state-elem fs-charts-box box-style no-padding ">' +
+                '<div class="flask-state-elem charts-box-info ">' +
+                '<div id="console-info-loadavg-chart" class="flask-state-elem margin-top-10 fs-chart-style"></div>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -614,90 +614,15 @@ class Ajax {
     }
 }
 
-function fn() {
-    let ajax = new Ajax();
-    ajax.send({
-        type: 'POST',
-        url: '/v0/state/bindid',
-        success: bindId
-    });
-
-    function bindId(data) {
-        if (!data.data.circular) {
-            if (!document.getElementById(data.data.id_name)) {
-                alert('Binding element ID does not exist');
-                let obj = new MachineStatus();
-                obj.showConsoleDetail();
-            } else {
-                document.getElementById(data.data.id_name).addEventListener('click', function () {
-                    window.scroll(0, 0);
-                    let obj = new MachineStatus();
-                    obj.showConsoleDetail();
-                })
-            }
-        } else if (data.data.circular) {
-            let str = "<div id='console_state_circular' class='circular circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
-            let bodyObj = document.getElementsByTagName('body')[0];
-            bodyObj.insertAdjacentHTML('afterbegin', str);
-            let circularObj = document.getElementById('console_state_circular');
-            circularObj.onclick = function () {
-                this.classList.add('circular-out');
-                window.scroll(0, 0);
-                let obj = new MachineStatus();
-                obj.showConsoleDetail();
-            };
-            let timeOutId;
-            let mousePosition;
-            circularObj.onmousedown = function (downEvent) {
-                mousePosition = mousePosition || downEvent.clientY;
-                circularObj.classList.remove('circular-animation');
-                timeOutId = setTimeout(function () {
-                    circularObj.style.cursor = 'move';
-                    bodyObj.style.cursor = 'move';
-                    bodyObj.onmousemove = function (moveEvent) {
-                        circularObj.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
-                    }
-                }, 1500)
-            };
-            bodyObj.onmouseup = function () {
-                circularObj.style.cursor = 'pointer';
-                circularObj.classList.add('circular-animation');
-                bodyObj.onmousemove = null;
-                this.style.cursor = 'default';
-                clearTimeout(timeOutId);
-            };
-            circularObj.ontouchstart = function (downEvent) {
-                mousePosition = mousePosition || downEvent.clientY;
-                circularObj.classList.remove('circular-animation');
-                timeOutId = setTimeout(function () {
-                    circularObj.style.cursor = 'move';
-                    bodyObj.style.cursor = 'move';
-                    bodyObj.ontouchmove = function (moveEvent) {
-                        circularObj.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
-                    }
-                }, 1500)
-            };
-            bodyObj.ontouchend = function () {
-                circularObj.style.cursor = 'pointer';
-                circularObj.classList.add('circular-animation');
-                bodyObj.ontouchmove = null;
-                this.style.cursor = 'default';
-                clearTimeout(timeOutId);
-            };
-        }
-
-    }
-}
-
-export default function Machine_state(language, floatball=false) {
+export default function Machine_state(language, floatball = false) {
     const MachineObj = new MachineStatus(language);
     if (floatball) {
-        let str = "<div id='console_state_circular' class='circular circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
+        let str = "<div id='console_state_circular' class='fs-circular fs-circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
         let bodyObj = document.getElementsByTagName('body')[0];
         bodyObj.insertAdjacentHTML('afterbegin', str);
         let circularObj = document.getElementById('console_state_circular');
         circularObj.onclick = function () {
-            this.classList.add('circular-out');
+            this.classList.add('fs-circular-out');
             window.scroll(0, 0);
             MachineObj.showConsoleDetail();
         };
@@ -705,7 +630,7 @@ export default function Machine_state(language, floatball=false) {
         let mousePosition;
         circularObj.onmousedown = function (downEvent) {
             mousePosition = mousePosition || downEvent.clientY;
-            circularObj.classList.remove('circular-animation');
+            circularObj.classList.remove('fs-circular-animation');
             timeOutId = setTimeout(function () {
                 circularObj.style.cursor = 'move';
                 bodyObj.style.cursor = 'move';
@@ -716,14 +641,14 @@ export default function Machine_state(language, floatball=false) {
         };
         bodyObj.onmouseup = function () {
             circularObj.style.cursor = 'pointer';
-            circularObj.classList.add('circular-animation');
+            circularObj.classList.add('fs-circular-animation');
             bodyObj.onmousemove = null;
             this.style.cursor = 'default';
             clearTimeout(timeOutId);
         };
         circularObj.ontouchstart = function (downEvent) {
             mousePosition = mousePosition || downEvent.clientY;
-            circularObj.classList.remove('circular-animation');
+            circularObj.classList.remove('fs-circular-animation');
             timeOutId = setTimeout(function () {
                 circularObj.style.cursor = 'move';
                 bodyObj.style.cursor = 'move';
@@ -734,7 +659,7 @@ export default function Machine_state(language, floatball=false) {
         };
         bodyObj.ontouchend = function () {
             circularObj.style.cursor = 'pointer';
-            circularObj.classList.add('circular-animation');
+            circularObj.classList.add('fs-circular-animation');
             bodyObj.ontouchmove = null;
             this.style.cursor = 'default';
             clearTimeout(timeOutId);
@@ -743,4 +668,5 @@ export default function Machine_state(language, floatball=false) {
         MachineObj.showConsoleDetail();
     }
 }
+
 
