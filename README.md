@@ -55,7 +55,6 @@ app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'R
 from flask_state import flask_state_conf
 
 # ADDRESS is the database name
-# CATALOGUE 0 is the same level directory as Flask config, and 1 is the superior directory of Flask config
 ADDRESS = 'console_host'
 flask_state_conf.set_address(ADDRESS)
 ```
