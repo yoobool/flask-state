@@ -1,6 +1,6 @@
 import logging
-from ..server.response_methods import make_response_content
-from ..server.host_status import MsgCode
+from ..services.response_methods import make_response_content
+from ..services.host_status import MsgCode
 from werkzeug.local import LocalProxy
 from flask import current_app, _request_ctx_stack, request
 

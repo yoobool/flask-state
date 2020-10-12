@@ -6,9 +6,9 @@ from concurrent.futures import ThreadPoolExecutor
 from flask import request, current_app
 
 from ..models import model_init_app
-from ..server import redis_conn, flask_state_conf
-from ..server.host_status import query_console_host, MsgCode, record_console_host
-from ..server.response_methods import make_response_content
+from ..services import redis_conn, flask_state_conf
+from ..services.host_status import query_console_host, MsgCode, record_console_host
+from ..services.response_methods import make_response_content
 from ..utils.auth import auth_user, auth_method
 from ..utils.file_lock import Lock
 
