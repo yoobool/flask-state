@@ -39,8 +39,10 @@ def init_app(app):
             try:
                 current_app.lock.acquire()
                 while True:
+                    pre_time = time.time()
                     record_console_host()
-                    time.sleep(flask_state_conf.SECS - 0.02)
+                    now_time = time.time()
+                    time.sleep(flask_state_conf.SECS - (now_time - pre_time))
             except Exception as e:
                 current_app.lock.release()
                 raise e
