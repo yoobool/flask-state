@@ -1,7 +1,7 @@
 import redis
 from enum import unique, Enum
 from ..utils.format_conf import format_sec, format_address
-from ..conf.config import Default_Seconds, Redis_Timeout
+from ..conf.config import DEFAULT_SECONDS, REDIS_TIMEOUT
 
 
 class DefaultConf:
@@ -13,7 +13,7 @@ class DefaultConf:
 
         # Set the interval to record the local state, with a minimum interval of 10 seconds
         # The default value is 60
-        self.SECS = Default_Seconds
+        self.SECS = DEFAULT_SECONDS
 
     def set_address(self, address):
         self.ADDRESS = format_address(address)
@@ -32,7 +32,7 @@ class RedisConn:
 
     def set_redis(self, redis_conf):
         self.redis = redis.Redis(host=redis_conf.get('REDIS_HOST'), port=redis_conf.get('REDIS_PORT'),
-                                 password=redis_conf.get('REDIS_PASSWORD'), socket_connect_timeout=Redis_Timeout)
+                                 password=redis_conf.get('REDIS_PASSWORD'), socket_connect_timeout=REDIS_TIMEOUT)
 
     def get_redis(self) -> redis.Redis:
         return self.redis

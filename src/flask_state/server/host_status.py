@@ -7,14 +7,14 @@ from .response_methods import make_response_content
 from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday, \
     retrieve_one_host_status
 from ..utils.date import get_current_ms, get_current_s
-from ..conf.config import CPU_Percent_Interval, DAYS_SCOPE
+from ..conf.config import CPU_PERCENT_INTERVAL, DAYS_SCOPE
 
-One_Minute_Seconds = 60000  # One minute milliseconds
-Seconds_To_Millisecond_Multiple = 1000  # Second to millisecond multiple
-Default_Hits_Ratio = 100  # Default hits ratio value
-Default_Delta_Hits_Ratio = 100  # Default 24h hits ratio value
-Default_Windows_Load_Avg = '0, 0, 0'  # Windows system cannot calculate load AVG
-Percentage = 100  # Percentage calculation
+ONE_MINUTE_SECONDS = 60000  # One minute milliseconds
+SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
+DEFAULT_HITS_RATIO = 100  # Default hits ratio value
+DEFAULT_DELTA_HITS_RATIO = 100  # Default 24h hits ratio value
+DEFAULT_WINDOWS_LOAD_AVG = '0, 0, 0'  # Windows system cannot calculate load AVG
+PERCENTAGE = 100  # Percentage calculation
 
 
 def record_console_host():
@@ -23,10 +23,10 @@ def record_console_host():
 
     """
     try:
-        cpu = psutil.cpu_percent(interval=CPU_Percent_Interval)
+        cpu = psutil.cpu_percent(interval=CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
         if platform.system() == 'Windows':
-            load_avg = Default_Windows_Load_Avg
+            load_avg = DEFAULT_WINDOWS_LOAD_AVG
         else:
             load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
         disk_usage = psutil.disk_usage('/').percent
@@ -45,8 +45,8 @@ def record_console_host():
                 mem_fragmentation_ratio = redis_info.get('mem_fragmentation_ratio')
                 keyspace_hits = redis_info.get('keyspace_hits')
                 keyspace_misses = redis_info.get('keyspace_misses')
-                hits_ratio = float('%.2f' % (keyspace_hits * Percentage / (keyspace_hits + keyspace_misses))) if \
-                    (keyspace_hits + keyspace_misses) != 0 else Default_Hits_Ratio
+                hits_ratio = float('%.2f' % (keyspace_hits * PERCENTAGE / (keyspace_hits + keyspace_misses))) if \
+                    (keyspace_hits + keyspace_misses) != 0 else DEFAULT_HITS_RATIO
                 delta_hits_ratio = hits_ratio
                 yesterday_current_statistic = retrieve_host_status_yesterday()
                 if yesterday_current_statistic:
@@ -56,8 +56,8 @@ def record_console_host():
                         be_divided_num = keyspace_hits + keyspace_misses - (
                                 yesterday_keyspace_hits + yesterday_keyspace_misses)
                         delta_hits_ratio = float(
-                            '%.2f' % ((keyspace_hits - yesterday_keyspace_hits) * Percentage / be_divided_num)) \
-                            if be_divided_num != 0 else Default_Delta_Hits_Ratio
+                            '%.2f' % ((keyspace_hits - yesterday_keyspace_hits) * PERCENTAGE / be_divided_num)) \
+                            if be_divided_num != 0 else DEFAULT_DELTA_HITS_RATIO
                 result_conf.update(used_memory=used_memory,
                                    used_memory_rss=used_memory_rss,
                                    connected_clients=connected_clients,
@@ -94,7 +94,7 @@ def query_console_host(days) -> dict:
         data = {"currentStatistic": arr[0] if arr else {}, "items": []}
         fields = ["cpu", "memory", "load_avg", "disk_usage"]
         for item in arr:
-            statistics_item = [int(item['ts'] / Seconds_To_Millisecond_Multiple)]
+            statistics_item = [int(item['ts'] / SECONDS_TO_MILLISECOND_MULTIPLE)]
             for field in fields:
                 statistics_item.append(item[field])
             data["items"].append(statistics_item)
@@ -113,7 +113,7 @@ def query_one_min_record():
         data = retrieve_one_host_status()
         if not data:
             return True
-        if (get_current_ms() - data.ts) < One_Minute_Seconds:
+        if (get_current_ms() - data.ts) < ONE_MINUTE_SECONDS:
             return False
         return True
     except Exception as e:

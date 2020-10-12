@@ -5,11 +5,12 @@ from werkzeug.local import LocalProxy
 from flask import current_app, _request_ctx_stack, request
 
 
-def auth_user(func):
+def auth_user(func) -> bool:
     """
     Verify whether the user logs in through the flask-login package.
     If the user does not install flask-login, it will pass by default.
-    :return: auth result: True/false
+    :return: auth result
+    :rtype: bool
     """
 
     def wrapper():

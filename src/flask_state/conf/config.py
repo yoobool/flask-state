@@ -1,11 +1,11 @@
 # Record local state interval
-Default_Seconds = 60
+DEFAULT_SECONDS = 60
 
 # Redis connection timeout
-Redis_Timeout = 1
+REDIS_TIMEOUT = 1
 
 # Time interval to calculate CPU utilization using psutil
-CPU_Percent_Interval = 0
+CPU_PERCENT_INTERVAL = 0
 
 
 # Date selection range
@@ -29,7 +29,7 @@ DAYS_SCOPE = {str(DaysScope.One_Day): DaysScope.One_Day,
               str(DaysScope.Seven_Day): DaysScope.Seven_Day,
               str(DaysScope.Thirty_Day): DaysScope.Thirty_Day}
 
-DAYS_SCOPE_Milliseconds = {str(DaysScope.One_Day): DaysMilliseconds.One_Day,
+DAYS_SCOPE_MILLISECONDS = {str(DaysScope.One_Day): DaysMilliseconds.One_Day,
                            str(DaysScope.Three_Day): DaysMilliseconds.Three_Day,
                            str(DaysScope.Seven_Day): DaysMilliseconds.Seven_Day,
                            str(DaysScope.Thirty_Day): DaysMilliseconds.Thirty_Day}

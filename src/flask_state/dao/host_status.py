@@ -3,8 +3,8 @@ from ..models import db
 from ..models.console_host import ConsoleHost
 from ..utils.date import get_current_ms, get_query_ms
 
-One_Day = '1'  # Days
-Five_Minutes_Milliseconds = 300000  # Five minutes milliseconds
+ONE_DAY = '1'  # Days
+FIVE_MINUTES_MILLISECONDS = 300000  # Five minutes milliseconds
 
 
 def retrieve_host_status(days) -> list:
@@ -46,8 +46,8 @@ def retrieve_host_status_yesterday() -> ConsoleHost:
     Returns the closest time status between yesterday and the current
 
     """
-    yesterday_ms = get_current_ms() - get_query_ms(One_Day)
-    delta_ms = yesterday_ms - Five_Minutes_Milliseconds
+    yesterday_ms = get_current_ms() - get_query_ms(ONE_DAY)
+    delta_ms = yesterday_ms - FIVE_MINUTES_MILLISECONDS
     yesterday_console_host = ConsoleHost.query.filter(
         ConsoleHost.ts < yesterday_ms, ConsoleHost.ts > delta_ms).order_by(
         ConsoleHost.ts.desc()).first()
