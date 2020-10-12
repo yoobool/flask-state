@@ -1,3 +1,5 @@
+from enum import Enum, unique
+
 # Record local state interval
 DEFAULT_SECONDS = 60
 
@@ -9,7 +11,8 @@ CPU_PERCENT_INTERVAL = 0
 
 
 # Date selection range
-class DaysScope:
+@unique
+class DaysScope(Enum):
     One_Day = 1
     Three_Day = 3
     Seven_Day = 7
@@ -17,7 +20,8 @@ class DaysScope:
 
 
 # Date selection range milliseconds
-class DaysMilliseconds:
+@unique
+class DaysMilliseconds(Enum):
     One_Day = 86400000
     Three_Day = 259200000
     Seven_Day = 604800000
