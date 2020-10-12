@@ -2,8 +2,9 @@ import psutil
 import os
 import platform
 import logging
-from . import redis_conn, MsgCode
-from .response_methods import make_response_content
+from . import redis_conn
+from ..exceptions import FlaskStateResponse, SuccessResponse, ErrorResponse
+from ..exceptions.error_code import MsgCode
 from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday
 from ..utils.date import get_current_ms, get_current_s
 from ..conf.config import CPU_PERCENT_INTERVAL, DAYS_SCOPE
@@ -73,7 +74,7 @@ def record_console_host():
         raise e
 
 
-def query_console_host(days) -> dict:
+def query_console_host(days) -> FlaskStateResponse:
     """
     Query the local status and redis status of [1,3,7,30] days
     :param days: the query days
@@ -81,7 +82,7 @@ def query_console_host(days) -> dict:
     """
     try:
         if days not in DAYS_SCOPE:
-            return make_response_content(MsgCode.OVERSTEP_DAYS_SCOPE)
+            return ErrorResponse(MsgCode.OVERSTEP_DAYS_SCOPE)
         result = retrieve_host_status(days)
         arr = []
         for status in result:
@@ -96,10 +97,10 @@ def query_console_host(days) -> dict:
             for field in fields:
                 statistics_item.append(item[field])
             data["items"].append(statistics_item)
-        return make_response_content(msg='Search success', data=data)
+        return SuccessResponse(msg='Search success', data=data)
     except Exception as e:
         logging.error(e)
-        return make_response_content(MsgCode.UNKNOWN_ERROR)
+        return ErrorResponse(MsgCode.UNKNOWN_ERROR)
 
 
 def row2dict(field):
