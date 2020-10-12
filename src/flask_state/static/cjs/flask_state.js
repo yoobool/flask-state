@@ -1,3 +1,5 @@
+'use strict';
+
 class MachineStatus {
     constructor(language) {
         this.language = language;
@@ -8,65 +10,65 @@ class MachineStatus {
         MachineStatus.addConsoleInfoContainer();
 
         if (window.addEventListener) {
-            document.getElementById('console_info_close').addEventListener('click', function clickClose() {
+            document.getElementById('console-info-close').addEventListener('click', function clickClose() {
                 document.getElementById('console-info-back').click();
-                document.getElementById('console_info_close').removeEventListener('click', clickClose);
-                if (document.getElementById('console_state_circular')) {
-                    document.getElementById('console_state_circular').classList.remove('fs-circular-out');
+                document.getElementById('console-info-close').removeEventListener('click', clickClose);
+                if (document.getElementById('console-state-circular')) {
+                    document.getElementById('console-state-circular').classList.remove('fs-circular-out');
                 }
             });
 
             document.getElementById('console-info-back').addEventListener('click', function clickBack() {
                 document.getElementById('console-info-back').style.display = 'none';
-                document.getElementById('console_info_container').style.display = 'none';
+                document.getElementById('console-info-container').style.display = 'none';
                 document.getElementById('console-info-back').removeEventListener('click', clickBack);
-                if (document.getElementById('console_state_circular')) {
-                    document.getElementById('console_state_circular').classList.remove('fs-circular-out');
+                if (document.getElementById('console-state-circular')) {
+                    document.getElementById('console-state-circular').classList.remove('fs-circular-out');
                 }
             });
 
         } else if (window.attachEvent) {
-            document.getElementById('console_info_close').attachEvent('onclick', function () {
+            document.getElementById('console-info-close').attachEvent('onclick', function () {
                 document.getElementById('console-info-back').click();
-                if (document.getElementById('console_state_circular')) {
-                    document.getElementById('console_state_circular').classList.remove('fs-circular-out');
+                if (document.getElementById('console-state-circular')) {
+                    document.getElementById('console-state-circular').classList.remove('fs-circular-out');
                 }
             });
 
             document.getElementById('console-info-back').attachEvent('onclick', function () {
                 document.getElementById('console-info-back').style.display = 'none';
-                document.getElementById('console_info_container').style.display = 'none';
-                if (document.getElementById('console_state_circular')) {
-                    document.getElementById('console_state_circular').classList.remove('fs-circular-out');
+                document.getElementById('console-info-container').style.display = 'none';
+                if (document.getElementById('console-state-circular')) {
+                    document.getElementById('console-state-circular').classList.remove('fs-circular-out');
                 }
             }, false);
         }
 
         document.getElementById('console-info-back').style.display = 'block';
 
-        let consoleInfo = document.getElementById('console_info_container');
+        let consoleInfo = document.getElementById('console-info-container');
         consoleInfo.style.display = 'block';
         consoleInfo.style.height = 'fit-content';
         consoleInfo.style.top = String(5) + 'rem';
 
-        consoleInfo.getElementsByTagName('h4')[0].innerHTML = this.language.host_status;
-        consoleInfo.getElementsByTagName('h4')[1].innerHTML = this.language.redis_status;
-        document.getElementById('cpu').innerHTML = this.language.cpu;
-        document.getElementById('memory').innerHTML = this.language.memory;
-        document.getElementById('disk_usage').innerHTML = this.language.disk_usage;
-        document.getElementById('load_avg').innerHTML = this.language.load_avg;
-        document.getElementById('boot_seconds').innerHTML = this.language.boot_seconds;
-        document.getElementById('used_memory').innerHTML = this.language.used_memory;
-        document.getElementById('used_memory_rss').innerHTML = this.language.used_memory_rss;
-        document.getElementById('mem_fragmentation_ratio').innerHTML = this.language.mem_fragmentation_ratio;
-        document.getElementById('hits_ratio').innerHTML = this.language.hits_ratio;
-        document.getElementById('delta_hits_ratio').innerHTML = this.language.delta_hits_ratio;
-        document.getElementById('uptime_in_seconds').innerHTML = this.language.uptime_in_seconds;
-        document.getElementById('connected_clients').innerHTML = this.language.connected_clients;
+        consoleInfo.getElementsByTagName('h4')[0].innerHTML = this.language.host_status + ':'
+        consoleInfo.getElementsByTagName('h4')[1].innerHTML = this.language.redis_status + ':'
+        document.getElementById('cpu').innerHTML = this.language.cpu + ':';
+        document.getElementById('memory').innerHTML = this.language.memory + ':'
+        document.getElementById('disk_usage').innerHTML = this.language.disk_usage + ':'
+        document.getElementById('load_avg').innerHTML = this.language.load_avg + ':'
+        document.getElementById('boot_seconds').innerHTML = this.language.boot_seconds + ':'
+        document.getElementById('used_memory').innerHTML = this.language.used_memory + ':'
+        document.getElementById('used_memory_rss').innerHTML = this.language.used_memory_rss + ':'
+        document.getElementById('mem_fragmentation_ratio').innerHTML = this.language.mem_fragmentation_ratio + ':'
+        document.getElementById('hits_ratio').innerHTML = this.language.hits_ratio + ':'
+        document.getElementById('delta_hits_ratio').innerHTML = this.language.delta_hits_ratio + ':'
+        document.getElementById('uptime_in_seconds').innerHTML = this.language.uptime_in_seconds + ':'
+        document.getElementById('connected_clients').innerHTML = this.language.connected_clients + ':'
         document.getElementById('days').innerHTML = this.language.days;
 
-        let hostInfoSpan = consoleInfo.getElementsByTagName('div')[0].getElementsByClassName('fs-badge-style');
-        let hostInfoExtendSpan = consoleInfo.getElementsByTagName('div')[1].getElementsByClassName('fs-badge-style');
+        let hostInfoSpan = document.getElementById('fs-host-status').getElementsByClassName('fs-badge-style');
+        let hostInfoExtendSpan = document.getElementById('fs-redis-status').getElementsByClassName('fs-badge-style');
         for (let item of hostInfoSpan) {
             item.innerText = '';
         }
@@ -305,30 +307,30 @@ class MachineStatus {
         let str = '<div class="flask-state-elem layer console-info-back-style" id="console-info-back" disabled="disabled" xmlns="http://www.w3.org/1999/html">' +
             '</div>' +
             '<div class="flask-state-elem ">' +
-            '<div class="flask-state-elem console-info-container-style console-info-container-box box-style " id="console_info_container">' +
-            '<button type="button" class="flask-state-elem console-info-close-style" id="console_info_close"><span>&times;</span></button>' +
+            '<div class="flask-state-elem console-info-container-style console-info-container-box box-style " id="console-info-container">' +
+            '<div class="flask-state-elem fs-select-container"><select id="select_days" class="margin-right-3">' +
+            '<option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><span id="days">days</span></div>' +
+            '<button type="button" class="flask-state-elem console-info-close-style" id="console-info-close"><span>&times;</span></button>' +
             '<h4 class="flask-state-elem fs-font-box box-style no-padding margin-top-10 fs-h4-style">host_status</h4>' +
-            '<div class="flask-state-elem fs-font-box box-style no-padding ">' +
-            '<span id="memory">memory</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="cpu">cpu</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="disk_usage">disk_usage</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="load_avg">LoadAvg</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="boot_seconds">boot_seconds</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>' +
+            '<div id="fs-host-status" class="flask-state-elem fs-font-box box-style no-padding">' +
+            '<span id="memory" class="margin-right-5">memory:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+            '<span id="cpu" class="margin-right-5">cpu:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+            '<span id="disk_usage" class="margin-right-5">disk_usage:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+            '<span id="load_avg" class="margin-right-5">LoadAvg:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+            '<span id="boot_seconds" class="margin-right-5">boot_seconds:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
             '</div>' +
             '<h4 class="flask-state-elem fs-font-box box-style no-padding fs-h4-style">redis_status</h4>' +
-            '<div class="flask-state-elem fs-font-box box-style no-padding margin-bottom-10 ">' +
-            '<span id="used_memory">used_memory</span>:&nbsp;<span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text"></span>&nbsp;&nbsp;' +
-            '<span id="used_memory_rss">used_memory_rss</span>:&nbsp;<span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text"></span>&nbsp;&nbsp;' +
-            '<span id="mem_fragmentation_ratio">mem_fragmentation_ratio</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="hits_ratio">hits_ratio</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="delta_hits_ratio">24h_hits_ratio</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="uptime_in_seconds">uptime_in_seconds</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<span id="connected_clients">connected_clients</span>:&nbsp;<span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span>&nbsp;&nbsp;' +
-            '<div class="flask-state-elem fs-select-container "><select id="select_days">' +
-            '<option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><span id="days">days</span></div>' +
+            '<div id="fs-redis-status" class="flask-state-elem fs-font-box box-style no-padding margin-bottom-10 ">' +
+            '<span id="used_memory" class="margin-right-5">used_memory:</span><span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text margin-right-10"></span>' +
+            '<span id="used_memory_rss" class="margin-right-5">used_memory_rss:</span><span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text margin-right-10"></span>' +
+            '<span id="mem_fragmentation_ratio" class="margin-right-5">mem_fragmentation_ratio:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+            '<span id="hits_ratio" class="margin-right-5">hits_ratio:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+            '<span id="delta_hits_ratio" class="margin-right-5">24h_hits_ratio:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+            '<span id="uptime_in_seconds" class="margin-right-5">uptime_in_seconds:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+            '<span id="connected_clients" class="margin-right-5">connected_clients:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
             '</div>';
         if (MachineStatus.checkMobile()) {
-            str += '<hr width="109%" size="1" align="center" noshade="" id="console-info-line" class="console-info-line-style">' +
+            str += '<hr size="1" align="center" noshade="" id="console-info-line" class="console-info-line-style">' +
                 '<div class="flask-state-elem fs-ul-tabs-box no-margin ">' +
                 '<ul id="console_info_tab" class="flask-state-elem fs-ul-tabs">' +
                 '<li class="flask-state-elem active"><a href="#console_info_tab_memory" data-toggle="tab">' +
@@ -615,57 +617,57 @@ class Ajax {
 }
 
 export default function Machine_state(language, floatball = false) {
-    const MachineObj = new MachineStatus(language);
+    const FlaskStateExample = new MachineStatus(language);
     if (floatball) {
-        let str = "<div id='console_state_circular' class='fs-circular fs-circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
-        let bodyObj = document.getElementsByTagName('body')[0];
-        bodyObj.insertAdjacentHTML('afterbegin', str);
-        let circularObj = document.getElementById('console_state_circular');
-        circularObj.onclick = function () {
+        let str = "<div id='console-state-circular' class='fs-circular fs-circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
+        let domBody = document.getElementsByTagName('body')[0];
+        domBody.insertAdjacentHTML('afterbegin', str);
+        let triggerCircular = document.getElementById('console-state-circular');
+        triggerCircular.onclick = function () {
             this.classList.add('fs-circular-out');
             window.scroll(0, 0);
-            MachineObj.showConsoleDetail();
+            FlaskStateExample.showConsoleDetail();
         };
         let timeOutId;
         let mousePosition;
-        circularObj.onmousedown = function (downEvent) {
+        triggerCircular.onmousedown = function (downEvent) {
             mousePosition = mousePosition || downEvent.clientY;
-            circularObj.classList.remove('fs-circular-animation');
+            triggerCircular.classList.remove('fs-circular-animation');
             timeOutId = setTimeout(function () {
-                circularObj.style.cursor = 'move';
-                bodyObj.style.cursor = 'move';
-                bodyObj.onmousemove = function (moveEvent) {
-                    circularObj.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
+                triggerCircular.style.cursor = 'move';
+                domBody.style.cursor = 'move';
+                domBody.onmousemove = function (moveEvent) {
+                    triggerCircular.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
                 }
             }, 1500)
         };
-        bodyObj.onmouseup = function () {
-            circularObj.style.cursor = 'pointer';
-            circularObj.classList.add('fs-circular-animation');
-            bodyObj.onmousemove = null;
+        domBody.onmouseup = function () {
+            triggerCircular.style.cursor = 'pointer';
+            triggerCircular.classList.add('fs-circular-animation');
+            domBody.onmousemove = null;
             this.style.cursor = 'default';
             clearTimeout(timeOutId);
         };
-        circularObj.ontouchstart = function (downEvent) {
+        triggerCircular.ontouchstart = function (downEvent) {
             mousePosition = mousePosition || downEvent.clientY;
-            circularObj.classList.remove('fs-circular-animation');
+            triggerCircular.classList.remove('fs-circular-animation');
             timeOutId = setTimeout(function () {
-                circularObj.style.cursor = 'move';
-                bodyObj.style.cursor = 'move';
-                bodyObj.ontouchmove = function (moveEvent) {
-                    circularObj.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
+                triggerCircular.style.cursor = 'move';
+                domBody.style.cursor = 'move';
+                domBody.ontouchmove = function (moveEvent) {
+                    triggerCircular.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
                 }
             }, 1500)
         };
-        bodyObj.ontouchend = function () {
-            circularObj.style.cursor = 'pointer';
-            circularObj.classList.add('fs-circular-animation');
-            bodyObj.ontouchmove = null;
+        domBody.ontouchend = function () {
+            triggerCircular.style.cursor = 'pointer';
+            triggerCircular.classList.add('fs-circular-animation');
+            domBody.ontouchmove = null;
             this.style.cursor = 'default';
             clearTimeout(timeOutId);
         };
     } else {
-        MachineObj.showConsoleDetail();
+        FlaskStateExample.showConsoleDetail();
     }
 }
 
