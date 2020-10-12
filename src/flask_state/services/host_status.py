@@ -4,12 +4,10 @@ import platform
 import logging
 from . import redis_conn, MsgCode
 from .response_methods import make_response_content
-from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday, \
-    retrieve_one_host_status
+from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday
 from ..utils.date import get_current_ms, get_current_s
 from ..conf.config import CPU_PERCENT_INTERVAL, DAYS_SCOPE
 
-ONE_MINUTE_SECONDS = 60000  # One minute milliseconds
 SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
 DEFAULT_HITS_RATIO = 100  # Default hits ratio value
 DEFAULT_DELTA_HITS_RATIO = 100  # Default 24h hits ratio value
@@ -99,23 +97,6 @@ def query_console_host(days) -> dict:
                 statistics_item.append(item[field])
             data["items"].append(statistics_item)
         return make_response_content(msg='Search success', data=data)
-    except Exception as e:
-        logging.error(e)
-        return make_response_content(MsgCode.UNKNOWN_ERROR)
-
-
-def query_one_min_record():
-    """
-    Check whether there are records inserted within one minute
-    :return: True or False
-    """
-    try:
-        data = retrieve_one_host_status()
-        if not data:
-            return True
-        if (get_current_ms() - data.ts) < ONE_MINUTE_SECONDS:
-            return False
-        return True
     except Exception as e:
         logging.error(e)
         return make_response_content(MsgCode.UNKNOWN_ERROR)
