@@ -2,13 +2,15 @@
 
 # Flask-State
 
-#### Flask-State是一款基于Flask运行的可视化插件。它能记录每分钟的本机状态以及读取Redis状态（可选项），并通过[Echarts](https://github.com/apache/incubator-echarts)生成数据图表展示给用户。
+Flask-State是一款基于Flask运行的可视化插件。它能记录每分钟的本机状态以及读取Redis状态（可选项），并通过 [Echarts](https://github.com/apache/incubator-echarts) 生成数据图表展示给用户。
+
+![](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
 [![](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
 
 
 ## Installation
-#### 安装和更新通过使用 [pip](https://pip.pypa.io/en/stable/quickstart/):
+安装和更新通过使用 [pip](https://pip.pypa.io/en/stable/quickstart/):
 ```
 $ pip install Flask-State
 ```
@@ -16,7 +18,7 @@ $ pip install Flask-State
 
 ## Usage
 
-#### Flask-State插件安装后，还需要引入JavaScript文件和CSS文件，为你的元素绑定一个约定ID值，即可轻松使用。在某些配置上，你也可以选择修改。
+Flask-State插件安装后，还需要引入JavaScript文件和CSS文件，为你的元素绑定一个约定ID值，即可轻松使用。在某些配置上，你也可以选择修改。
 
 #### 第一步：定义一个Flask app：
 ```
@@ -47,7 +49,7 @@ init_app(app)
 app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'REDIS_PORT':16379, 'REDIS_PASSWORD': 'fish09'}
 ```
 
-```
+```python
 from flask_state import flask_state_conf
 
 # ADDRESS为数据库地址名称
@@ -55,7 +57,7 @@ ADDRESS = 'console_host'
 flask_state_conf.set_address(ADDRESS)
 ```
 
-```
+```python
 from flask_state import flask_state_conf
 
 # SECS为记录本机状态时间间隔, 最少间隔为10秒
@@ -65,10 +67,10 @@ flask_state_conf.set_secs(SECS)
 
 
 ## Contributing
-#### 我们非常欢迎[提出问题](https://github.com/yoobool/flask-state/issues/new)!
+我们非常欢迎[提出问题](https://github.com/yoobool/flask-state/issues/new)!
 
-#### Flask-State遵循[《贡献者公约》](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/)行为准则。
+Flask-State遵循[《贡献者公约》](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) 行为准则。
 
 
 ## License
-#### ......
+Flask State使用BSD-3-Clause许可证。
