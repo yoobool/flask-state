@@ -21,6 +21,7 @@ def init_app(app):
     """
     app.add_url_rule('/v0/state/hoststatus', endpoint='state_host_status', view_func=query_console_status,
                      methods=['POST'])
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     if not app.config.get('SQLALCHEMY_BINDS') or not app.config['SQLALCHEMY_BINDS'].get('flask_state_sqlite'):
         app.config['SQLALCHEMY_BINDS'] = app.config.get('SQLALCHEMY_BINDS') or {}
         app.config['SQLALCHEMY_BINDS']['flask_state_sqlite'] = default_conf.ADDRESS
