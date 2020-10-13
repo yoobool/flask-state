@@ -57,6 +57,8 @@
 .console-info-container-style {
     z-index: 1003;
     position: absolute;
+    display: block;
+    top: 5rem;
     left: 0;
     right: 0;
     height: fit-content;
