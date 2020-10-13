@@ -10,31 +10,9 @@
 </head>
 <body style="height: 100%;background-color: purple">
 <script src="https://cdn.staticfile.org/echarts/4.2.1/echarts.min.js"></script>
-
-<!--umd-->
-<!-- You can choose any way to make the component display-->
-<!--1.Binding page elements-->
-<div id="test_id" onclick="Machine_state(en)"
-     style="margin: 0 auto;background-color: #fff;border-radius: 100px;width: 100px;height: 100px;cursor: pointer;opacity: 0.5;border: 1px solid #777;text-align: center;line-height: 100px">
+<script src="../static/dist/flask_state.js"></script>
+<div id="test_id" style="margin: 0 auto;background-color: #fff;border-radius: 100px;width: 100px;height: 100px;cursor: pointer;opacity: 0.5;border: 1px solid #777;text-align: center;line-height: 100px">
     click me
 </div>
-
-<script src="../static/umd/flask_state.js"></script>
-<script src="../static/umd/zh.js"></script>
-<script src="../static/umd/en.js"></script>
-<script type="text/javascript">
-    // 2.Binding suspension ball
-    // Machine_state(en, true);
-</script>
-
-<!--cjs-->
-<!--<script type="module">-->
-<!--import Machine_state from '../static/cjs/flask_state.js';-->
-<!--import zh from '../static/cjs/zh.js';-->
-<!--import en from '../static/cjs/en.js';-->
-
-<!--You can choose any way to make the component display-->
-<!--Machine_state(en);-->
-<!--</script>-->
 </body>
 </html>
