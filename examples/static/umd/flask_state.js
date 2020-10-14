@@ -181,10 +181,7 @@ class MachineStatus {
                     consoleCpuChart.setOption(cpuOption);
                     consoleLoadavgChart.setOption(loadavgOption);
                     consoleDiskusageChart.setOption(diskUsageOption);
-                    consoleMemoryChart.resize();
-                    consoleCpuChart.resize();
-                    consoleLoadavgChart.resize();
-                    consoleDiskusageChart.resize();
+                    MachineStatus.resizeChart([consoleMemoryChart, consoleCpuChart, consoleLoadavgChart, consoleDiskusageChart]);
                 },
                 complete: () => {
                     consoleMemoryChart.hideLoading();
@@ -197,7 +194,7 @@ class MachineStatus {
         setCharts('1');
 
         // Bind window resizing redraw event
-        window.onresize = () => MachineStatus.resizeChart([consoleMemoryChart, consoleCpuChart, consoleLoadavgChart, consoleDiskusageChart]);
+        window.onresize = () => MachineStatus.resizeChartTimer([consoleMemoryChart, consoleCpuChart, consoleLoadavgChart, consoleDiskusageChart]);
         // Bind mobile phone to switch to display charts event
         if (document.getElementById('fs-info-tab')) {
             let liArr = document.getElementById('fs-info-tab').getElementsByTagName('li');
@@ -217,10 +214,7 @@ class MachineStatus {
                     node_li.classList.remove('active');
                     preNode.classList.remove('fs-show');
                     nowNode.classList.add('fs-show');
-                    consoleMemoryChart.resize();
-                    consoleCpuChart.resize();
-                    consoleLoadavgChart.resize();
-                    consoleDiskusageChart.resize();
+                    MachineStatus.resizeChart([consoleMemoryChart, consoleCpuChart, consoleLoadavgChart, consoleDiskusageChart]);
                     preNode = nowNode;
                     node_li = item;
                 });
@@ -235,15 +229,17 @@ class MachineStatus {
         })
     }
 
-    // Redraw chart events
-    static resizeChart(myChart, timeout) {
+    // Redraw chart events timer
+    static resizeChartTimer(myChart, timeout) {
         clearTimeout(this.clearId);
         this.clearId = setTimeout(function () {
-            myChart.forEach(function (chart) {
-                if (chart)
-                    chart.resize();
-            });
+            MachineStatus.resizeChart(myChart);
         }, timeout || 200)
+    }
+
+    // Redraw chart events
+    static resizeChart(chartList) {
+        chartList.forEach(chart => chart.resize());
     }
 
     // Insert window element
