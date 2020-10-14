@@ -185,31 +185,6 @@ class MachineStatus {
                     consoleCpuChart.resize();
                     consoleLoadavgChart.resize();
                     consoleDiskusageChart.resize();
-
-                    window.onresize = () => MachineStatus.resizeChart([consoleMemoryChart, consoleCpuChart, consoleLoadavgChart, consoleDiskusageChart]);
-                    if (document.getElementById('fs-info-tab')) {
-                        let liArr = document.getElementById('fs-info-tab').getElementsByTagName('li');
-                        let node = document.getElementById('fs-info-tab-memory');
-                        let node_li = liArr[0];
-                        let index = 0;
-                        const elemDict = {0: 'fs-info-tab-memory', 1: 'fs-info-tab-cpu', 2: 'fs-info-tab-disk-usage', 3: 'fs-info-tab-loadavg'};
-                        for (let item of liArr) {
-                            let now = document.getElementById(elemDict[index]);
-                            item.children[0].addEventListener('click', () => {
-                                item.classList.add('active');
-                                node_li.classList.remove('active');
-                                node.classList.remove('fs-show');
-                                now.classList.add('fs-show');
-                                consoleMemoryChart.resize();
-                                consoleCpuChart.resize();
-                                consoleLoadavgChart.resize();
-                                consoleDiskusageChart.resize();
-                                node = now;
-                                node_li = item;
-                            });
-                            index++;
-                        }
-                    }
                 },
                 complete: () => {
                     consoleMemoryChart.hideLoading();
@@ -221,6 +196,38 @@ class MachineStatus {
         };
         setCharts('1');
 
+        // Bind window resizing redraw event
+        window.onresize = () => MachineStatus.resizeChart([consoleMemoryChart, consoleCpuChart, consoleLoadavgChart, consoleDiskusageChart]);
+        // Bind mobile phone to switch to display charts event
+        if (document.getElementById('fs-info-tab')) {
+            let liArr = document.getElementById('fs-info-tab').getElementsByTagName('li');
+            let preNode = document.getElementById('fs-info-tab-memory');
+            let node_li = liArr[0];
+            let index = 0;
+            const elemDict = {
+                0: 'fs-info-tab-memory',
+                1: 'fs-info-tab-cpu',
+                2: 'fs-info-tab-disk-usage',
+                3: 'fs-info-tab-loadavg'
+            };
+            for (let item of liArr) {
+                let nowNode = document.getElementById(elemDict[index]);
+                item.children[0].addEventListener('click', () => {
+                    item.classList.add('active');
+                    node_li.classList.remove('active');
+                    preNode.classList.remove('fs-show');
+                    nowNode.classList.add('fs-show');
+                    consoleMemoryChart.resize();
+                    consoleCpuChart.resize();
+                    consoleLoadavgChart.resize();
+                    consoleDiskusageChart.resize();
+                    preNode = nowNode;
+                    node_li = item;
+                });
+                index++;
+            }
+        }
+
         // Pull the local state again when switching days
         let selectContainer = document.getElementById('fs-select-days');
         selectContainer.addEventListener('change', () => {
@@ -228,6 +235,7 @@ class MachineStatus {
         })
     }
 
+    // Redraw chart events
     static resizeChart(myChart, timeout) {
         clearTimeout(this.clearId);
         this.clearId = setTimeout(function () {
@@ -238,6 +246,7 @@ class MachineStatus {
         }, timeout || 200)
     }
 
+    // Insert window element
     static addConsoleInfoContainer(isMobile) {
         let str = '<div class="flask-state-elem layer console-info-back-style" id="fs-info-back" disabled="disabled" xmlns="http://www.w3.org/1999/html">' +
             '</div>' +
@@ -330,6 +339,7 @@ class MachineStatus {
         document.getElementsByTagName('body')[0].insertAdjacentHTML('afterbegin', str);
     }
 
+    // Initialize echart
     static generateChatOption(isMobile, titleText, tableName = '', lineName = '') {
         let baseData = {
             color: tableName === 'loadavg' ? ['#ffa726', '#42a5f5', '#66bb6a'] : ['#42a5f5'],
