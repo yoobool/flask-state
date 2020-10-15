@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     entry: './examples/static/entry/index.js',
     output: {
-        filename: 'flask_state.js',
+        filename: 'flask-state.js',
         path: path.resolve('./examples/static/', 'dist')
     },
     mode: 'development',
