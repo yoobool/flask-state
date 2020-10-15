@@ -562,6 +562,8 @@
     function init(targetDom, language = {}) {
         let FlaskStateExample = new MachineStatus(language);
         if (targetDom instanceof HTMLElement) {
+            targetDom.addEventListener('click', () => FlaskStateExample.showConsoleDetail());
+        } else {
             let str = "<div id='fs-state-circular' class='fs-circular fs-circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
             let domBody = document.getElementsByTagName('body')[0];
             domBody.insertAdjacentHTML('afterbegin', str);
@@ -609,8 +611,6 @@
                 this.style.cursor = 'default';
                 clearTimeout(timeOutId);
             };
-        } else {
-            targetDom.addEventListener('click', () => FlaskStateExample.showConsoleDetail());
         }
     }
 
