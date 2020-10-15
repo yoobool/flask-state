@@ -18,11 +18,10 @@
         constructor(language) {
             this.language = language;
             this.mobile = isMobile();
+            MachineStatus.addConsoleInfoContainer(this.mobile);
         };
 
         showConsoleDetail() {
-            MachineStatus.addConsoleInfoContainer(this.mobile);
-
             // Add form event listener
             if (window.addEventListener) {
                 document.getElementById('fs-info-close').addEventListener('click', function clickClose() {
@@ -44,6 +43,7 @@
 
             }
             document.getElementById('fs-info-back').style.display = 'block';
+            document.getElementById('fs-info-container').style.display = 'block';
 
             // Modify parameter display language
             if (Object.keys(this.language).length !== 0) {
@@ -545,19 +545,23 @@
                 iPhone: u.indexOf('iPhone') > -1,
                 iPad: u.indexOf('iPad') > -1,
                 webApp: u.indexOf('Safari') === -1,
-                weixin: u.indexOf('MicroMessenger') > -1,
+                wechat: u.indexOf('MicroMessenger') > -1,
                 qq: u.match(/\sQQ/i) && u.match(/\sQQ/i)[0] === " qq",
             }
         }();
-        return deviceBrowser.iPhone || deviceBrowser.iPad || deviceBrowser.webApp || deviceBrowser.weixin
+        return deviceBrowser.iPhone || deviceBrowser.iPad || deviceBrowser.webApp || deviceBrowser.wechat
             || deviceBrowser.qq || deviceBrowser.ios || deviceBrowser.mobile || false;
 
     };
 
     /* Trigger window event */
+
+    let FlaskStateExample = null;
+
     function init(targetDom) {
         const language = arguments.length > 1 && typeof arguments[1] === "object" && arguments[1].hasOwnProperty('language') ? arguments[1] : {};
-        let FlaskStateExample = new MachineStatus(language);
+        FlaskStateExample = FlaskStateExample ? FlaskStateExample : new MachineStatus(language);
+
         if (targetDom instanceof HTMLElement) {
             targetDom.addEventListener('click', () => FlaskStateExample.showConsoleDetail());
         } else {
