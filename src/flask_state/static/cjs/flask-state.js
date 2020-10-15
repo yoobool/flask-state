@@ -562,13 +562,18 @@
         }
     })();
 
+    /* bind dom list */
+    let bindList = {};
+
     /* Trigger window event */
     function init(targetDom) {
         const language = arguments.length > 1 && typeof arguments[1] === "object" && arguments[1].hasOwnProperty('language') ? arguments[1] : {};
 
-        if (targetDom instanceof HTMLElement && targetDom.id) {
+        if (targetDom instanceof HTMLElement && targetDom.id && !bindList.hasOwnProperty(targetDom.id)) {
+            bindList[targetDom.id] = 0; // 0 is defaultValue
             targetDom.addEventListener('click', () => FlaskStateInstance(language).showConsoleDetail());
         } else {
+            if (document.getElementById('fs-state-circular')) return;
             let str = "<div id='fs-state-circular' class='fs-circular fs-circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
             let domBody = document.getElementsByTagName('body')[0];
             domBody.insertAdjacentHTML('afterbegin', str);
