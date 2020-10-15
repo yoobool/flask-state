@@ -46,6 +46,7 @@
 
             }
             document.getElementById('fs-info-back').style.display = 'block';
+            document.getElementById('fs-info-container').style.display = 'block';
 
             // Modify parameter display language
             if (Object.keys(this.language).length !== 0) {
