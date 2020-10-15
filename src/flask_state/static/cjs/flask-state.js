@@ -528,7 +528,7 @@
             result = Math.floor(dayTime) + days;
         }
         return result;
-    }
+    };
 
     /* Check if the device is a mobile phone */
     const isMobile = () => {
@@ -554,16 +554,20 @@
 
     };
 
+    /* singleton */
+    const FlaskStateInstance = (function () {
+        let instance = null;
+        return function (language) {
+            return instance || (instance = new MachineStatus(language))
+        }
+    })();
+
     /* Trigger window event */
-
-    let FlaskStateExample = null;
-
     function init(targetDom) {
         const language = arguments.length > 1 && typeof arguments[1] === "object" && arguments[1].hasOwnProperty('language') ? arguments[1] : {};
-        FlaskStateExample = FlaskStateExample ? FlaskStateExample : new MachineStatus(language);
 
-        if (targetDom instanceof HTMLElement) {
-            targetDom.addEventListener('click', () => FlaskStateExample.showConsoleDetail());
+        if (targetDom instanceof HTMLElement && targetDom.id) {
+            targetDom.addEventListener('click', () => FlaskStateInstance(language).showConsoleDetail());
         } else {
             let str = "<div id='fs-state-circular' class='fs-circular fs-circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
             let domBody = document.getElementsByTagName('body')[0];
@@ -572,7 +576,7 @@
             triggerCircular.onclick = function () {
                 this.classList.add('fs-circular-out');
                 window.scroll(0, 0);
-                FlaskStateExample.showConsoleDetail();
+                FlaskStateInstance(language).showConsoleDetail();
             };
             let timeOutId;
             let mousePosition;
