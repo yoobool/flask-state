@@ -559,7 +559,8 @@
     };
 
     /* Trigger window event */
-    function init(targetDom, language = {}) {
+    function init(targetDom) {
+        const language = arguments.length > 1 && typeof arguments[1] === 'string' && LANG[arguments[1]] ? LANG[arguments[1]] : {};
         let FlaskStateExample = new MachineStatus(language);
         if (targetDom instanceof HTMLElement) {
             targetDom.addEventListener('click', () => FlaskStateExample.showConsoleDetail());
