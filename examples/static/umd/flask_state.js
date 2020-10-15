@@ -561,7 +561,7 @@
     /* Trigger window event */
     function init(targetDom, language = {}) {
         let FlaskStateExample = new MachineStatus(language);
-        if (typeof targetDom !== 'object') {
+        if (targetDom instanceof HTMLElement) {
             let str = "<div id='fs-state-circular' class='fs-circular fs-circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
             let domBody = document.getElementsByTagName('body')[0];
             domBody.insertAdjacentHTML('afterbegin', str);
