@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./flask_state.js');
+module.exports = require('./flask-state.js');
