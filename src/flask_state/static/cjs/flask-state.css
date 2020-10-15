@@ -211,11 +211,13 @@
 }
 
 .console-info-container-box {
+    display: none;
     width: 91.66666667%;
 }
 
 @media (min-width: 768px) {
     .console-info-container-box {
+        display: none;
         width: 75%;
     }
 
@@ -227,6 +229,7 @@
 
 @media (min-width: 992px) {
     .console-info-container-box {
+        display: none;
         float: left;
         width: 75%;
     }
