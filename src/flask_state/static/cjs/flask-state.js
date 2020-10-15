@@ -21,7 +21,9 @@
         };
 
         showConsoleDetail() {
-            MachineStatus.addConsoleInfoContainer(this.mobile);
+            if (document.getElementById('fs-info-container') === null && document.getElementById('fs-info-back') === null){
+                MachineStatus.addConsoleInfoContainer(this.mobile);
+            }
 
             // Add form event listener
             if (window.addEventListener) {
