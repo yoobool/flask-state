@@ -237,6 +237,7 @@
                 success: response => {
                     const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
                     const data = response.data;
+                    if (data.items.length === 0 || data.currentStatistic.length === 0) return;
                     data.items = data.items.map(item => {
                         let element = {};
                         fields.forEach((field, index) => {
