@@ -7,7 +7,7 @@ class FlaskStateConf:
     def __init__(self):
         # Set database address and name
         # If the address is not allowed, the default address and name will be used
-        self.ADDRESS = 'sqlite:///console_host'
+        self.ADDRESS = 'sqlite:///flask_state.db'
 
         # Set the interval to record the local state, with a minimum interval of 10 seconds
         # The default value is 60

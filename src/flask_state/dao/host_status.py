@@ -1,6 +1,5 @@
-import logging
 from ..models import db
-from ..models.console_host import FlaskStateHost
+from ..models.flask_state_host import FlaskStateHost
 from ..utils.date import get_current_ms, get_query_ms
 
 ONE_DAY = '1'  # Days
@@ -32,8 +31,8 @@ def create_host_status(kwargs):
 
     """
     try:
-        console_host = FlaskStateHost(**kwargs)
-        db.session.add(console_host)
+        flask_state_host = FlaskStateHost(**kwargs)
+        db.session.add(flask_state_host)
         db.session.commit()
     except Exception as e:
         db.session.rollback()
@@ -47,7 +46,7 @@ def retrieve_host_status_yesterday() -> FlaskStateHost:
     """
     yesterday_ms = get_current_ms() - get_query_ms(ONE_DAY)
     delta_ms = yesterday_ms - FIVE_MINUTES_MILLISECONDS
-    yesterday_console_host = FlaskStateHost.query.filter(
+    yesterday_flask_state_host = FlaskStateHost.query.filter(
         FlaskStateHost.ts < yesterday_ms, FlaskStateHost.ts > delta_ms).order_by(
         FlaskStateHost.ts.desc()).first()
-    return yesterday_console_host
+    return yesterday_flask_state_host

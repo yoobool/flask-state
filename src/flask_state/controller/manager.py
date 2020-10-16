@@ -6,7 +6,7 @@ from flask import request, current_app
 from .response_methods import make_response_content
 from ..models import model_init_app
 from ..services import redis_conn, flask_state_conf
-from ..services.host_status import query_console_host, record_console_host
+from ..services.host_status import query_flask_state_host, record_flask_state_host
 from ..exceptions import ErrorResponse
 from ..exceptions.error_code import MsgCode
 from ..utils.auth import auth_user, auth_method
@@ -19,7 +19,7 @@ def init_app(app):
     :param app: Flask app
 
     """
-    app.add_url_rule('/v0/state/hoststatus', endpoint='state_host_status', view_func=query_console_status,
+    app.add_url_rule('/v0/state/hoststatus', endpoint='state_host_status', view_func=query_flask_state,
                      methods=['POST'])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     if not app.config.get('SQLALCHEMY_BINDS') or not app.config['SQLALCHEMY_BINDS'].get('flask_state_sqlite'):
@@ -40,7 +40,7 @@ def init_app(app):
                 current_app.lock.acquire()
                 while True:
                     pre_time = time.time()
-                    record_console_host()
+                    record_flask_state_host()
                     now_time = time.time()
                     time.sleep(flask_state_conf.SECS - (now_time - pre_time))
             except Exception as e:
@@ -52,7 +52,7 @@ def init_app(app):
 
 @auth_user
 @auth_method
-def query_console_status():
+def query_flask_state():
     """
     Query the local state and redis status
     :return: flask response
@@ -62,7 +62,7 @@ def query_console_status():
         if not isinstance(b2d, dict):
             return make_response_content(MsgCode.JSON_FORMAT_ERROR)
         time_quantum = b2d.get('timeQuantum')
-        return make_response_content(resp=query_console_host(time_quantum))
+        return make_response_content(resp=query_flask_state_host(time_quantum))
     except Exception as e:
         logging.exception(e)
         return make_response_content(ErrorResponse(MsgCode.UNKNOWN_ERROR))

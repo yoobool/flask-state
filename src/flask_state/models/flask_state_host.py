@@ -18,7 +18,7 @@ class FlaskStateHost(db.Model):
     create_time = db.Column(db.DateTime, server_default=func.now())
     update_time = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
 
-    # console
+    # host
     cpu = db.Column(db.Float, server_default=text("0"))
     memory = db.Column(db.Float, server_default=text("0"))
     load_avg = db.Column(db.String(32), server_default="")

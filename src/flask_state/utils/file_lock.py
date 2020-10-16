@@ -21,7 +21,7 @@ class Lock:
 
 class FileLock:
     def __init__(self):
-        lock_file = 'FLASK_STATE_LOCK'
+        lock_file = '821e9dab54fec92e3d054b3367a50b70d328caed'
         if SYSTEM == WINDOWS:
             lock_dir = os.environ['tmp']
         else:

@@ -16,7 +16,7 @@ DEFAULT_WINDOWS_LOAD_AVG = '0, 0, 0'  # Windows system cannot calculate load AVG
 PERCENTAGE = 100  # Percentage calculation
 
 
-def record_console_host():
+def record_flask_state_host():
     """
     Record local status and monitor redis status
 
@@ -33,10 +33,10 @@ def record_console_host():
         result_conf = {'ts': get_current_ms(), 'cpu': cpu, 'memory': memory, 'load_avg': load_avg,
                        'disk_usage': disk_usage,
                        'boot_seconds': int(get_current_s() - boot_ts)}
-        console_handler = redis_conn.get_redis()
-        if console_handler:
+        redis_handler = redis_conn.get_redis()
+        if redis_handler:
             try:
-                redis_info = console_handler.info()
+                redis_info = redis_handler.info()
                 used_memory = redis_info.get('used_memory')
                 used_memory_rss = redis_info.get('used_memory_rss')
                 connected_clients = redis_info.get('connected_clients')
@@ -74,7 +74,7 @@ def record_console_host():
         raise e
 
 
-def query_console_host(days) -> FlaskStateResponse:
+def query_flask_state_host(days) -> FlaskStateResponse:
     """
     Query the local status and redis status of [1,3,7,30] days
     :param days: the query days
