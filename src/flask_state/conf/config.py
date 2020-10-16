@@ -28,12 +28,17 @@ class DaysMilliseconds(Enum):
     Thirty_Day = 2592000000
 
 
-DAYS_SCOPE = {str(DaysScope.One_Day.value): DaysScope.One_Day.value,
-              str(DaysScope.Three_Day.value): DaysScope.Three_Day.value,
-              str(DaysScope.Seven_Day.value): DaysScope.Seven_Day.value,
-              str(DaysScope.Thirty_Day.value): DaysScope.Thirty_Day.value}
+@unique
+class HttpMethod(Enum):
+    POST = 'POST'
+    GET = 'GET'
+    PUT = 'PUT'
+    DELETE = 'DELETE'
+    PATCH = 'PATCH'
 
-DAYS_SCOPE_MILLISECONDS = {str(DaysScope.One_Day.value): DaysMilliseconds.One_Day.value,
-                           str(DaysScope.Three_Day.value): DaysMilliseconds.Three_Day.value,
-                           str(DaysScope.Seven_Day.value): DaysMilliseconds.Seven_Day.value,
-                           str(DaysScope.Thirty_Day.value): DaysMilliseconds.Thirty_Day.value}
+
+DAYS_SCOPE = dict([(str(DaysScope[key].value), DaysScope[key].value) for key in DaysScope.__members__])
+
+DAYS_SCOPE_MILLISECONDS = dict(
+    [(str(DaysScope[key].value), DaysMilliseconds[key].value) for key in DaysMilliseconds.__members__])
+
