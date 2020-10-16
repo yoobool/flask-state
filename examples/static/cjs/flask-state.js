@@ -13,6 +13,7 @@
     };
 
     const BIT_TO_MB = 1048576;
+    const SECONDS_TO_MILLISECONDS = 1000;
 
     class MachineStatus {
         constructor(language) {
@@ -73,7 +74,7 @@
                         data.items = data.items.map(item => {
                             let element = {};
                             fields.forEach((field, index) => {
-                                if (field === "ts") return element[field] = 1000 * item[index];
+                                if (field === "ts") return element[field] = SECONDS_TO_MILLISECONDS * item[index];
                                 element[field] = item[index];
                             });
                             return element;
@@ -565,15 +566,13 @@
         }
     })();
 
-    /* bind dom list */
-     Init.prototype.bindList = {};
-
     /* Trigger window event */
     function Init(targetDom) {
         const language = arguments.length > 1 && typeof arguments[1] === "object" && arguments[1].hasOwnProperty('language') ? arguments[1] : {};
 
-        if (targetDom instanceof HTMLElement && targetDom.id && !Init.prototype.bindList.hasOwnProperty(targetDom.id)) {
-            Init.prototype.bindList[targetDom.id] = 0; // 0 is defaultValue
+        if (targetDom instanceof HTMLElement && targetDom.id) {
+            if (targetDom.getAttribute('flaskState')) return;
+            targetDom.setAttribute('flaskState', "true");
             targetDom.addEventListener('click', () => FlaskStateInstance(language).setFlaskStateData());
         } else {
             if (document.getElementById('fs-state-circular')) return;
@@ -629,4 +628,3 @@
 
     exports.init = Init;
 })();
-

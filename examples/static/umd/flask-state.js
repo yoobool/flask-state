@@ -17,6 +17,7 @@
     };
 
     const BIT_TO_MB = 1048576;
+    const SECONDS_TO_MILLISECONDS = 1000;
 
     class MachineStatus {
         constructor(language) {
@@ -77,7 +78,7 @@
                         data.items = data.items.map(item => {
                             let element = {};
                             fields.forEach((field, index) => {
-                                if (field === "ts") return element[field] = 1000 * item[index];
+                                if (field === "ts") return element[field] = SECONDS_TO_MILLISECONDS * item[index];
                                 element[field] = item[index];
                             });
                             return element;
