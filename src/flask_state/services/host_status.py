@@ -69,7 +69,7 @@ def record_flask_state_host():
                                    hits_ratio=hits_ratio,
                                    delta_hits_ratio=delta_hits_ratio)
             except Exception as t:
-                logger.exception(t)
+                logger.warning(t)
         create_host_status(result_conf)
     except Exception as e:
         logger.exception(e)
