@@ -17,7 +17,7 @@ def retrieve_host_status(days) -> list:
     return result
 
 
-def retrieve_one_host_status() -> list:
+def retrieve_one_host_status() -> dict:
     """
     Return to the latest status
 
@@ -37,7 +37,6 @@ def create_host_status(kwargs):
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        logging.error(e)
         raise e
 
 
