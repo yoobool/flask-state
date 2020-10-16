@@ -9,6 +9,7 @@ setup(
     version=about['__version__'],
     install_requires=[
         "Flask>=1.0",
-        "Flask-SQLAlchemy>=1.0"
+        "Flask-SQLAlchemy>=1.0",
+        "psutil>=5.7.0"
     ]
 )
