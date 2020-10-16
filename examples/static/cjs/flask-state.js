@@ -18,30 +18,11 @@
         constructor(language) {
             this.language = language;
             this.mobile = isMobile();
-            MachineStatus.addConsoleInfoContainer(this.mobile);
+            MachineStatus.initFlaskStateContainer(this.mobile);
+            MachineStatus.setEventListener();
         };
 
-        showConsoleDetail() {
-            // Add form event listener
-            if (window.addEventListener) {
-                document.getElementById('fs-info-close').addEventListener('click', function clickClose() {
-                    document.getElementById('fs-info-back').click();
-                    document.getElementById('fs-info-close').removeEventListener('click', clickClose);
-                    if (document.getElementById('fs-state-circular')) {
-                        document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
-                    }
-                });
-
-                document.getElementById('fs-info-back').addEventListener('click', function clickBack() {
-                    document.getElementById('fs-info-back').style.display = 'none';
-                    document.getElementById('fs-info-container').style.display = 'none';
-                    document.getElementById('fs-info-back').removeEventListener('click', clickBack);
-                    if (document.getElementById('fs-state-circular')) {
-                        document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
-                    }
-                });
-
-            }
+        setFlaskStateData() {
             document.getElementById('fs-info-back').style.display = 'block';
             document.getElementById('fs-info-container').style.display = 'block';
 
@@ -245,7 +226,7 @@
         }
 
         // Insert window element
-        static addConsoleInfoContainer(isMobile) {
+        static initFlaskStateContainer(isMobile) {
             let str = '<div class="flask-state-elem layer console-info-back-style" id="fs-info-back" disabled="disabled" xmlns="http://www.w3.org/1999/html">' +
                 '</div>' +
                 '<div class="flask-state-elem ">' +
@@ -334,7 +315,29 @@
                     "</div>" +
                     "</div>";
             }
-            document.getElementsByTagName('body')[0].insertAdjacentHTML('afterbegin', str);
+            document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', str);
+        }
+
+        // add EventListener
+        static setEventListener() {
+            if (window.addEventListener) {
+                document.getElementById('fs-info-close').addEventListener('click', function clickClose() {
+                    document.getElementById('fs-info-back').style.display = 'none';
+                    document.getElementById('fs-info-container').style.display = 'none';
+                    if (document.getElementById('fs-state-circular')) {
+                        document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
+                    }
+                });
+
+                document.getElementById('fs-info-back').addEventListener('click', function clickBack() {
+                    document.getElementById('fs-info-back').style.display = 'none';
+                    document.getElementById('fs-info-container').style.display = 'none';
+                    if (document.getElementById('fs-state-circular')) {
+                        document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
+                    }
+                });
+
+            }
         }
 
         // Initialize echart
@@ -528,7 +531,7 @@
             result = Math.floor(dayTime) + days;
         }
         return result;
-    }
+    };
 
     /* Check if the device is a mobile phone */
     const isMobile = () => {
@@ -554,25 +557,34 @@
 
     };
 
+    /* singleton */
+    const FlaskStateInstance = (function () {
+        let instance = null;
+        return function (language) {
+            return instance || (instance = new MachineStatus(language))
+        }
+    })();
+
+    /* bind dom list */
+     Init.prototype.bindList = {};
+
     /* Trigger window event */
-
-    let FlaskStateExample = null;
-
-    function init(targetDom) {
+    function Init(targetDom) {
         const language = arguments.length > 1 && typeof arguments[1] === "object" && arguments[1].hasOwnProperty('language') ? arguments[1] : {};
-        FlaskStateExample = FlaskStateExample ? FlaskStateExample : new MachineStatus(language);
 
-        if (targetDom instanceof HTMLElement) {
-            targetDom.addEventListener('click', () => FlaskStateExample.showConsoleDetail());
+        if (targetDom instanceof HTMLElement && targetDom.id && !Init.prototype.bindList.hasOwnProperty(targetDom.id)) {
+            Init.prototype.bindList[targetDom.id] = 0; // 0 is defaultValue
+            targetDom.addEventListener('click', () => FlaskStateInstance(language).setFlaskStateData());
         } else {
+            if (document.getElementById('fs-state-circular')) return;
             let str = "<div id='fs-state-circular' class='fs-circular fs-circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
             let domBody = document.getElementsByTagName('body')[0];
-            domBody.insertAdjacentHTML('afterbegin', str);
+            domBody.insertAdjacentHTML('beforeend', str);
             let triggerCircular = document.getElementById('fs-state-circular');
             triggerCircular.onclick = function () {
                 this.classList.add('fs-circular-out');
                 window.scroll(0, 0);
-                FlaskStateExample.showConsoleDetail();
+                FlaskStateInstance(language).setFlaskStateData();
             };
             let timeOutId;
             let mousePosition;
@@ -615,6 +627,6 @@
         }
     }
 
-    exports.init = init;
+    exports.init = Init;
 })();
 

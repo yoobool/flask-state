@@ -1,8 +1,8 @@
 from flask import Flask
-from src.flask_state import init_app, flask_state_conf
+from flask_state import init_app, flask_state_conf
 
 
-def settint_app():
+def setting_app():
     app = Flask(__name__)
 
     # Redis conf

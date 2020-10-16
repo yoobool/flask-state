@@ -1,7 +1,7 @@
 from flask import render_template
-from examples.config import settint_app
+from examples.config import setting_app
 
-app = settint_app()
+app = setting_app()
 
 
 @app.route('/', methods=['GET'])
