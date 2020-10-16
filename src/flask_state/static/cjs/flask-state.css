@@ -59,7 +59,7 @@
 }
 
 .console-info-container-style {
-    z-index: 1003;
+    z-index: 2002;
     position: absolute;
     display: block;
     top: 5rem;
@@ -89,7 +89,7 @@
 }
 
 .console-info-back-style {
-    z-index: 1002;
+    z-index: 2001;
     position: fixed;
     top: 0;
     left: 0;
@@ -298,5 +298,3 @@
     border-radius: 3px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
-
-
