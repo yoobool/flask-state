@@ -64,5 +64,5 @@ def query_console_status():
         time_quantum = b2d.get('timeQuantum')
         return make_response_content(resp=query_console_host(time_quantum))
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return make_response_content(ErrorResponse(MsgCode.UNKNOWN_ERROR))

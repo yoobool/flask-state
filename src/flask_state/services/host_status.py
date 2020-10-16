@@ -67,10 +67,10 @@ def record_console_host():
                                    hits_ratio=hits_ratio,
                                    delta_hits_ratio=delta_hits_ratio)
             except Exception as t:
-                logging.error(t)
+                logging.exception(t)
         create_host_status(result_conf)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         raise e
 
 
@@ -99,7 +99,7 @@ def query_console_host(days) -> FlaskStateResponse:
             data["items"].append(statistics_item)
         return SuccessResponse(msg='Search success', data=data)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
         return ErrorResponse(MsgCode.UNKNOWN_ERROR)
 
 
