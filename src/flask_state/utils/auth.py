@@ -15,11 +15,10 @@ def auth_user(func):
     """
 
     def wrapper():
-        try:
-            cr = current_app.login_manager
-        except Exception as e:
-            logging.error(e)
+        if not hasattr(current_app, 'login_manager'):
             return func()
+
+        cr = current_app.login_manager
         current_user = LocalProxy(lambda: get_user())
 
         def get_user():
