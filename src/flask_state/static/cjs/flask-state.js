@@ -566,14 +566,14 @@
     })();
 
     /* bind dom list */
-    let bindList = {};
+     Init.prototype.bindList = {};
 
     /* Trigger window event */
-    function init(targetDom) {
+    function Init(targetDom) {
         const language = arguments.length > 1 && typeof arguments[1] === "object" && arguments[1].hasOwnProperty('language') ? arguments[1] : {};
 
-        if (targetDom instanceof HTMLElement && targetDom.id && !bindList.hasOwnProperty(targetDom.id)) {
-            bindList[targetDom.id] = 0; // 0 is defaultValue
+        if (targetDom instanceof HTMLElement && targetDom.id && !Init.prototype.bindList.hasOwnProperty(targetDom.id)) {
+            Init.prototype.bindList[targetDom.id] = 0; // 0 is defaultValue
             targetDom.addEventListener('click', () => FlaskStateInstance(language).setFlaskStateData());
         } else {
             if (document.getElementById('fs-state-circular')) return;
@@ -627,6 +627,6 @@
         }
     }
 
-    exports.init = init;
+    exports.init = Init;
 })();
 
