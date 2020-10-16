@@ -1,9 +1,9 @@
-import logging
 from flask import current_app, _request_ctx_stack, request
+from werkzeug.local import LocalProxy
+
 from ..controller.response_methods import make_response_content
 from ..exceptions import ErrorResponse
 from ..exceptions.error_code import MsgCode
-from werkzeug.local import LocalProxy
 
 
 def auth_user(func):
