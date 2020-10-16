@@ -58,9 +58,9 @@ def query_flask_state():
     :return: flask response
     """
     try:
-        b2d = json.loads(request.data)
+        b2d = request.json
         if not isinstance(b2d, dict):
-            return make_response_content(MsgCode.JSON_FORMAT_ERROR)
+            return make_response_content(ErrorResponse(MsgCode.JSON_FORMAT_ERROR))
         time_quantum = b2d.get('timeQuantum')
         return make_response_content(resp=query_flask_state_host(time_quantum))
     except Exception as e:
