@@ -9,6 +9,12 @@ REDIS_TIMEOUT = 1
 # Time interval to calculate CPU utilization using psutil
 CPU_PERCENT_INTERVAL = 0
 
+# Default binding database URL key
+DEFAULT_BIND_SQLITE = 'flask_state_sqlite'
+
+# Default database URL
+DEFAULT_DB_URL = 'sqlite:///flask_state_host.db'
+
 
 # Date selection range
 @unique
@@ -41,4 +47,3 @@ DAYS_SCOPE = dict([(str(DaysScope[key].value), DaysScope[key].value) for key in 
 
 DAYS_SCOPE_MILLISECONDS = dict(
     [(str(DaysScope[key].value), DaysMilliseconds[key].value) for key in DaysMilliseconds.__members__])
-

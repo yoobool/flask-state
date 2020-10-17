@@ -15,7 +15,7 @@ class LoggingWrap:
 
     def exception(self, msg, *args, exc_info=True, **kwargs):
         if self.logger and hasattr(self.logger, 'exception') and callable(self.logger.exception):
-            self.logger.exception(msg, *args, exc_info, **kwargs)
+            self.logger.exception(msg, *args, exc_info=exc_info, **kwargs)
 
 
 logger = LoggingWrap()

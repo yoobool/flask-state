@@ -59,3 +59,12 @@ class ErrorCode(Enum):
 
     def get_msg(self):
         return self.value.get('msg')
+
+
+@unique
+class ExceptionMsg(Enum):
+    def get_level(self):
+        return self.value.get('level')
+
+    def get_msg(self):
+        return self.value.get('msg')
