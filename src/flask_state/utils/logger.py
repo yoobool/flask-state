@@ -7,8 +7,8 @@ class LoggingWrap:
     def __init__(self):
         self.logger = None
 
-    def set(self, test):
-        self.logger = test
+    def set(self, logger_instance):
+        self.logger = logger_instance
 
     def info(self, msg, *args, **kwargs):
         if self.logger and hasattr(self.logger, 'info') and callable(self.logger.info):
