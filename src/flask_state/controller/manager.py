@@ -8,11 +8,13 @@ from .response_methods import make_response_content
 from ..conf.config import HttpMethod
 from ..exceptions import ErrorResponse
 from ..exceptions.error_code import MsgCode
+from ..exceptions.error_msg import ErrorMsg
 from ..models import model_init_app
 from ..services import redis_conn, flask_state_conf
 from ..services.host_status import query_flask_state_host, record_flask_state_host
 from ..utils.auth import auth_user, auth_method
 from ..utils.file_lock import Lock
+from ..utils.format_conf import format_address
 from ..utils.logger import logger
 
 
@@ -20,15 +22,18 @@ def init_app(app, log_instance=None):
     """
     Plugin entry
     :param app: Flask app
-
+    :param log_instance: custom logger object
     """
     logger.set(log_instance or logging.getLogger())
     app.add_url_rule('/v0/state/hoststatus', endpoint='state_host_status', view_func=query_flask_state,
                      methods=[HttpMethod.POST.value])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    if not app.config.get('SQLALCHEMY_BINDS') or not app.config['SQLALCHEMY_BINDS'].get('flask_state_sqlite'):
-        logger.exception('You must to set up SQLALCHEMY_BINDS and bind flask_state_sqlite')
-    if app.config.get('REDIS_CONF') and app.config.get('REDIS_CONF', {}).get('REDIS_STATUS'):
+    if not app.config.get('SQLALCHEMY_BINDS', {}).get('flask_state_sqlite'):
+        logger.exception(ErrorMsg.LACK_SQLITE.get_msg())
+        raise KeyError('SQLALCHEMY_BINDS')
+    app.config['SQLALCHEMY_BINDS']['flask_state_sqlite'] = format_address(
+        app.config['SQLALCHEMY_BINDS'].get('flask_state_sqlite'))
+    if app.config.get('REDIS_CONF', {}).get('REDIS_STATUS'):
         redis_state = app.config['REDIS_CONF']
         redis_conf = {'REDIS_HOST': redis_state.get('REDIS_HOST'), 'REDIS_PORT': redis_state.get('REDIS_PORT'),
                       'REDIS_PASSWORD': redis_state.get('REDIS_PASSWORD')}
