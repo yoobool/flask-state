@@ -69,4 +69,4 @@ def query_flask_state():
         return make_response_content(resp=query_flask_state_host(time_quantum))
     except Exception as e:
         logger.exception(e)
-        return make_response_content(ErrorResponse(MsgCode.UNKNOWN_ERROR))
+        return make_response_content(ErrorResponse(MsgCode.UNKNOWN_ERROR), http_status=500)

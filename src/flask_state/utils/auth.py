@@ -26,7 +26,7 @@ def auth_user(func):
                 cr._load_user()
             return getattr(_request_ctx_stack.top, 'user', None)
         if not (current_user and current_user.is_authenticated):
-            return make_response_content(ErrorResponse(MsgCode.AUTH_FAIL))
+            return make_response_content(ErrorResponse(MsgCode.AUTH_FAIL), http_status=401)
         return func()
 
     return wrapper
@@ -41,7 +41,7 @@ def auth_method(func):
 
     def wrapper():
         if request.method != 'POST':
-            return make_response_content(ErrorResponse(MsgCode.REQUEST_METHOD_ERROR))
+            return make_response_content(ErrorResponse(MsgCode.REQUEST_METHOD_ERROR), http_status=401)
         return func()
 
     return wrapper
