@@ -66,5 +66,5 @@ class ExceptionMsg(Enum):
     def get_level(self):
         return self.value.get('level')
 
-    def get_msg(self):
-        return self.value.get('msg')
+    def get_msg(self, supplement=''):
+        return self.value.get('msg') + supplement
