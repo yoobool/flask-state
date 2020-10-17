@@ -1,5 +1,6 @@
 from flask import Flask
-from flask_state import init_app, flask_state_conf
+
+from src.flask_state import init_app, DEFAULT_BIND_SQLITE
 
 
 def setting_app():
@@ -15,10 +16,9 @@ def setting_app():
 
     import os
     path_ = os.getcwd() + '/test.db'
-    flask_state_conf.set_address(path_)
+    app.config['SQLALCHEMY_BINDS'] = {DEFAULT_BIND_SQLITE: 'sqlite:///' + path_}
 
-    flask_state_conf.set_secs(20)
-
+    # log_instance = logging.getLogger(__name__)
     # use init_app initial configuration
-    init_app(app)
+    init_app(app, 60)
     return app
