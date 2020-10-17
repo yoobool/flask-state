@@ -1,5 +1,6 @@
 import os
 import platform
+import sys
 
 import psutil
 
@@ -8,8 +9,9 @@ from ..conf.config import CPU_PERCENT_INTERVAL, DAYS_SCOPE
 from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday
 from ..exceptions import FlaskStateResponse, SuccessResponse, ErrorResponse
 from ..exceptions.error_code import MsgCode
-from ..utils.logger import logger
 from ..utils.date import get_current_ms, get_current_s
+from ..utils.format_conf import get_file_inf
+from ..utils.logger import logger
 
 SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
 DEFAULT_HITS_RATIO = 100  # Default hits ratio value
@@ -69,10 +71,10 @@ def record_flask_state_host():
                                    hits_ratio=hits_ratio,
                                    delta_hits_ratio=delta_hits_ratio)
             except Exception as t:
-                logger.warning(t)
+                logger.warning(t, extra=get_file_inf(sys._getframe()))
         create_host_status(result_conf)
     except Exception as e:
-        logger.exception(e)
+        logger.exception(e, extra=get_file_inf(sys._getframe()))
         raise e
 
 
@@ -101,7 +103,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
             data["items"].append(statistics_item)
         return SuccessResponse(msg='Search success', data=data)
     except Exception as e:
-        logger.exception(e)
+        logger.exception(e, extra=get_file_inf(sys._getframe()))
         return ErrorResponse(MsgCode.UNKNOWN_ERROR)
 
 

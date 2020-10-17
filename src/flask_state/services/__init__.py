@@ -1,26 +1,6 @@
 import redis
-from ..utils.format_conf import format_sec, format_address
-from ..conf.config import DEFAULT_SECONDS, REDIS_TIMEOUT
 
-
-class FlaskStateConf:
-    def __init__(self):
-        # Set database address and name
-        # If the address is not allowed, the default address and name will be used
-        self.ADDRESS = 'sqlite:///flask_state.db'
-
-        # Set the interval to record the local state, with a minimum interval of 10 seconds
-        # The default value is 60
-        self.SECS = DEFAULT_SECONDS
-
-    def set_address(self, address):
-        self.ADDRESS = format_address(address)
-
-    def set_secs(self, secs):
-        self.SECS = format_sec(secs)
-
-
-flask_state_conf = FlaskStateConf()
+from ..conf.config import REDIS_TIMEOUT
 
 
 # Create redis object
