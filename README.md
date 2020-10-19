@@ -1,4 +1,3 @@
-![](https://github.com/yoobool/flask-state/blob/master/src/flask_state/static/flask_state.png)
 # Flask-State
 
 Flask-States is a visual plug-in based on flask. It can record the local state every minute and read the status of redis if you have configured redis，and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
