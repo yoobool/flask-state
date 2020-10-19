@@ -1,5 +1,6 @@
 import sys
 import time
+import math
 from concurrent.futures import ThreadPoolExecutor
 
 from flask import request, current_app
@@ -48,11 +49,14 @@ def init_app(app, interval=60, log_instance=None):
         with app.app_context():
             try:
                 current_app.lock_flask_state.acquire()
+                in_time = time.time()
+                target_time = int(int((time.time()) / 60 + 1) * 60)
+                time.sleep(60 - math.ceil(in_time % 60))
                 while True:
-                    pre_time = time.time()
                     record_flask_state_host()
+                    target_time += interval
                     now_time = time.time()
-                    time.sleep(interval - (now_time - pre_time))
+                    time.sleep(target_time - now_time)
             except Exception as e:
                 current_app.lock_flask_state.release()
                 raise e
