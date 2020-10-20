@@ -7,7 +7,9 @@ Flask-State是一款基于Flask运行的可视化插件。它能记录每分钟�
 ![](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
 [![](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
-[![](https://img.shields.io/npm/v/flask-state-test)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
+[![](https://img.shields.io/npm/v/flask-state)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
+
+
 ## Installation
 安装和更新通过使用 [pip](https://pip.pypa.io/en/stable/quickstart/)
 ```
@@ -16,7 +18,7 @@ $ pip install Flask-State
 
 载入显示组件方式可通过标签引入或npm安装
 ```html
-<script src="flask-state.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
 ```
 ```
 npm install flask-state --save
@@ -30,7 +32,7 @@ Flask-State插件安装后，还需要引入JavaScript文件和CSS文件，然�
 #### 第一步：定义一个Flask app
 ```python
 from flask import Flask
-app = flask.Flask(__name__)
+app = Flask(__name__)
 ```
 
 #### 第二步：绑定数据库地址
@@ -48,8 +50,8 @@ flask_state.init_app(app)
 #### 第四步：选择合适的导入方式导入视图文件
 ```html
 <!--cdn方式导入-->
-<link rel="stylesheet" href="/umd/flask-state.css">
-<script src="/umd/flask-state.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.css">
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
 <script type="text/javascript">
     flaskState.init(document.getElementById('test'));
 </script>
@@ -79,7 +81,7 @@ flask_state.init(app, SECS)
 ```python
 import flask_state
 import logging
-custom_logger = logging.getLogger(name)
+custom_logger = logging.getLogger(__name__)
 flask_state.init_app(app, interval=20, log_instance=custom_logger)
 ```
 
@@ -100,7 +102,7 @@ flaskState.init();
 </script>
 ```
 ```javascript
-const flaskState = require('flask-state');
+import {init} from 'flask-state';
 import {zh} from 'flask-state/i18n.js';
 flaskState.init(null, zh);
 ```
