@@ -289,7 +289,7 @@
                             document.getElementById('fs-redis-status-title').innerHTML = '';
                             document.getElementById('fs-redis-status-title').style.marginTop = 0;
                             document.getElementById('fs-redis-status').style.display = 'none';
-                        } else{
+                        } else {
                             hostInfoKeysList.forEach((item, index) => {
                                 switch (item) {
                                     case 'used_memory':
@@ -600,10 +600,15 @@
     })();
 
     /* Trigger window event */
-    function Init(targetDom) {
-        const language = arguments.length > 1 && typeof arguments[1] === "object" && arguments[1].hasOwnProperty('language') ? arguments[1] : {};
+    function Init(initMap) {
+        let targetDom = null;
+        let language = {};
+        if (initMap !== null && typeof initMap === 'object') {
+            targetDom = initMap.hasOwnProperty('dom') ? initMap.dom : null;
+            language = initMap.hasOwnProperty('lang') ? initMap['lang'].hasOwnProperty('language') ? initMap['lang'] : {} : {};
+        }
 
-        if (targetDom instanceof HTMLElement && targetDom.id) {
+        if (targetDom instanceof HTMLElement) {
             if (targetDom.getAttribute('flaskState')) return;
             targetDom.setAttribute('flaskState', "true");
             targetDom.addEventListener('click', () => FlaskStateInstance(language).setFlaskStateData());
