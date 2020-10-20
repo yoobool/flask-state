@@ -29,25 +29,25 @@ npm install flask-state --save
 After the Flask-State is installed, you also need to import JavaScript file and CSS file to bind a convention ID value for your element. In some configurations, you can also choose to modify them.
 
 
-#### Firstly：we'll set up a Flask app.
+### Firstly：we'll set up a Flask app.
 ```python
 from flask import Flask
 app = Flask(__name__)
 ```
 
-#### Secondly：Bind database address.
+### Secondly：Bind database address.
 ```python
 from flask_state import DEFAULT_BIND_SQLITE
 app.config['SQLALCHEMY_BINDS'] = {DEFAULT_BIND_SQLITE: 'sqlite:///path'}
 ```
 
-#### Thirdly：Call the init_app method of the flask-state to initialize the configuration. It will add a route for you to access the database to get the local state.
+### Thirdly：Call the init_app method of the flask-state to initialize the configuration. It will add a route for you to access the database to get the local state.
 ```python
 import flask_state
 flask_state.init_app(app)
 ```
 
-#### Lastly：Select the appropriate method to import the view file.
+### Lastly：Select the appropriate method to import the view file.
 ```html
 <!--CDN-->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.css">
@@ -64,13 +64,14 @@ import {init} from 'flask-state';
 init(document.getElementById('test');
 ```
 
-#### Extra：You can also customize some configuration(non-essential).
-If you still need to monitor the redis status, you can configure your redis address parameters on the app
+### Extra：You can also customize some configuration(non-essential).
+
+#### Monitor the redis status.
 ```python
 app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'REDIS_PORT':16379, 'REDIS_PASSWORD': 'fish09'}
 ```
 
-Modify the time interval for saving monitoring records.
+#### Modify the time interval for saving monitoring records.
 ```python
 # The minimum interval is 10 seconds. The default interval is 60 seconds
 import flask_state
@@ -78,7 +79,7 @@ SECS = 60
 flask_state.init_app(app, SECS)
 ```
 
-Custom logger object.
+#### Custom logger object.
 ```python
 import flask_state
 import logging
@@ -86,14 +87,14 @@ custom_logger = logging.getLogger(__name__)
 flask_state.init_app(app, interval=20, log_instance=custom_logger)
 ```
 
-Custom binding triggers the object of the window.
+#### Custom binding triggers the object of the window.
 ```javascript
 /* When the initialization plug-in does not pass in an object, the plug-in will automatically create a right-hand suspension ball */
 /* Note: all pages share a plug-in instance. Calling init() method multiple times will only trigger plug-in events for new object binding */
 flaskState.init();
 ```
 
-Select the language in which the plug-in is displayed.
+#### Select the language in which the plug-in is displayed, now support en, zh
 ```html
 <!--Note: the language file imported through the tag must be after the plug-in is imported-->
 <script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
