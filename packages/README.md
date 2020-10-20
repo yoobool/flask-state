@@ -41,7 +41,7 @@ from flask_state import DEFAULT_BIND_SQLITE
 app.config['SQLALCHEMY_BINDS'] = {DEFAULT_BIND_SQLITE: 'sqlite:///path'}
 ```
 
-### Thirdly：Call the init_app method of the flask-state to initialize the configuration. It will add a route for you to access the database to get the local state.
+### Thirdly：Call the init_app method of the flask-state to initialize the configuration.
 ```python
 import flask_state
 flask_state.init_app(app)
@@ -94,7 +94,7 @@ flask_state.init_app(app, interval=20, log_instance=custom_logger)
 flaskState.init();
 ```
 
-#### Select the language in which the plug-in is displayed, now support en, zh
+#### Select the language in which the plug-in is displayed, now support en, zh.
 ```html
 <!--Note: the language file imported through the tag must be after the plug-in is imported-->
 <script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
