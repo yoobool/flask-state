@@ -8,6 +8,7 @@ from ..utils.format_conf import get_file_inf
 from ..utils.logger import logger
 
 ONE_DAY = '1'  # Days
+THIRTY_DAT = '30'  # 30 Days
 FIVE_MINUTES_MILLISECONDS = 300000  # Five minutes milliseconds
 
 
@@ -31,6 +32,22 @@ def create_host_status(kwargs):
         db.session.add(flask_state_host)
         db.session.commit()
         logger.info(InfoMsg.INSERT_SUCCESS.get_msg(), extra=get_file_inf(sys._getframe()))
+    except Exception as e:
+        db.session.rollback()
+        raise e
+
+
+def delete_thirty_days_status():
+    """
+    Delete thirty days records ago
+
+    """
+    try:
+        target_time = get_current_ms() - get_query_ms(THIRTY_DAT)
+        result = FlaskStateHost.query.filter(FlaskStateHost.ts < target_time).all()
+        db.session.delete(result)
+        db.session.commit()
+        logger.info(InfoMsg.DELETE_SUCCESS.get_msg(), extra=get_file_inf(sys._getframe()))
     except Exception as e:
         db.session.rollback()
         raise e

@@ -6,7 +6,8 @@ import psutil
 
 from . import redis_conn
 from ..conf.config import Constant, DAYS_SCOPE
-from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday
+from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday, \
+    delete_thirty_days_status
 from ..exceptions import FlaskStateResponse, SuccessResponse, ErrorResponse
 from ..exceptions.error_code import MsgCode
 from ..utils.date import get_current_ms, get_current_s
@@ -18,6 +19,7 @@ DEFAULT_HITS_RATIO = 100  # Default hits ratio value
 DEFAULT_DELTA_HITS_RATIO = 100  # Default 24h hits ratio value
 DEFAULT_WINDOWS_LOAD_AVG = '0, 0, 0'  # Windows system cannot calculate load AVG
 PERCENTAGE = 100  # Percentage calculation
+ONE_DAY_SECONDS = 1440  # One day seconds
 
 
 def record_flask_state_host(interval):
@@ -73,6 +75,11 @@ def record_flask_state_host(interval):
             except Exception as t:
                 logger.warning(t, extra=get_file_inf(sys._getframe()))
         create_host_status(result_conf)
+        now_time = get_current_s()
+        if int(now_time / ONE_DAY_SECONDS + 1) * ONE_DAY_SECONDS - interval <= now_time <= int(
+                now_time / ONE_DAY_SECONDS + 1) * ONE_DAY_SECONDS + interval:
+            delete_thirty_days_status()
+
     except Exception as e:
         logger.exception(e, extra=get_file_inf(sys._getframe()))
         raise e
