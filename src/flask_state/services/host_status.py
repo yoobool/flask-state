@@ -5,7 +5,7 @@ import sys
 import psutil
 
 from . import redis_conn
-from ..conf.config import CPU_PERCENT_INTERVAL, DAYS_SCOPE
+from ..conf.config import Constant, DAYS_SCOPE
 from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday
 from ..exceptions import FlaskStateResponse, SuccessResponse, ErrorResponse
 from ..exceptions.error_code import MsgCode
@@ -20,13 +20,13 @@ DEFAULT_WINDOWS_LOAD_AVG = '0, 0, 0'  # Windows system cannot calculate load AVG
 PERCENTAGE = 100  # Percentage calculation
 
 
-def record_flask_state_host():
+def record_flask_state_host(interval):
     """
     Record local status and monitor redis status
 
     """
     try:
-        cpu = psutil.cpu_percent(interval=CPU_PERCENT_INTERVAL)
+        cpu = psutil.cpu_percent(interval=Constant.CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
         if platform.system() == 'Windows':
             load_avg = DEFAULT_WINDOWS_LOAD_AVG

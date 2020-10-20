@@ -2,17 +2,11 @@ import os
 import platform
 import sys
 
-from ..conf.config import DEFAULT_SECONDS
+from ..conf.config import Constant
 from ..exceptions.log_msg import ErrorMsg, WarningMsg
 from ..utils.logger import logger
 
-MIN_SECONDS = 10  # Optional minimum number of seconds
-
-MIN_ADDRESS_LENGTH = 11  # minimum number of address length
-
 DB_URL_HEADER = 'sqlite:///'  # Database URL specification header
-
-WINDOWS_SYSTEM = 'Windows'  # Windows system
 
 
 def format_sec(secs) -> int:
@@ -24,9 +18,9 @@ def format_sec(secs) -> int:
     if not isinstance(secs, int):
         raise TypeError(
             ErrorMsg.DATA_TYPE_ERROR.get_msg('.The target type is %s, not %s' % (int.__name__, type(secs).__name__)))
-    if secs < MIN_SECONDS:
+    if secs < Constant.MIN_SECONDS:
         logger.warning(WarningMsg.TIME_SMALL.get_msg(), extra=get_file_inf(sys._getframe()))
-        return DEFAULT_SECONDS
+        return Constant.DEFAULT_SECONDS
     return secs
 
 
@@ -39,9 +33,9 @@ def format_address(address) -> str:
     if not isinstance(address, str):
         raise TypeError(
             ErrorMsg.DATA_TYPE_ERROR.get_msg('.The target type is %s, not %s' % (str.__name__, type(address).__name__)))
-    if len(address) < MIN_ADDRESS_LENGTH or address[:MIN_ADDRESS_LENGTH - 1] != DB_URL_HEADER:
+    if len(address) < Constant.MIN_ADDRESS_LENGTH or address[:Constant.MIN_ADDRESS_LENGTH - 1] != DB_URL_HEADER:
         raise ValueError(ErrorMsg.ERROR_ADDRESS.get_msg())
-    if platform.system() == WINDOWS_SYSTEM:
+    if platform.system() == Constant.WINDOWS_SYSTEM:
         index = max(address.rfind('\\'), address.rfind('/'))
     else:
         index = address.rfind('/')
