@@ -1,5 +1,6 @@
 [English](https://github.com/yoobool/flask-state/blog/master/master/README.md) | 简体中文
 
+![](https://github.com/yoobool/flask-state/blob/master/src/flask_state/static/flask_state.png)
 # Flask-State
 
 Flask-State是一款基于Flask运行的可视化插件。它能记录每分钟的本机状态以及读取Redis状态（可选项），并通过 [Echarts](https://github.com/apache/incubator-echarts) 生成数据图表展示给用户。
@@ -104,7 +105,7 @@ flaskState.init();
 ```javascript
 import {init} from 'flask-state';
 import {zh} from 'flask-state/i18n.js';
-flaskState.init(null, zh);
+init(null, zh);
 ```
 
 
