@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 about = {}
 with open('src/flask_state/__about__.py') as f:
