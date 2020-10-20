@@ -53,6 +53,7 @@ flask_state.init_app(app)
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.css">
 <script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
 <script type="text/javascript">
+    // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
     flaskState.init(document.getElementById('test'));
 </script>
 ```
@@ -68,7 +69,7 @@ init(document.getElementById('test'));
 
 #### Monitor the redis status.
 ```python
-app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'REDIS_PORT':16379, 'REDIS_PASSWORD': 'fish09'}
+app.config['REDIS_CONF'] = {'REDIS_STATUS': True, 'REDIS_HOST': '192.168.1.1', 'REDIS_PORT':16380, 'REDIS_PASSWORD': 'psw'}
 ```
 
 #### Modify the time interval for saving monitoring records.

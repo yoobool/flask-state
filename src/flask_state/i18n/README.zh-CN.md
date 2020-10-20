@@ -54,6 +54,7 @@ flask_state.init_app(app)
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.css">
 <script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
 <script type="text/javascript">
+    // 创建一个id为'test'的dom节点，init()绑定节点后点击即可打开监听窗口
     flaskState.init(document.getElementById('test'));
 </script>
 ```
@@ -68,7 +69,7 @@ init(document.getElementById('test'));
 #### 额外的：你也可以自定义某些配置文件（非必须）
 如果你还需要监控REDIS状态，你可以在Flask app上配置你的redis地址参数
 ```python
-app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'REDIS_PORT':16379, 'REDIS_PASSWORD': 'fish09'}
+app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.3', 'REDIS_PORT':16380, 'REDIS_PASSWORD': 'psw'}
 ```
 
 修改保存监控记录的时间间隔
