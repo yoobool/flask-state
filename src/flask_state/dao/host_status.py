@@ -18,17 +18,6 @@ def retrieve_host_status(days) -> list:
     """
     target_time = get_current_ms() - get_query_ms(days)
     result = FlaskStateHost.query.filter(FlaskStateHost.ts > target_time).order_by(FlaskStateHost.ts.desc()).all()
-    logger.info(InfoMsg.QUERY_SUCCESS.get_msg(), extra=get_file_inf(sys._getframe()))
-    return result
-
-
-def retrieve_one_host_status() -> dict:
-    """
-    Return to the latest status
-
-    """
-    result = FlaskStateHost.query.order_by(FlaskStateHost.id.desc()).first()
-    logger.info(InfoMsg.QUERY_SUCCESS.get_msg(), extra=get_file_inf(sys._getframe()))
     return result
 
 
@@ -57,5 +46,4 @@ def retrieve_host_status_yesterday() -> FlaskStateHost:
     yesterday_flask_state_host = FlaskStateHost.query.filter(
         FlaskStateHost.ts < yesterday_ms, FlaskStateHost.ts > delta_ms).order_by(
         FlaskStateHost.ts.desc()).first()
-    logger.info(InfoMsg.GET_YESTERDAY.get_msg(), extra=get_file_inf(sys._getframe()))
     return yesterday_flask_state_host
