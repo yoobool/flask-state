@@ -15,5 +15,6 @@ class WarningMsg(ExceptionMsg):
 
 class InfoMsg(ExceptionMsg):
     INSERT_SUCCESS = {'msg': 'Insert status', 'level': 'info'}
+    DELETE_SUCCESS = {'msg': 'Delete expired records', 'level': 'info'}
     QUERY_SUCCESS = {'msg': 'Query status', 'level': 'info'}
     GET_YESTERDAY = {'msg': 'Query yesterday status', 'level': 'info'}
