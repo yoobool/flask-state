@@ -51,7 +51,7 @@ def init_app(app, interval=60, log_instance=None):
                 current_app.lock_flask_state.acquire()
                 in_time = time.time()
                 target_time = int(int((time.time()) / 60 + 1) * 60)
-                time.sleep(60 - math.ceil(in_time % 60))
+                time.sleep(60 - in_time % 60)
                 while True:
                     record_flask_state_host()
                     target_time += interval
