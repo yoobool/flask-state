@@ -62,7 +62,7 @@ flask_state.init_app(app)
 import 'flask-state/flask-state.css';
 import {init} from 'flask-state';
 // 创建一个id为'test'的dom节点，init()绑定节点后点击即可打开监听窗口
-init(document.getElementById('test');
+init(document.getElementById('test'));
 ```
 
 #### 额外的：你也可以自定义某些配置文件（非必须）

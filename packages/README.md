@@ -61,7 +61,7 @@ flask_state.init_app(app)
 import 'flask-state/flask-state.css';
 import {init} from 'flask-state';
 // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
-init(document.getElementById('test');
+init(document.getElementById('test'));
 ```
 
 ### Extra：You can also customize some configuration(non-essential).
