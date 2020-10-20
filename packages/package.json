@@ -1,0 +1,27 @@
+{
+  "name": "flask-state",
+  "version": "1.0.0",
+  "description": "Flask-States is a visual plug-in based on flask. It can record the local state every minute and read the status of redis if you have configured redis，and generate data chart to show to users through Echarts.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoobool/flask-state.git"
+  },
+  "keywords": [
+    "flask-state",
+    "flask-monitor",
+    "plug-in"
+  ],
+  "author": "yoobool",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/yoobool/flask-state/issues"
+  },
+  "homepage": "https://github.com/yoobool/flask-state",
+  "dependencies": {
+    "echarts": "^4.9.0"
+  }
+}
