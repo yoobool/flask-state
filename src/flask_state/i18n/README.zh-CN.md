@@ -60,8 +60,9 @@ flask_state.init_app(app)
 ```javascript
 // npm方式导入
 import 'flask-state/flask-state.css';
-const flaskState = require('flask-state');
-flaskState.init(document.getElementById('test');
+import {init} from 'flask-state';
+// 创建一个id为'test'的dom节点，init()绑定节点后点击即可打开监听窗口
+init(document.getElementById('test');
 ```
 
 #### 额外的：你也可以自定义某些配置文件（非必须）
@@ -75,7 +76,7 @@ app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'R
 # 最少间隔为10秒, 当不设置时间时默认间隔为60秒
 import flask_state
 SECS = 60
-flask_state.init(app, SECS)
+flask_state.init_app(app, SECS)
 ```
 
 自定义logger对象
@@ -96,8 +97,8 @@ flaskState.init();
 选择插件显示的语言
 ```html
 <!--注意：通过标签导入语言文件必须在导入插件之后-->
-<script src="flask-state.js"></script>
-<script src="flask-state/zh.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/zh.js"></script>
 <script type="text/javascript">
     flaskState.init(null, flaskState.zh);
 </script>
