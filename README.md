@@ -1,12 +1,12 @@
 ![](https://github.com/yoobool/flask-state/blob/master/src/flask_state/static/flask_state.png)
 # Flask-State
 
-Flask-States is a visual plug-in based on flask. It can record the local state every minute and read the status of redis if you have configured redis，and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
+Flask-State is a visual plug-in based on flask. It can record the local state every minute and read the status of redis if you have configured redis，and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
 
 ![](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
 [![](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
-
+[![](https://img.shields.io/npm/v/flask-state)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
 
 
 ## Installation
@@ -15,59 +15,98 @@ Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):
 $ pip install Flask-State
 ```
 
+Display components can use ```<script>``` tag from a CDN, or as a flask-state package on npm.
+```html
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
+```
+```
+npm install flask-state --save
+```
+
 
 ## Usage
 
-After the Flask-State is installed, you also need to import JavaScript files and CSS files to bind a convention ID value for your element, which can be used easily. In some configurations, you can also choose to modify them.
+After the Flask-State is installed, you also need to import JavaScript file and CSS file to bind a convention ID value for your element. In some configurations, you can also choose to modify them.
 
 
 #### Firstly：we'll set up a Flask app.
 ```python
-import flask
-
-app = flask.Flask(__name__)
+from flask import Flask
+app = Flask(__name__)
 ```
 
-#### Secondly：Call the init_app method of the Flask-State to initialize the relevant configuration. It will add several routes for you to access some configurations and databases.
+#### Secondly：Bind database address.
+```python
+from flask_state import DEFAULT_BIND_SQLITE
+app.config['SQLALCHEMY_BINDS'] = {DEFAULT_BIND_SQLITE: 'sqlite:///path'}
+```
+
+#### Thirdly：Call the init_app method of the flask-state to initialize the configuration. It will add a route for you to access the database to get the local state.
 ```python
 import flask_state
-
 flask_state.init_app(app)
 ```
 
-#### Thirdly：Introduce related files into your HTML file and bind ID values for an element.
+#### Lastly：Select the appropriate method to import the view file.
 ```html
-<link href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v0.0.1/flask_state/static/flask_state.css" rel="stylesheet">
-
-<!-- Any element: div/button/a/span -->
-<a id='console_machine_status'></a>
-
-<script src="https://cdn.staticfile.org/echarts/4.2.1/echarts.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v0.0.1/flask_state/static/flask_state.js"></script>
+<!--CDN-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.css">
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
+<script type="text/javascript">
+    flaskState.init(document.getElementById('test'));
+</script>
+```
+```javascript
+// npm
+import 'flask-state/flask-state.css';
+import {init} from 'flask-state';
+// Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
+init(document.getElementById('test');
 ```
 
-#### Extra：You can also customize some configuration files.
+#### Extra：You can also customize some configuration(non-essential).
+If you still need to monitor the redis status, you can configure your redis address parameters on the app
 ```python
-# If you still need to monitor the redis status, you need to configure your redis status on the Flask app
 app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.2', 'REDIS_PORT':16379, 'REDIS_PASSWORD': 'fish09'}
 ```
 
+Modify the time interval for saving monitoring records.
 ```python
-from flask_state import flask_state_conf
-
-# ADDRESS is the database name
-ADDRESS = 'console_host'
-flask_state_conf.set_address(ADDRESS)
-```
-
-```python
-from flask_state import flask_state_conf
-
-# SECS is the time interval for recording the local state, with a minimum interval of 10 seconds
+# The minimum interval is 10 seconds. The default interval is 60 seconds
+import flask_state
 SECS = 60
-flask_state_conf.set_secs(SECS)
+flask_state.init_app(app, SECS)
 ```
 
+Custom logger object.
+```python
+import flask_state
+import logging
+custom_logger = logging.getLogger(__name__)
+flask_state.init_app(app, interval=20, log_instance=custom_logger)
+```
+
+Custom binding triggers the object of the window.
+```javascript
+/* When the initialization plug-in does not pass in an object, the plug-in will automatically create a right-hand suspension ball */
+/* Note: all pages share a plug-in instance. Calling init() method multiple times will only trigger plug-in events for new object binding */
+flaskState.init();
+```
+
+Select the language in which the plug-in is displayed.
+```html
+<!--Note: the language file imported through the tag must be after the plug-in is imported-->
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/zh.js"></script>
+<script type="text/javascript">
+    flaskState.init(null, flaskState.zh);
+</script>
+```
+```javascript
+import {init} from 'flask-state';
+import {zh} from 'flask-state/i18n.js';
+init(null, zh);
+```
 
 
 ## Contributing
