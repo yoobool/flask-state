@@ -4,7 +4,7 @@ from enum import Enum, unique
 # Constant class
 class Constant:
     DEFAULT_SECONDS = 60  # Record local state interval
-    MIN_SECONDS = 10  # Optional minimum number of seconds
+    MIN_SECONDS = 60  # Optional minimum number of seconds
     REDIS_TIMEOUT = 1  # Redis connection timeout
     CPU_PERCENT_INTERVAL = 0  # Time interval to calculate CPU utilization using psutil
     DEFAULT_BIND_SQLITE = 'flask_state_sqlite'  # Default binding database URL key
