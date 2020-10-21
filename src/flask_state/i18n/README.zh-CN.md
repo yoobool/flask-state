@@ -19,7 +19,7 @@ $ pip install Flask-State
 
 载入显示组件方式可通过标签引入或npm安装
 ```html
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/umd/flask-state.min.js"></script>
 ```
 ```
 npm install flask-state --save
@@ -51,11 +51,11 @@ flask_state.init_app(app)
 #### 第四步：选择合适的导入方式导入视图文件
 ```html
 <!--cdn方式导入-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.css">
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/umd/flask-state.css">
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/umd/flask-state.min.js"></script>
 <script type="text/javascript">
     // 创建一个id为'test'的dom节点，init()绑定节点后点击即可打开监听窗口
-    flaskState.init(document.getElementById('test'));
+    flaskState.init({dom:document.getElementById('test')});
 </script>
 ```
 ```javascript
@@ -63,7 +63,7 @@ flask_state.init_app(app)
 import 'flask-state/flask-state.css';
 import {init} from 'flask-state';
 // 创建一个id为'test'的dom节点，init()绑定节点后点击即可打开监听窗口
-init(document.getElementById('test'));
+init({dom:document.getElementById('test')});
 ```
 
 #### 额外的：你也可以自定义某些配置文件（非必须）
@@ -98,16 +98,16 @@ flaskState.init();
 选择插件显示的语言
 ```html
 <!--注意：通过标签导入语言文件必须在导入插件之后-->
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/zh.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/umd/zh.js"></script>
 <script type="text/javascript">
-    flaskState.init(null, flaskState.zh);
+    flaskState.init({lang:flaskState.zh});
 </script>
 ```
 ```javascript
 import {init} from 'flask-state';
 import {zh} from 'flask-state/i18n.js';
-init(null, zh);
+init({lang:zh});
 ```
 
 

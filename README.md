@@ -17,7 +17,7 @@ $ pip install Flask-State
 
 Display components can use ```<script>``` tag from a CDN, or as a flask-state package on npm.
 ```html
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/umd/flask-state.min.js"></script>
 ```
 ```
 npm install flask-state --save
@@ -50,19 +50,19 @@ flask_state.init_app(app)
 ### Lastly：Select the appropriate method to import the view file.
 ```html
 <!--CDN-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.css">
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/flask-state.css">
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/umd/flask-state.min.js"></script>
 <script type="text/javascript">
     // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
-    flaskState.init(document.getElementById('test'));
+    flaskState.init({dom:document.getElementById('test')});
 </script>
 ```
 ```javascript
 // npm
-import 'flask-state/cjs/flask-state.css';
+import 'flask-state/flask-state.css';
 import {init} from 'flask-state';
 // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
-init(document.getElementById('test'));
+init({dom:document.getElementById('test')});
 ```
 
 ### Extra：You can also customize some configuration(non-essential).
@@ -74,7 +74,7 @@ app.config['REDIS_CONF'] = {'REDIS_STATUS': True, 'REDIS_HOST': '192.168.1.1', '
 
 #### Modify the time interval for saving monitoring records.
 ```python
-# The minimum interval is 10 seconds. The default interval is 60 seconds
+# The minimum interval is 60 seconds. The default interval is 60 seconds
 import flask_state
 SECS = 60
 flask_state.init_app(app, SECS)
@@ -98,16 +98,16 @@ flaskState.init();
 #### Select the language in which the plug-in is displayed, now support en, zh.
 ```html
 <!--Note: the language file imported through the tag must be after the plug-in is imported-->
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/flask-state.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.0/packages/umd/zh.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.1/packages/umd/zh.js"></script>
 <script type="text/javascript">
-    flaskState.init(null, flaskState.zh);
+    flaskState.init({lang:flaskState.zh});
 </script>
 ```
 ```javascript
 import {init} from 'flask-state';
-import {zh} from 'flask-state/cjs/i18n.js';
-init(null, zh);
+import {zh} from 'flask-state/i18n.js';
+init({lang:zh});
 ```
 
 
