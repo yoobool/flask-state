@@ -59,7 +59,7 @@ flask_state.init_app(app)
 ```
 ```javascript
 // npm
-import 'flask-state/flask-state.css';
+import 'flask-state/cjs/flask-state.css';
 import {init} from 'flask-state';
 // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
 init(document.getElementById('test'));
@@ -106,7 +106,7 @@ flaskState.init();
 ```
 ```javascript
 import {init} from 'flask-state';
-import {zh} from 'flask-state/i18n.js';
+import {zh} from 'flask-state/cjs/i18n.js';
 init(null, zh);
 ```
 
