@@ -34,7 +34,7 @@ module.exports = [{
     },
 }, {
     // umd
-    entry: './examples/static/cjs/flask-state.js',
+    entry: './examples/static/umd/initial.js',
     output: {
         filename: 'flask-state.min.js',
         library: 'flaskState',
