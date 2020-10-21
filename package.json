@@ -24,7 +24,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "python examples/app.py",
-    "build:dev": "NODE_ENV=development node examples/build/build.js"
+    "build:dev": "NODE_ENV=development node examples/build/build.js",
+    "compress": "webpack --config examples/build/compress.js"
   },
   "repository": {
     "type": "git",
