@@ -76,7 +76,8 @@ def record_flask_state_host(interval):
                 logger.warning(t, extra=get_file_inf(sys._getframe()))
         create_host_status(result_conf)
         now_time = get_current_s()
-        new_day_utc = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc).timestamp()
+        new_day_utc = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0,
+                                                tzinfo=timezone.utc).timestamp()
         if now_time <= new_day_utc + interval:
             delete_thirty_days_status()
 
@@ -95,6 +96,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
         if days not in DAYS_SCOPE:
             return ErrorResponse(MsgCode.OVERSTEP_DAYS_SCOPE)
         result = retrieve_host_status(days)
+        result = control_result_counts(result)
         arr = []
         for status in result:
             load_avg = (status.load_avg or '').split(',')
@@ -112,6 +114,24 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     except Exception as e:
         logger.exception(e, extra=get_file_inf(sys._getframe()))
         return ErrorResponse(MsgCode.UNKNOWN_ERROR)
+
+
+def control_result_counts(result) -> list:
+    """
+    Control the search results to the specified number
+    :param result: db query result
+    :return: result after treatment
+    """
+    result_length = len(result)
+    if result_length > Constant.MAX_RETURN_RECORDS:
+        refine_result = list()
+        interval = round(result_length / Constant.MAX_RETURN_RECORDS, 2)
+        index = 0
+        while index <= result_length - 1:
+            refine_result.append(result[int(index)])
+            index += interval
+        result = refine_result
+    return result
 
 
 def row2dict(field):

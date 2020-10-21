@@ -11,7 +11,8 @@ class Constant:
     DEFAULT_DB_URL = 'sqlite:///flask_state_host.db'  # Default database URL
     WINDOWS_SYSTEM = 'Windows'  # Windows system
     UNIX_SYSTEM = 'Unix'  # Unix system
-    MIN_ADDRESS_LENGTH = 11  # minimum number of address length
+    MIN_ADDRESS_LENGTH = 11  # Minimum number of address length
+    MAX_RETURN_RECORDS = 480  # Return the maximum number of records
 
 
 # Date selection range
