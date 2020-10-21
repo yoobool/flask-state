@@ -34,7 +34,7 @@
 
         setFlaskStateData() {
             document.getElementById('fs-info-back').style.display = 'block';
-            document.getElementById('fs-info-container').style.display = 'block';
+            document.getElementById('fs-info-container').style.display = 'fixed';
             document.getElementsByTagName('body')[0].style.overflowX = 'hidden';
             document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
             document.getElementById('fs-select-days').value = '1';

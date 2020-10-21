@@ -60,7 +60,7 @@
 
 .console-info-container-style {
     z-index: 2002;
-    position: absolute;
+    position: fixed;
     display: block;
     top: 5rem;
     left: 0;

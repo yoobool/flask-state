@@ -39,6 +39,8 @@
         setFlaskStateData() {
             document.getElementById('fs-info-back').style.display = 'block';
             document.getElementById('fs-info-container').style.display = 'block';
+            document.getElementsByTagName('body')[0].style.overflowX = 'hidden';
+            document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
             document.getElementById('fs-select-days').value = '1';
             this.setCharts('1');
         }
@@ -142,6 +144,8 @@
                 document.getElementById('fs-info-close').addEventListener('click', function clickClose() {
                     document.getElementById('fs-info-back').style.display = 'none';
                     document.getElementById('fs-info-container').style.display = 'none';
+                    document.getElementsByTagName('body')[0].style.overflowX = 'auto';
+                    document.getElementsByTagName('body')[0].style.overflowY = 'auto';
                     if (document.getElementById('fs-state-circular')) {
                         document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
                     }
@@ -150,6 +154,8 @@
                 document.getElementById('fs-info-back').addEventListener('click', function clickBack() {
                     document.getElementById('fs-info-back').style.display = 'none';
                     document.getElementById('fs-info-container').style.display = 'none';
+                    document.getElementsByTagName('body')[0].style.overflowX = 'auto';
+                    document.getElementsByTagName('body')[0].style.overflowY = 'auto';
                     if (document.getElementById('fs-state-circular')) {
                         document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
                     }
@@ -276,36 +282,49 @@
 
                         let hostInfoExtendSpan = document.getElementById('fs-redis-status').getElementsByClassName('fs-badge-style');
                         let hostInfoKeysList = ['used_memory', 'used_memory_rss', 'mem_fragmentation_ratio', 'hits_ratio', 'delta_hits_ratio', 'uptime_in_seconds', 'connected_clients'];
-                        hostInfoKeysList.forEach((item, index) => {
-                            switch (item) {
-                                case 'used_memory':
-                                    hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + 'M';
-                                    break;
-                                case 'used_memory_rss':
-                                    hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + 'M';
-                                    break;
-                                case 'mem_fragmentation_ratio':
-                                    let ratio = currentStatistic[item];
-                                    hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
-                                    if (ratio !== null && ratio !== undefined && ratio > 1) {
-                                        let hostInfoExtendSpanClass = hostInfoExtendSpan[index].classList;
-                                        hostInfoExtendSpanClass.remove('background-green');
-                                        hostInfoExtendSpanClass.add('background-red');
-                                    }
-                                    break;
-                                case 'hits_ratio':
-                                    hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
-                                    break;
-                                case 'delta_hits_ratio':
-                                    hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
-                                    break;
-                                case 'uptime_in_seconds':
-                                    hostInfoExtendSpan[index].innerHTML = MachineStatus.getFormatSeconds(currentStatistic[item], this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
-                                    break;
-                                case 'connected_clients':
-                                    hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
+                        let hideRedis = true
+                        for (let item in hostInfoKeysList) {
+                            if (currentStatistic[item]) {
+                                hideRedis = false
+                                break
                             }
-                        });
+                        }
+                        if (hideRedis) {
+                            document.getElementById('fs-redis-status-title').innerHTML = '';
+                            document.getElementById('fs-redis-status-title').style.marginTop = 0;
+                            document.getElementById('fs-redis-status').style.display = 'none';
+                        } else {
+                            hostInfoKeysList.forEach((item, index) => {
+                                switch (item) {
+                                    case 'used_memory':
+                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + 'M';
+                                        break;
+                                    case 'used_memory_rss':
+                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + 'M';
+                                        break;
+                                    case 'mem_fragmentation_ratio':
+                                        let ratio = currentStatistic[item];
+                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
+                                        if (ratio !== null && ratio !== undefined && ratio > 1) {
+                                            let hostInfoExtendSpanClass = hostInfoExtendSpan[index].classList;
+                                            hostInfoExtendSpanClass.remove('background-green');
+                                            hostInfoExtendSpanClass.add('background-red');
+                                        }
+                                        break;
+                                    case 'hits_ratio':
+                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
+                                        break;
+                                    case 'delta_hits_ratio':
+                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
+                                        break;
+                                    case 'uptime_in_seconds':
+                                        hostInfoExtendSpan[index].innerHTML = MachineStatus.getFormatSeconds(currentStatistic[item], this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
+                                        break;
+                                    case 'connected_clients':
+                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
+                                }
+                            });
+                        }
                     }
 
                     data.items.reverse();
@@ -585,10 +604,15 @@
     })();
 
     /* Trigger window event */
-    function Init(targetDom) {
-        const language = arguments.length > 1 && typeof arguments[1] === "object" && arguments[1].hasOwnProperty('language') ? arguments[1] : {};
+    function Init(initMap) {
+        let targetDom = null;
+        let language = {};
+        if (initMap !== null && typeof initMap === 'object') {
+            targetDom = initMap.hasOwnProperty('dom') ? initMap.dom : null;
+            language = initMap.hasOwnProperty('lang') ? initMap['lang'].hasOwnProperty('language') ? initMap['lang'] : {} : {};
+        }
 
-        if (targetDom instanceof HTMLElement && targetDom.id) {
+        if (targetDom instanceof HTMLElement) {
             if (targetDom.getAttribute('flaskState')) return;
             targetDom.setAttribute('flaskState', "true");
             targetDom.addEventListener('click', () => FlaskStateInstance(language).setFlaskStateData());
@@ -600,7 +624,6 @@
             let triggerCircular = document.getElementById('fs-state-circular');
             triggerCircular.onclick = function () {
                 this.classList.add('fs-circular-out');
-                window.scroll(0, 0);
                 FlaskStateInstance(language).setFlaskStateData();
             };
             let timeOutId;
