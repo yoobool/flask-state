@@ -1,6 +1,7 @@
 import os
 import platform
 import sys
+from datetime import datetime, timezone
 
 import psutil
 
@@ -19,7 +20,6 @@ DEFAULT_HITS_RATIO = 100  # Default hits ratio value
 DEFAULT_DELTA_HITS_RATIO = 100  # Default 24h hits ratio value
 DEFAULT_WINDOWS_LOAD_AVG = '0, 0, 0'  # Windows system cannot calculate load AVG
 PERCENTAGE = 100  # Percentage calculation
-ONE_DAY_SECONDS = 1440  # One day seconds
 
 
 def record_flask_state_host(interval):
@@ -76,8 +76,8 @@ def record_flask_state_host(interval):
                 logger.warning(t, extra=get_file_inf(sys._getframe()))
         create_host_status(result_conf)
         now_time = get_current_s()
-        if int(now_time / ONE_DAY_SECONDS + 1) * ONE_DAY_SECONDS - interval <= now_time <= int(
-                now_time / ONE_DAY_SECONDS + 1) * ONE_DAY_SECONDS + interval:
+        new_day_utc = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc).timestamp()
+        if now_time <= new_day_utc + interval:
             delete_thirty_days_status()
 
     except Exception as e:
