@@ -83,7 +83,6 @@ def record_flask_state_host(interval):
 
     except Exception as e:
         logger.exception(e, extra=get_file_inf(sys._getframe()))
-        raise e
 
 
 def query_flask_state_host(days) -> FlaskStateResponse:
