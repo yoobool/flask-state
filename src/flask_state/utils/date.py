@@ -1,5 +1,6 @@
 import time
-from ..conf.config import DAYS_SCOPE_MILLISECONDS
+
+from ..conf.config import DAYS_SCOPE, DaysMilliseconds
 
 SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
 
@@ -26,6 +27,4 @@ def get_query_ms(days):
     :param days: query limited days
     :return: a limited time period of milliseconds
     """
-    if not isinstance(days, str):
-        days = str(days)
-    return DAYS_SCOPE_MILLISECONDS.get(days) or 0
+    return DaysMilliseconds[DAYS_SCOPE.get(days)].value if days in DAYS_SCOPE else 0

@@ -15,6 +15,8 @@ from ..utils.date import get_current_ms, get_current_s
 from ..utils.format_conf import get_file_inf
 from ..utils.logger import logger
 
+from memory_profiler import profile
+
 SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
 DEFAULT_HITS_RATIO = 100  # Default hits ratio value
 DEFAULT_DELTA_HITS_RATIO = 100  # Default 24h hits ratio value
@@ -92,6 +94,11 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     :return: flask response
     """
     try:
+        try:
+            if not isinstance(days, int):
+                days = int(days)
+        except Exception as t:
+            raise t
         if days not in DAYS_SCOPE:
             return ErrorResponse(MsgCode.OVERSTEP_DAYS_SCOPE)
         result = retrieve_host_status(days)

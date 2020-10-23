@@ -7,8 +7,8 @@ from ..utils.date import get_current_ms, get_query_ms
 from ..utils.format_conf import get_file_inf
 from ..utils.logger import logger
 
-ONE_DAY = '1'  # Days
-THIRTY_DAT = '30'  # 30 Days
+ONE_DAY = 1  # Days
+THIRTY_DAT = 30  # 30 Days
 FIVE_MINUTES_MILLISECONDS = 300000  # Five minutes milliseconds
 
 

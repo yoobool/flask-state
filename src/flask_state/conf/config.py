@@ -16,21 +16,21 @@ class Constant:
 
 
 # Date selection range
-@unique
-class DaysScope(Enum):
-    One_Day = 1
-    Three_Day = 3
-    Seven_Day = 7
-    Thirty_Day = 30
+DAYS_SCOPE = {
+    1: 'ONE_DAY',
+    3: 'THREE_DAY',
+    7: 'SEVEN_DAY',
+    30: 'THIRTY_DAY',
+}
 
 
 # Date selection range milliseconds
 @unique
 class DaysMilliseconds(Enum):
-    One_Day = 86400000
-    Three_Day = 259200000
-    Seven_Day = 604800000
-    Thirty_Day = 2592000000
+    ONE_DAY = 86400000
+    THREE_DAY = 259200000
+    SEVEN_DAY = 604800000
+    THIRTY_DAY = 2592000000
 
 
 @unique
@@ -40,9 +40,3 @@ class HttpMethod(Enum):
     PUT = 'PUT'
     DELETE = 'DELETE'
     PATCH = 'PATCH'
-
-
-DAYS_SCOPE = dict([(str(DaysScope[key].value), DaysScope[key].value) for key in DaysScope.__members__])
-
-DAYS_SCOPE_MILLISECONDS = dict(
-    [(str(DaysScope[key].value), DaysMilliseconds[key].value) for key in DaysMilliseconds.__members__])
