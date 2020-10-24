@@ -44,11 +44,10 @@ def delete_thirty_days_status():
     """
     try:
         target_time = get_current_ms() - get_query_ms(THIRTY_DAT)
-        result = FlaskStateHost.query.filter(FlaskStateHost.ts < target_time).all()
-        for item in result:
-            db.session.delete(item)
-        db.session.commit()
-        logger.info(InfoMsg.DELETE_SUCCESS.get_msg(), extra=get_file_inf(sys._getframe()))
+        result = FlaskStateHost.query.filter(FlaskStateHost.ts < target_time).delete(synchronize_session=False)
+        if result:
+            db.session.commit()
+            logger.info(InfoMsg.DELETE_SUCCESS.get_msg(), extra=get_file_inf(sys._getframe()))
     except Exception as e:
         db.session.rollback()
         raise e
