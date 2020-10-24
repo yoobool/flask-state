@@ -17,7 +17,7 @@ def format_sec(secs) -> int:
     """
     if not isinstance(secs, int):
         raise TypeError(
-            ErrorMsg.DATA_TYPE_ERROR.get_msg('.The target type is %s, not %s' % (int.__name__, type(secs).__name__)))
+            ErrorMsg.DATA_TYPE_ERROR.get_msg('. The target type is %s, not %s' % (int.__name__, type(secs).__name__)))
     if secs < Constant.MIN_SECONDS:
         logger.warning(WarningMsg.TIME_SMALL.get_msg(), extra=get_file_inf(sys._getframe()))
         return Constant.DEFAULT_SECONDS
@@ -34,12 +34,12 @@ def format_address(address) -> str:
         raise TypeError(
             ErrorMsg.DATA_TYPE_ERROR.get_msg('.The target type is %s, not %s' % (str.__name__, type(address).__name__)))
     if len(address) < Constant.MIN_ADDRESS_LENGTH or address[:Constant.MIN_ADDRESS_LENGTH - 1] != DB_URL_HEADER:
-        raise ValueError(ErrorMsg.ERROR_ADDRESS.get_msg())
+        raise ValueError(ErrorMsg.ERROR_ADDRESS.get_msg('.Error sqlite url: %s' % address))
     if platform.system() == Constant.WINDOWS_SYSTEM:
         index = max(address.rfind('\\'), address.rfind('/'))
     else:
-        index = address.rfind('/')
-    if not os.access(address[10:index] if index != -1 else './', os.W_OK):
+        index = address[Constant.MIN_ADDRESS_LENGTH - 1:].rfind('/')
+    if not os.access(address[Constant.MIN_ADDRESS_LENGTH - 1:index] if index != -1 else './', os.W_OK):
         raise ValueError(ErrorMsg.NO_ACCESS.get_msg())
     return address
 
