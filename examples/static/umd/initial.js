@@ -223,10 +223,10 @@ class MachineStatus {
         this.consoleMemoryChart = echarts.init(document.getElementById('fs-info-memory-chart'), null, {renderer: 'svg'});
         this.consoleLoadavgChart = echarts.init(document.getElementById('fs-info-loadavg-chart'), null, {renderer: 'svg'});
         this.consoleDiskusageChart = echarts.init(document.getElementById('fs-info-diskusage-chart'), null, {renderer: 'svg'});
-        this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today);
-        this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today);
-        this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'DiskUsage', '', this.language.today);
-        this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes);
+        this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today || 'today');
+        this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today || 'today');
+        this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'DiskUsage', '', this.language.today || 'today');
+        this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes || 'minutes');
     }
 
     /* Define functions that access native state and plot */
