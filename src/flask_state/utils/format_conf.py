@@ -39,8 +39,9 @@ def format_address(address) -> str:
         index = max(address.rfind('\\'), address.rfind('/'))
     else:
         index = address[Constant.MIN_ADDRESS_LENGTH - 1:].rfind('/')
-    if not os.access(address[Constant.MIN_ADDRESS_LENGTH - 1:index] if index != -1 else './', os.W_OK):
-        raise ValueError(ErrorMsg.NO_ACCESS.get_msg())
+    db_path = address[Constant.MIN_ADDRESS_LENGTH - 1:][:index] if index != -1 else './'
+    if not os.access(db_path, os.W_OK):
+        raise ValueError(ErrorMsg.NO_ACCESS.get_msg('. No access path: %s' % db_path))
     return address
 
 
