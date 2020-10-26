@@ -146,13 +146,14 @@ def test_format_address():
     correct_address_list = ['sqlite:///test.db', 'sqlite:////']
     for address in correct_address_list:
         index = address[Constant.MIN_ADDRESS_LENGTH - 1:].rfind('/')
+        address_path = address[Constant.MIN_ADDRESS_LENGTH - 1:][:index] if index != -1 else './'
         try:
-            if not os.access(address[Constant.MIN_ADDRESS_LENGTH - 1:index] if index != -1 else './', os.W_OK):
+            if not os.access(address_path, os.W_OK):
                 raise ValueError(
-                    ErrorMsg.NO_ACCESS.get_msg('. No access path: %s' % address[Constant.MIN_ADDRESS_LENGTH - 1:index]))
+                    ErrorMsg.NO_ACCESS.get_msg('. No access path: %s' % address_path))
         except ValueError as v:
             assert v.__str__() == 'Path has no access, make sure you have access to the path. No access path: %s' \
-                   % address[Constant.MIN_ADDRESS_LENGTH - 1:index]
+                   % address
 
 
 def test_get_file_inf():
