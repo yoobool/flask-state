@@ -9,6 +9,7 @@ importlib-metadata==2.0.0  # via pluggy, pytest
 iniconfig==1.0.1          # via pytest
 packaging==20.4           # via pytest
 pluggy==0.13.1            # via pytest
+psutil==5.7.3             # via -r requirements/tests.in
 py==1.9.0                 # via pytest
 pyparsing==2.4.7          # via packaging
 pytest==6.1.1             # via -r requirements/tests.in
