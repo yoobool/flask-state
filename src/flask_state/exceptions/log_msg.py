@@ -5,8 +5,8 @@ class ErrorMsg(ExceptionMsg):
     LACK_SQLITE = {'msg': 'app.config must to set up SQLALCHEMY_BINDS and bind flask_state_sqlite', 'level': 'error'}
     ERROR_ADDRESS = {'msg': 'Incorrect address format, Set the format to: sqlite:///path', 'level': 'error'}
     NO_ACCESS = {'msg': 'Path has no access, make sure you have access to the path',
-                 'level': 'warning'}
-    DATA_TYPE_ERROR = {'msg': 'Data type format error', 'level': 'warning'}
+                 'level': 'error'}
+    DATA_TYPE_ERROR = {'msg': 'Data type format error', 'level': 'error'}
 
 
 class WarningMsg(ExceptionMsg):
