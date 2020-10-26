@@ -131,7 +131,7 @@ def control_result_counts(result) -> list:
         refine_result = list()
         interval = round(result_length / Constant.MAX_RETURN_RECORDS, 2)
         index = 0
-        while index <= result_length - 1:
+        while index <= result_length - 1 and len(refine_result) < Constant.MAX_RETURN_RECORDS:
             refine_result.append(result[int(index)])
             index += interval
         result = refine_result
