@@ -5,7 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = [{
     // cjs
-    entry: './examples/static/cjs/flask-state.js',
+    entry: './examples/static/initial.js',
     output: {
         filename: 'flask-state.min.js',
         libraryTarget: "commonjs2",
@@ -22,9 +22,6 @@ module.exports = [{
     optimization: {
         minimizer: [new TerserPlugin({
             terserOptions: {
-                output: {
-                    comments: false,
-                },
                 compress: {
                     pure_funcs: ["console.log"]
                 },
@@ -34,7 +31,7 @@ module.exports = [{
     },
 }, {
     // umd
-    entry: './examples/static/umd/initial.js',
+    entry: './examples/static/initial.js',
     output: {
         filename: 'flask-state.min.js',
         library: 'flaskState',
