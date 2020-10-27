@@ -26,7 +26,9 @@ class MachineStatus {
             this.setTagChangeEventListener(this.consoleCpuChart, this.consoleMemoryChart, this.consoleLoadavgChart, this.consoleDiskusageChart);
         }
         // Bind window resizing redraw event
-        window.onresize = () => MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskusageChart]);
+        window.addEventListener('resize', () => {
+            MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskusageChart]);
+        })
     };
 
     setFlaskStateData() {
@@ -276,7 +278,7 @@ class MachineStatus {
                     let hostInfoExtendSpan = document.getElementById('fs-redis-status').getElementsByClassName('fs-badge-style');
                     let hostInfoKeysList = ['used_memory', 'used_memory_rss', 'mem_fragmentation_ratio', 'hits_ratio', 'delta_hits_ratio', 'uptime_in_seconds', 'connected_clients'];
                     let hideRedis = true
-                    for (let item in hostInfoKeysList) {
+                    for (let item of hostInfoKeysList) {
                         if (currentStatistic[item]) {
                             hideRedis = false
                             break
