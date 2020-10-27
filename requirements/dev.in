@@ -1,3 +1,6 @@
 -r docs.in
 -r tests.in
 pip-tools
+setuptools
+wheel
+twine
