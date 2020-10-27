@@ -9,7 +9,6 @@ def test_msg_code():
         try:
             assert isinstance(item.get_msg(), str)
             assert isinstance(item.get_code(), int)
-            item.get_hide()
         except Exception as e:
             assert isinstance(type(e), AttributeError)
 

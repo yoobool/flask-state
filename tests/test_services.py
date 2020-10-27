@@ -45,8 +45,8 @@ def test_query_flask_state_host(app):
             response_content = host_status.query_flask_state_host(day)
             assert 200 == response_content.get_code()
             assert 'Search success' == response_content.get_msg()
-            assert response_content.data.get('currentStatistic')
-            assert response_content.data.get('items')
+            assert isinstance(response_content.data.get('currentStatistic'), dict)
+            assert isinstance(response_content.data.get('items'), list)
             assert isinstance(response_content, SuccessResponse)
 
         for day in test_error_day:

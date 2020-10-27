@@ -1,6 +1,5 @@
 import json
 import os
-import sys
 import time
 
 from flask import make_response
@@ -150,15 +149,7 @@ def test_format_address():
         try:
             if not os.access(address_path, os.W_OK):
                 raise ValueError(
-                    ErrorMsg.NO_ACCESS.get_msg('. No access path: %s' % address_path))
+                    ErrorMsg.NO_ACCESS.get_msg('. No access path: %s' % address))
         except ValueError as v:
             assert v.__str__() == 'Path has no access, make sure you have access to the path. No access path: %s' \
                    % address
-
-
-def test_get_file_inf():
-    """
-    Test whether the function name is normal
-    """
-    result = format_conf.get_file_inf(sys._getframe())
-    assert 'test_get_file_inf' == result.get('handlerFuncName')
