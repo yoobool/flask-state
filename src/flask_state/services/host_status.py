@@ -1,6 +1,5 @@
 import os
 import platform
-import sys
 from datetime import datetime, timezone
 
 import psutil
@@ -12,7 +11,6 @@ from ..dao.host_status import create_host_status, retrieve_host_status, retrieve
 from ..exceptions import FlaskStateResponse, SuccessResponse, ErrorResponse
 from ..exceptions.error_code import MsgCode
 from ..utils.date import get_current_ms, get_current_s
-from ..utils.format_conf import get_file_inf
 from ..utils.logger import logger
 
 SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
@@ -73,7 +71,7 @@ def record_flask_state_host(interval):
                                    hits_ratio=hits_ratio,
                                    delta_hits_ratio=delta_hits_ratio)
             except Exception as t:
-                logger.warning(t, extra=get_file_inf(sys._getframe()))
+                logger.warning(t)
         create_host_status(result_conf)
         now_time = get_current_s()
         new_day_utc = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0,
@@ -82,7 +80,7 @@ def record_flask_state_host(interval):
             delete_thirty_days_status()
 
     except Exception as e:
-        logger.exception(e, extra=get_file_inf(sys._getframe()))
+        logger.exception(e)
 
 
 def query_flask_state_host(days) -> FlaskStateResponse:
@@ -116,7 +114,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
             data["items"].append(statistics_item)
         return SuccessResponse(msg='Search success', data=data)
     except Exception as e:
-        logger.exception(e, extra=get_file_inf(sys._getframe()))
+        logger.exception(e)
         return ErrorResponse(MsgCode.UNKNOWN_ERROR)
 
 

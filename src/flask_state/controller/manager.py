@@ -1,4 +1,3 @@
-import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 
@@ -14,7 +13,7 @@ from ..services import redis_conn
 from ..services.host_status import query_flask_state_host, record_flask_state_host
 from ..utils.auth import auth_user, auth_method
 from ..utils.file_lock import Lock
-from ..utils.format_conf import format_address, get_file_inf, format_sec
+from ..utils.format_conf import format_address, format_sec
 from ..utils.logger import logger, DefaultLogger
 
 ONE_MINUTE_SECONDS = 60
@@ -85,11 +84,10 @@ def query_flask_state():
         b2d = request.json
         if not isinstance(b2d, dict):
             logger.warning(ErrorMsg.DATA_TYPE_ERROR).get_msg(
-                '.The target type is %s, not %s' % (dict.__name__, type(b2d).__name__),
-                extra=get_file_inf(sys._getframe()))
+                '.The target type is %s, not %s' % (dict.__name__, type(b2d).__name__))
             return make_response_content(ErrorResponse(MsgCode.JSON_FORMAT_ERROR))
         time_quantum = b2d.get('timeQuantum')
         return make_response_content(resp=query_flask_state_host(time_quantum))
     except Exception as e:
-        logger.exception(e, extra=get_file_inf(sys._getframe()))
+        logger.exception(e)
         return make_response_content(ErrorResponse(MsgCode.UNKNOWN_ERROR), http_status=500)

@@ -1,10 +1,7 @@
-import sys
-
 from ..exceptions.log_msg import InfoMsg
 from ..models import db
 from ..models.flask_state_host import FlaskStateHost
 from ..utils.date import get_current_ms, get_query_ms
-from ..utils.format_conf import get_file_inf
 from ..utils.logger import logger
 
 ONE_DAY = 1  # Days
@@ -31,7 +28,7 @@ def create_host_status(kwargs):
         flask_state_host = FlaskStateHost(**kwargs)
         db.session.add(flask_state_host)
         db.session.commit()
-        logger.info(InfoMsg.INSERT_SUCCESS.get_msg(), extra=get_file_inf(sys._getframe()))
+        logger.info(InfoMsg.INSERT_SUCCESS.get_msg())
     except Exception as e:
         db.session.rollback()
         raise e
@@ -47,7 +44,7 @@ def delete_thirty_days_status():
         result = FlaskStateHost.query.filter(FlaskStateHost.ts < target_time).delete(synchronize_session=False)
         if result:
             db.session.commit()
-            logger.info(InfoMsg.DELETE_SUCCESS.get_msg(), extra=get_file_inf(sys._getframe()))
+            logger.info(InfoMsg.DELETE_SUCCESS.get_msg())
     except Exception as e:
         db.session.rollback()
         raise e

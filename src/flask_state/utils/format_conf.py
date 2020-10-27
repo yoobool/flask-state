@@ -1,6 +1,5 @@
 import os
 import platform
-import sys
 
 from ..conf.config import Constant
 from ..exceptions.log_msg import ErrorMsg, WarningMsg
@@ -19,7 +18,7 @@ def format_sec(secs) -> int:
         raise TypeError(
             ErrorMsg.DATA_TYPE_ERROR.get_msg('. The target type is %s, not %s' % (int.__name__, type(secs).__name__)))
     if secs < Constant.MIN_SECONDS:
-        logger.warning(WarningMsg.TIME_SMALL.get_msg(), extra=get_file_inf(sys._getframe()))
+        logger.warning(WarningMsg.TIME_SMALL.get_msg())
         return Constant.DEFAULT_SECONDS
     return secs
 
@@ -41,17 +40,5 @@ def format_address(address) -> str:
         index = address[Constant.MIN_ADDRESS_LENGTH - 1:].rfind('/')
     db_path = address[Constant.MIN_ADDRESS_LENGTH - 1:][:index] if index != -1 else './'
     if not os.access(db_path, os.W_OK):
-        raise ValueError(ErrorMsg.NO_ACCESS.get_msg('. No access path: %s' % db_path))
+        raise ValueError(ErrorMsg.NO_ACCESS.get_msg('. No access path: %s' % address))
     return address
-
-
-def get_file_inf(get_frame) -> dict:
-    """
-    Get the current file name, function name, line number
-    :param get_frame: sys.frame class
-    :return: dict of file name, function name, line number
-    """
-    return {
-        'handlerFileName': 'flask_state.' + get_frame.f_code.co_filename.split('flask_state/')[-1].replace('/', '.')[
-                                            :-3], 'handlerFuncName': get_frame.f_code.co_name,
-        'handlerLine': get_frame.f_lineno}
