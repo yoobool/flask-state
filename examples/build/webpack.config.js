@@ -3,11 +3,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const optimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 module.exports = {
     entry: './examples/static/entry/index.js',
     output: {
-        filename: 'flask-state.min.js',
+        filename: "js/[name].[chunkhash:8].min.js",
         path: path.resolve('./examples/static/', 'dist')
     },
     mode: 'development',
@@ -46,13 +47,14 @@ module.exports = {
         },
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             filename: '../../templates/index.html',
             template: './examples/static/entry/index.html',
         }),
         new MiniCssExtractPlugin({
             filename: "css/flask-state.css",
-            chunkFilename: 'css/[name].[contenthash:8].chunk.css',
+            chunkFilename: 'css/[name].[contenthash:8].min.css',
         }),
         new optimizeCssAssetsPlugin(),
     ]
