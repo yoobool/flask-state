@@ -8,7 +8,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
     entry: './examples/static/entry/index.js',
     output: {
-        filename: "js/[name].[chunkhash:8].min.js",
+        filename: "flask-state.js",
         path: path.resolve('./examples/static/', 'dist')
     },
     mode: 'development',

@@ -9,7 +9,7 @@ module.exports = [{
     output: {
         filename: 'flask-state.min.js',
         libraryTarget: "commonjs2",
-        path: path.resolve('./examples/compress/cjs/'),
+        path: path.resolve('./packages/cjs/'),
     },
     module: {
         rules: [{
@@ -66,7 +66,7 @@ module.exports = [{
     // css
     entry: './examples/static/css-index.js',
     output: {
-        path: path.resolve('./examples/compress/')
+        path: path.resolve('./packages/')
     },
     module: {
         rules: [{
@@ -87,7 +87,7 @@ module.exports = [{
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: "css/flask-state.min.css",
+            filename: "flask-state.css",
         }),
         new optimizeCssAssetsPlugin(),
     ]
