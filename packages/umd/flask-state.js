@@ -67,23 +67,23 @@
                 '<div class="flask-state-elem fs-select-container"><select id="fs-select-days" class="margin-right-3">' +
                 '<option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><span id="fs-days">days</span></div>' +
                 '<button type="button" class="flask-state-elem console-info-close-style" id="fs-info-close"><span>&times;</span></button>' +
-                '<h4 id="fs-host-status-title" class="flask-state-elem fs-font-box box-style no-padding margin-top-10 fs-h4-style">host_status</h4>' +
+                '<h4 id="fs-host-status-title" class="flask-state-elem fs-font-box box-style no-padding margin-top-10 fs-h4-style">host status</h4>' +
                 '<div id="fs-host-status" class="flask-state-elem fs-font-box box-style no-padding">' +
                 '<span id="fs-memory" class="margin-right-5">memory:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
                 '<span id="fs-cpu" class="margin-right-5">cpu:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
-                '<span id="fs-disk-usage" class="margin-right-5">disk_usage:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+                '<span id="fs-disk-usage" class="margin-right-5">disk usage:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
                 '<span id="fs-load-avg" class="margin-right-5">LoadAvg:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
-                '<span id="fs-boot-seconds" class="margin-right-5">boot_seconds:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+                '<span id="fs-boot-seconds" class="margin-right-5">boot seconds:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
                 '</div>' +
-                '<h4 id="fs-redis-status-title" class="flask-state-elem fs-font-box box-style no-padding fs-h4-style">redis_status</h4>' +
+                '<h4 id="fs-redis-status-title" class="flask-state-elem fs-font-box box-style no-padding fs-h4-style">redis status</h4>' +
                 '<div id="fs-redis-status" class="flask-state-elem fs-font-box box-style no-padding margin-bottom-10 ">' +
-                '<span id="fs-used-memory" class="margin-right-5">used_memory:</span><span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text margin-right-10"></span>' +
-                '<span id="fs-used-memory-rss" class="margin-right-5">used_memory_rss:</span><span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text margin-right-10"></span>' +
-                '<span id="fs-mem-fragmentation-ratio" class="margin-right-5">mem_fragmentation_ratio:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
-                '<span id="fs-hits-ratio" class="margin-right-5">hits_ratio:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
-                '<span id="fs-delta-hits-ratio" class="margin-right-5">24h_hits_ratio:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
-                '<span id="fs-uptime-in-seconds" class="margin-right-5">uptime_in_seconds:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
-                '<span id="fs-connected-clients" class="margin-right-5">connected_clients:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+                '<span id="fs-used-memory" class="margin-right-5">used memory:</span><span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text margin-right-10"></span>' +
+                '<span id="fs-used-memory-rss" class="margin-right-5">used memory rss:</span><span class="flask-state-elem fs-badge-style margin-top-m3 no-padding fontsize-18 console-info-memory-text margin-right-10"></span>' +
+                '<span id="fs-mem-fragmentation-ratio" class="margin-right-5">mem fragmentation ratio:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+                '<span id="fs-hits-ratio" class="margin-right-5">hits ratio:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+                '<span id="fs-delta-hits-ratio" class="margin-right-5">24h hits ratio:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+                '<span id="fs-uptime-in-seconds" class="margin-right-5">uptime in seconds:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
+                '<span id="fs-connected-clients" class="margin-right-5">connected clients:</span><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-10"></span>' +
                 '</div>';
             if (this.mobile) {
                 str += '<hr id="console-info-line" class="console-info-line-style">' +
@@ -94,7 +94,7 @@
                     '<li class="flask-state-elem"><a href="#console_info_tab_cpu" data-toggle="tab">' +
                     '<strong>cpu</strong></a></li>' +
                     '<li class="flask-state-elem"><a href="#console_info_tab_diskusage" data-toggle="tab">' +
-                    '<strong>disk_usage</strong></a></li>' +
+                    '<strong>disk usage</strong></a></li>' +
                     '<li class="flask-state-elem"><a href="#console_info_tab_loadavg" data-toggle="tab">' +
                     '<strong>LoadAvg</strong></a></li>' +
                     '</ul>' +
@@ -241,10 +241,10 @@
             this.consoleMemoryChart = echarts.init(document.getElementById('fs-info-memory-chart'), null, {renderer: 'svg'});
             this.consoleLoadavgChart = echarts.init(document.getElementById('fs-info-loadavg-chart'), null, {renderer: 'svg'});
             this.consoleDiskusageChart = echarts.init(document.getElementById('fs-info-diskusage-chart'), null, {renderer: 'svg'});
-            this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today);
-            this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today);
-            this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'DiskUsage', '', this.language.today);
-            this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes);
+            this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today || 'today');
+            this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today || 'today');
+            this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'DiskUsage', '', this.language.today || 'today');
+            this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes || 'minutes');
         }
 
         /* Define functions that access native state and plot */
