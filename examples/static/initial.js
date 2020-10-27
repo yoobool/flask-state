@@ -1,16 +1,3 @@
-/** @license flask-state
- * flask-state.js
- *
- * Copyright (c) 2020, yoobool
- *
- * This source code is licensed under the BSD-3 license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-'use strict';
-
-
-
 const ONE_MIN_SECONDS = 60;
 const ONE_DAY_HOURS = 24;
 const MACHINE_VALUE = {

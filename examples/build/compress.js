@@ -22,6 +22,9 @@ module.exports = [{
     optimization: {
         minimizer: [new TerserPlugin({
             terserOptions: {
+                output: {
+                    comments: false,
+                },
                 compress: {
                     pure_funcs: ["console.log"]
                 },
@@ -36,7 +39,7 @@ module.exports = [{
         filename: 'flask-state.min.js',
         library: 'flaskState',
         libraryTarget: 'umd',
-        path: path.resolve('./examples/compress/umd/')
+        path: path.resolve('./packages/umd/')
     },
     module: {
         rules: [{
