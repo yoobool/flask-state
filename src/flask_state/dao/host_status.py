@@ -26,7 +26,7 @@ def retrieve_latest_host_status() -> dict:
     Query the latest status
 
     """
-    result = FlaskStateHost.query.with_entities(FlaskStateHost.__table__).first()
+    result = FlaskStateHost.query.with_entities(FlaskStateHost.__table__).order_by(FlaskStateHost.ts.desc()).first()
     result = result._asdict() if result else {}
     return result
 
