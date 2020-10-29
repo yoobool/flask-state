@@ -15,9 +15,9 @@ def retrieve_host_status(days) -> list:
 
     """
     target_time = get_current_ms() - get_query_ms(days)
-    result = FlaskStateHost.query.with_entities(FlaskStateHost.cpu, FlaskStateHost.memory,
-                                                FlaskStateHost.load_avg, FlaskStateHost.disk_usage,
-                                                FlaskStateHost.ts).filter(FlaskStateHost.ts > target_time).all()
+    result = FlaskStateHost.query.with_entities(FlaskStateHost.cpu, FlaskStateHost.memory, FlaskStateHost.load_avg,
+                                                FlaskStateHost.disk_usage, FlaskStateHost.ts).filter(
+        FlaskStateHost.ts > target_time).order_by(FlaskStateHost.ts.desc()).all()
     return result
 
 
