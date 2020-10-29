@@ -7,7 +7,7 @@ import psutil
 from . import redis_conn
 from ..conf.config import Constant, DAYS_SCOPE
 from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday, \
-    delete_thirty_days_status
+    delete_thirty_days_status, retrieve_latest_host_status
 from ..exceptions import FlaskStateResponse, SuccessResponse, ErrorResponse
 from ..exceptions.error_code import MsgCode
 from ..utils.date import get_current_ms, get_current_s
@@ -97,21 +97,15 @@ def query_flask_state_host(days) -> FlaskStateResponse:
             raise t
         if days not in DAYS_SCOPE:
             return ErrorResponse(MsgCode.OVERSTEP_DAYS_SCOPE)
+        current_status = retrieve_latest_host_status()
+        current_status['load_avg'] = (current_status.get('load_avg') or '').split(',')
         result = retrieve_host_status(days)
         result = control_result_counts(result)
         arr = []
         for status in result:
-            load_avg = (status.load_avg or '').split(',')
-            host_dict = row2dict(status)
-            host_dict.update(load_avg=load_avg)
-            arr.append(host_dict)
-        data = {"currentStatistic": arr[0] if arr else {}, "items": []}
-        fields = ["cpu", "memory", "load_avg", "disk_usage"]
-        for item in arr:
-            statistics_item = [int(item['ts'] / SECONDS_TO_MILLISECOND_MULTIPLE)]
-            for field in fields:
-                statistics_item.append(item[field])
-            data["items"].append(statistics_item)
+            arr.append([int(status.ts / SECONDS_TO_MILLISECOND_MULTIPLE), status.cpu, status.memory,
+                        status.load_avg.split(','), status.disk_usage])
+        data = {"currentStatistic": current_status, "items": arr}
         return SuccessResponse(msg='Search success', data=data)
     except Exception as e:
         logger.exception(e)
