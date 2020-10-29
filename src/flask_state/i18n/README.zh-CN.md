@@ -74,7 +74,7 @@ app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.3', 'R
 
 修改保存监控记录的时间间隔
 ```python
-# 最少间隔为10秒, 当不设置时间时默认间隔为60秒
+# 最少间隔为60秒, 当不设置时间时默认间隔为60秒
 import flask_state
 SECS = 60
 flask_state.init_app(app, SECS)
@@ -85,7 +85,7 @@ flask_state.init_app(app, SECS)
 import flask_state
 import logging
 custom_logger = logging.getLogger(__name__)
-flask_state.init_app(app, interval=20, log_instance=custom_logger)
+flask_state.init_app(app, interval=60, log_instance=custom_logger)
 ```
 
 自定义绑定触发窗口的对象

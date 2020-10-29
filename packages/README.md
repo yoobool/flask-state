@@ -85,7 +85,7 @@ flask_state.init_app(app, SECS)
 import flask_state
 import logging
 custom_logger = logging.getLogger(__name__)
-flask_state.init_app(app, interval=20, log_instance=custom_logger)
+flask_state.init_app(app, interval=60, log_instance=custom_logger)
 ```
 
 #### Custom binding triggers the object of the window.
