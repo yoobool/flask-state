@@ -142,6 +142,7 @@ cython_debug/
 # spare code
 .spare/
 
+*.db
 node_modules
 package-lock.json
 ReleaseNotes.md
