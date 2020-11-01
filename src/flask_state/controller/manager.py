@@ -40,11 +40,15 @@ def init_app(app, interval=Constant.DEFAULT_SECONDS, log_instance=None):
 
 
 def init_redis(app):
-    if app.config.get('REDIS_CONF', {}).get('REDIS_STATUS'):
-        redis_state = app.config['REDIS_CONF']
-        redis_conf = {'REDIS_HOST': redis_state.get('REDIS_HOST'), 'REDIS_PORT': redis_state.get('REDIS_PORT'),
-                      'REDIS_PASSWORD': redis_state.get('REDIS_PASSWORD')}
-        redis_conn.set_redis(redis_conf)
+    redis_state = app.config.get('REDIS_CONF', {})
+
+    if not redis_state.get('REDIS_STATUS'):
+        return
+
+    redis_conf_keys = ['REDIS_HOST', 'REDIS_PORT', 'REDIS_PASSWORD']
+    redis_conf = {key: value for key, value in redis_state.items() if key in redis_conf_keys}
+
+    redis_conn.set_redis(redis_conf)
 
 
 def init_db(app):
