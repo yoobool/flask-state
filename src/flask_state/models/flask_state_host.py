@@ -1,11 +1,13 @@
 from sqlalchemy import func
 from sqlalchemy.sql import text
+
 from . import db
+from ..conf.config import Constant
 
 
 # model
 class FlaskStateHost(db.Model):
-    __bind_key__ = 'flask_state_sqlite'
+    __bind_key__ = Constant.DEFAULT_BIND_SQLITE
     __tablename__ = "flask_state_host"
 
     __table_args__ = (
