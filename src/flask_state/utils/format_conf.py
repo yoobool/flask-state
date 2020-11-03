@@ -35,7 +35,7 @@ def format_address(address) -> str:
     if len(address) < Constant.MIN_ADDRESS_LENGTH or address[:Constant.MIN_ADDRESS_LENGTH - 1] != DB_URL_HEADER:
         raise ValueError(ErrorMsg.ERROR_ADDRESS.get_msg('.Error sqlite url: %s' % address))
     if platform.system() == Constant.WINDOWS_SYSTEM:
-        index = max(address.rfind('\\'), address.rfind('/'))
+        index = max(address[Constant.MIN_ADDRESS_LENGTH - 1:].rfind('\\'), address[Constant.MIN_ADDRESS_LENGTH - 1:].rfind('/'))
     else:
         index = address[Constant.MIN_ADDRESS_LENGTH - 1:].rfind('/')
     db_path = address[Constant.MIN_ADDRESS_LENGTH - 1:][:index] if index != -1 else './'
