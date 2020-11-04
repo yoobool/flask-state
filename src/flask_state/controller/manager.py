@@ -1,5 +1,7 @@
+import os
+import sched
+import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
 
 from flask import request, current_app
 
@@ -7,7 +9,7 @@ from .response_methods import make_response_content
 from ..conf.config import HttpMethod, Constant
 from ..exceptions import ErrorResponse
 from ..exceptions.error_code import MsgCode
-from ..exceptions.log_msg import ErrorMsg
+from ..exceptions.log_msg import ErrorMsg, InfoMsg
 from ..models import model_init_app
 from ..services import redis_conn
 from ..services.host_status import query_flask_state_host, record_flask_state_host
@@ -35,8 +37,9 @@ def init_app(app, interval=Constant.DEFAULT_SECONDS, log_instance=None):
 
     # Timing recorder
     interval = format_sec(interval)
-
-    ThreadPoolExecutor(max_workers=1).submit(record_timer, app, interval)
+    t = threading.Thread(target=record_timer, args=(app, interval,))
+    t.setDaemon(True)
+    t.start()
 
 
 def init_redis(app):
@@ -59,15 +62,22 @@ def record_timer(app, interval):
     app.lock_flask_state = Lock.get_file_lock()
     with app.app_context():
         try:
-            current_app.lock_flask_state.acquire()
+            try:
+                current_app.lock_flask_state.acquire()
+                logger.info(InfoMsg.ACQUIRED_LOCK.get_msg('. process ID: %d' % os.getpid()))
+            except BlockingIOError:
+                logger.exception(ErrorMsg.ACQUIRED_LOCK_FAILED.get_msg('. process ID: %d' % os.getpid()))
+                return
+            s = sched.scheduler(time.time, time.sleep)
             in_time = time.time()
             target_time = int(int((time.time()) / ONE_MINUTE_SECONDS + 1) * ONE_MINUTE_SECONDS)
             time.sleep(ONE_MINUTE_SECONDS - in_time % ONE_MINUTE_SECONDS)
+            record_flask_state_host(interval)
             while True:
-                record_flask_state_host(interval)
                 target_time += interval
                 now_time = time.time()
-                time.sleep(target_time - now_time)
+                s.enter(target_time - now_time, 1, record_flask_state_host, (interval,))
+                s.run()
         except Exception as e:
             current_app.lock_flask_state.release()
             raise e
