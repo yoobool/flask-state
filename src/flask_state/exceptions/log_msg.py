@@ -7,6 +7,7 @@ class ErrorMsg(ExceptionMsg):
     NO_ACCESS = {'msg': 'Path has no access, make sure you have access to the path',
                  'level': 'error'}
     DATA_TYPE_ERROR = {'msg': 'Data type format error', 'level': 'error'}
+    ACQUIRED_LOCK_FAILED = {'msg': 'File lock not obtained', 'level': 'error'}
 
 
 class WarningMsg(ExceptionMsg):
@@ -18,3 +19,4 @@ class InfoMsg(ExceptionMsg):
     DELETE_SUCCESS = {'msg': 'Delete expired records', 'level': 'info'}
     QUERY_SUCCESS = {'msg': 'Query status', 'level': 'info'}
     GET_YESTERDAY = {'msg': 'Query yesterday status', 'level': 'info'}
+    ACQUIRED_LOCK = {'msg': 'Acquired file lock successfully', 'level': 'info'}
