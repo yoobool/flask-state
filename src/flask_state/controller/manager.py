@@ -52,10 +52,10 @@ def init_redis(app):
 
 def init_db(app):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    if not app.config.get('SQLALCHEMY_BINDS', {}).get('flask_state_sqlite'):
+    if not app.config.get('SQLALCHEMY_BINDS', {}).get(Constant.DEFAULT_BIND_SQLITE):
         raise KeyError(ErrorMsg.LACK_SQLITE.get_msg())
-    app.config['SQLALCHEMY_BINDS']['flask_state_sqlite'] = format_address(
-        app.config['SQLALCHEMY_BINDS'].get('flask_state_sqlite'))
+    app.config['SQLALCHEMY_BINDS'][Constant.DEFAULT_BIND_SQLITE] = format_address(
+        app.config['SQLALCHEMY_BINDS'].get(Constant.DEFAULT_BIND_SQLITE))
 
 
 def record_timer(app, interval):
