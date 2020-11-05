@@ -11,7 +11,7 @@
 
 .fs-h4-style {
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     font-family: inherit;
     font-weight: 500;
     font-size: 18px;
@@ -46,16 +46,23 @@
 
 .fs-badge-style {
     display: inline-block;
-    padding: 3px 7px;
+    height: 26px;
+    padding: 0 8px;
     font-size: 12px;
     font-weight: 700;
-    line-height: 1;
+    line-height: 26px;
     color: #fff;
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
     background-color: #777;
-    border-radius: 10px;
+}
+
+.fs-state-right-badge {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 3px 5px;
+    color: #fff !important;
 }
 
 .console-info-container-style {
@@ -76,16 +83,18 @@
 .console-info-close-style {
     z-index: 2;
     position: absolute;
-    top: 10px;
+    top: 8px;
     right: 15px;
     padding: 0;
-    font-size: 21px;
-    font-weight: 700;
     line-height: 1;
-    opacity: .2;
     background: 0 0;
     border: 0;
     cursor: pointer;
+}
+
+.console-info-close-style > svg {
+    width: 24px;
+    height: 24px;
 }
 
 .console-info-back-style {
@@ -110,7 +119,6 @@
 
 .console-info-memory-text {
     font-weight: bold;
-    color: #ff851b;
     background-color: transparent;
 }
 
@@ -140,9 +148,30 @@
     z-index: 3;
     position: absolute;
     top: 10px;
-    right: 5rem;
+    right: 64px;
 }
 
+.fs-select-days {
+    padding: 0 20px 0 5px;
+    border-radius: 3px;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+.fs-select-arrow {
+    position: absolute;
+    display: flex;
+    width: 16px;
+    height: 16px;
+    left: 12px;
+    padding: 3px 5px 2px 8px;
+    align-items: center;
+    pointer-events: none;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
 
 .fs-ul-tabs-box {
     margin-bottom: 20px;
@@ -227,6 +256,29 @@
     }
 }
 
+.fs-chart-content {
+    float: left;
+    width: 100%;
+    max-height: 710px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.fs-chart-content::-webkit-scrollbar {
+    padding-left: 5px;
+    width: 5px;
+}
+
+.fs-chart-content::-webkit-scrollbar-thumb {
+    background-color: #bfbfbf;
+    border-radius: 10px;
+}
+
+.fs-mobile-chart-container {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
 @media (min-width: 992px) {
     .console-info-container-box {
         display: none;
@@ -244,7 +296,6 @@
         width: 100%;
     }
 }
-
 
 @media (max-width: 768px) {
     .fs-chart-style {
@@ -272,8 +323,8 @@
     margin-right: 5px;
 }
 
-.margin-right-10 {
-    margin-right: 10px;
+.margin-right-18 {
+    margin-right: 18px;
 }
 
 .fontsize-18 {
@@ -297,4 +348,28 @@
     border-top: 3px solid #00c0ef;
     border-radius: 3px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.b-0079cc {
+    background-color: #0079cc !important;
+}
+
+.b-007dc8 {
+    background-color: #007dc8 !important;
+}
+
+.b-0051b9 {
+    background-color: #0051b9 !important;
+}
+
+.b-534c6d {
+    background-color: #534c6d !important;
+}
+
+.b-99cb3d {
+    background-color: #99cb3d !important;
+}
+
+.inline-block {
+    display: inline-block;
 }

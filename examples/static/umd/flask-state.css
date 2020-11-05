@@ -143,6 +143,9 @@
     right: 5rem;
 }
 
+.select-days {
+    padding: 5px 10px;
+}
 
 .fs-ul-tabs-box {
     margin-bottom: 20px;
