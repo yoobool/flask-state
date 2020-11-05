@@ -5,10 +5,13 @@
 
 Flask-State是一款基于Flask运行的可视化插件。它能记录每分钟的本机状态以及读取Redis状态（可选项），并通过 [Echarts](https://github.com/apache/incubator-echarts) 生成数据图表展示给用户。
 
-![](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
-
-[![](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
+[![](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
+[![](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
 [![](https://img.shields.io/npm/v/flask-state)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
+[![](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
+[![](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)](https://pypi.org/project/Flask-State/)
+
+![](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
 
 ## Installation
@@ -116,6 +119,8 @@ init({lang:zh});
 
 Flask-State遵循[《贡献者公约》](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) 行为准则。
 
+## Community Channel
+我们在 [Gitter](https://gitter.im/flaskstate/community) 等你! 请加入我们.
 
 ## License
 Flask State使用BSD-3-Clause许可证。
