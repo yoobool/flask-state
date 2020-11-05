@@ -10,7 +10,6 @@
 'use strict';
 
 
-
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
         typeof define === 'function' && define.amd ? define(factory) :
@@ -75,21 +74,21 @@
                 '</button>' +
                 '<h4 id="fs-host-status-title" class="flask-state-elem fs-font-box box-style no-padding margin-top-10 fs-h4-style">host status</h4>' +
                 '<div id="fs-host-status" class="flask-state-elem fs-font-box box-style no-padding">' +
-                '<div class="inline-block"><div id="fs-memory" class="b-0079cc fs-state-right-badge">memory:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-cpu" class="b-0079cc fs-state-right-badge">cpu:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-disk-usage" class="b-0079cc fs-state-right-badge">disk usage:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-load-avg" class="b-007dc8 fs-state-right-badge">LoadAvg:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-boot-seconds" class="b-0051b9 fs-state-right-badge">boot seconds:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-memory" class="b-0079cc fs-state-right-badge">memory:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-cpu" class="b-0079cc fs-state-right-badge">cpu:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-disk-usage" class="b-0079cc fs-state-right-badge">disk usage:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-load-avg" class="b-007dc8 fs-state-right-badge">LoadAvg:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-boot-seconds" class="b-0051b9 fs-state-right-badge">boot seconds:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
                 '</div>' +
                 '<h4 id="fs-redis-status-title" class="flask-state-elem fs-font-box box-style no-padding fs-h4-style">redis status</h4>' +
                 '<div id="fs-redis-status" class="flask-state-elem fs-font-box box-style no-padding margin-bottom-10 ">' +
-                '<div class="inline-block"><div id="fs-used-memory" class="b-99cb3d fs-state-right-badge">used memory:</div><span class="flask-state-elem background-green fs-badge-style margin-top-m3 console-info-memory-text margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-used-memory-rss" class="b-99cb3d fs-state-right-badge">used memory rss:</div><span class="flask-state-elem background-green fs-badge-style margin-top-m3 console-info-memory-text margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-mem-fragmentation-ratio" class="b-534c6d fs-state-right-badge">mem fragmentation ratio:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-hits-ratio" class="b-0079cc fs-state-right-badge">hits ratio:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-delta-hits-ratio" class="b-0079cc fs-state-right-badge">24h hits ratio:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-uptime-in-seconds" class="b-0051b9 fs-state-right-badge">uptime in seconds:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
-                '<div class="inline-block"><div id="fs-connected-clients" class="b-534c6d fs-state-right-badge">connected clients:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3 margin-right-18"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory" class="b-99cb3d fs-state-right-badge">used memory:</div><span class="flask-state-elem background-green fs-badge-style margin-top-m3 console-info-memory-text"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory-rss" class="b-99cb3d fs-state-right-badge">used memory rss:</div><span class="flask-state-elem background-green fs-badge-style margin-top-m3 console-info-memory-text"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-mem-fragmentation-ratio" class="b-534c6d fs-state-right-badge">mem fragmentation ratio:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-hits-ratio" class="b-0079cc fs-state-right-badge">hits ratio:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-delta-hits-ratio" class="b-0079cc fs-state-right-badge">24h hits ratio:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-uptime-in-seconds" class="b-0051b9 fs-state-right-badge">uptime in seconds:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-connected-clients" class="b-534c6d fs-state-right-badge">connected clients:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
                 '</div>';
             if (this.mobile) {
                 str += '<hr id="console-info-line" class="console-info-line-style">' +
