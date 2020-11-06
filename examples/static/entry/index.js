@@ -1,6 +1,6 @@
-import {init} from '../cjs';
-import '../cjs/flask-state.css';
-import {zh} from '../cjs/i18n.js';
+import {init} from '../../../packages';
+import '../../../packages/flask-state.min.css';
+import {zh} from '../../../packages/i18n';
 init(null);
 init({dom:document.getElementById('test_id'), lang:zh});
 

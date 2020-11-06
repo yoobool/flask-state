@@ -87,7 +87,7 @@ module.exports = [{
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: "flask-state.css",
+            filename: "flask-state.min.css",
         }),
         new optimizeCssAssetsPlugin(),
     ]

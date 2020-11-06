@@ -1,1 +1,1 @@
-import './cjs/flask-state.css'
+import '../../packages/flask-state.css'
