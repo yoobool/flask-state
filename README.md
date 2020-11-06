@@ -21,7 +21,7 @@ $ pip install Flask-State
 
 Display components can use ```<script>``` tag from a CDN, or as a flask-state package on npm.
 ```html
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
 ```
 ```
 npm install flask-state --save
@@ -54,8 +54,8 @@ flask_state.init_app(app)
 ### Lastly：Select the appropriate method to import the view file.
 ```html
 <!--CDN-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/flask-state.css">
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/flask-state.css">
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
 <script type="text/javascript">
     // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
     flaskState.init({dom:document.getElementById('test')});
@@ -102,8 +102,8 @@ flaskState.init();
 #### Select the language in which the plug-in is displayed, now support en, zh.
 ```html
 <!--Note: the language file imported through the tag must be after the plug-in is imported-->
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/zh.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/zh.js"></script>
 <script type="text/javascript">
     flaskState.init({lang:flaskState.zh});
 </script>
