@@ -280,8 +280,8 @@
                         hostInfoSpan[1].innerHTML = currentStatistic.cpu + '%';
                         hostInfoSpan[2].innerHTML = currentStatistic.disk_usage + '%';
                         hostInfoSpan[3].innerHTML = currentStatistic.load_avg[0] + "，" + currentStatistic.load_avg[1] + "，" + currentStatistic.load_avg[2];
-                        if (currentStatistic.boot_seconds)
-                            hostInfoSpan[4].innerHTML = MachineStatus.getFormatSeconds(currentStatistic.boot_seconds, this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
+
+                        hostInfoSpan[4].innerHTML = MachineStatus.getFormatSeconds(currentStatistic.boot_seconds || 0, this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
 
                         const machineIndex = ['memory', 'cpu', 'disk_usage', 'load_avg'];
                         machineIndex.forEach(function (item, index) {
