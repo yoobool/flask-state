@@ -47,7 +47,6 @@
         };
 
         setFlaskStateData() {
-            document.scrollingElement.scrollTop = 0;
             document.getElementById('fs-background').style.display = 'block';
             document.getElementById('fs-info-container').style.display = 'block';
             document.getElementsByTagName('body')[0].style.overflowX = 'hidden';
