@@ -3,7 +3,7 @@
 
 [![](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
 [![](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
-[![](https://img.shields.io/npm/v/flask-state)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
+[![](https://img.shields.io/npm/v/flask-state)](https://www.npmjs.com/package/flask-state)
 [![](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
 [![](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)](https://pypi.org/project/Flask-State/)
 
