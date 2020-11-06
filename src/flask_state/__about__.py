@@ -1,5 +1,5 @@
 __title__ = 'Flask-State'
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __description__ = 'A visual plug-in for displaying native state through echarts for browser.'
 __url__ = 'https://github.com/yoobool/flask-state'
 __author__ = 'Yoobool'
