@@ -1,4 +1,4 @@
-import {init} from '../../../packages';
+import {init} from '../';
 import '../../../packages/flask-state.css';
 import {zh} from '../../../packages/i18n';
 init(null);
