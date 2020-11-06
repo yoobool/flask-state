@@ -34,7 +34,7 @@ class MachineStatus {
     };
 
     setFlaskStateData() {
-        document.getElementById('fs-info-back').style.display = 'block';
+        document.getElementById('fs-background').style.display = 'block';
         document.getElementById('fs-info-container').style.display = 'block';
         document.getElementsByTagName('body')[0].style.overflowX = 'hidden';
         document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
@@ -44,9 +44,8 @@ class MachineStatus {
 
     /* Insert window element */
     initFlaskStateContainer() {
-        let str = '<div class="flask-state-elem layer console-info-back-style" id="fs-info-back" disabled="disabled" xmlns="http://www.w3.org/1999/html">' +
-            '</div>' +
-            '<div class="flask-state-elem ">' +
+        let str =
+            '<div class="flask-state-elem fs-background" id="fs-background">' +
             '<div class="flask-state-elem console-info-container-style console-info-container-box box-style " id="fs-info-container">' +
             '<div class="flask-state-elem fs-select-container">' +
             '<svg t="1604570316831" class="icon fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3994" width="16" height="16" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><style type="text/css"></style></defs><path d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z" fill="#161e2e" p-id="3995"></path></svg>' +
@@ -57,21 +56,21 @@ class MachineStatus {
             '</button>' +
             '<h4 id="fs-host-status-title" class="flask-state-elem fs-font-box box-style no-padding margin-top-10 fs-h4-style">host status</h4>' +
             '<div id="fs-host-status" class="flask-state-elem fs-font-box box-style no-padding">' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-memory" class="b-0079cc fs-state-right-badge">memory:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-cpu" class="b-0079cc fs-state-right-badge">cpu:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-disk-usage" class="b-0079cc fs-state-right-badge">disk usage:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-load-avg" class="b-007dc8 fs-state-right-badge">LoadAvg:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-boot-seconds" class="b-0051b9 fs-state-right-badge">boot seconds:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-memory" class="b-0079cc fs-state-right-badge">memory:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-cpu" class="b-0079cc fs-state-right-badge">cpu:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-disk-usage" class="b-0079cc fs-state-right-badge">disk usage:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-load-avg" class="b-007dc8 fs-state-right-badge">LoadAvg:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-boot-seconds" class="b-0051b9 fs-state-right-badge">boot seconds:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
             '</div>' +
             '<h4 id="fs-redis-status-title" class="flask-state-elem fs-font-box box-style no-padding fs-h4-style">redis status</h4>' +
             '<div id="fs-redis-status" class="flask-state-elem fs-font-box box-style no-padding margin-bottom-10 ">' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory" class="b-99cb3d fs-state-right-badge">used memory:</div><span class="flask-state-elem background-green fs-badge-style margin-top-m3 console-info-memory-text"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory-rss" class="b-99cb3d fs-state-right-badge">used memory rss:</div><span class="flask-state-elem background-green fs-badge-style margin-top-m3 console-info-memory-text"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-mem-fragmentation-ratio" class="b-534c6d fs-state-right-badge">mem fragmentation ratio:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-hits-ratio" class="b-0079cc fs-state-right-badge">hits ratio:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-delta-hits-ratio" class="b-0079cc fs-state-right-badge">24h hits ratio:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-uptime-in-seconds" class="b-0051b9 fs-state-right-badge">uptime in seconds:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
-            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-connected-clients" class="b-534c6d fs-state-right-badge">connected clients:</div><span class="flask-state-elem fs-badge-style background-green margin-top-m3"></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory" class="b-99cb3d fs-state-right-badge">used memory:</div><span class="flask-state-elem background-green fs-badge-style  console-info-memory-text"></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory-rss" class="b-99cb3d fs-state-right-badge">used memory rss:</div><span class="flask-state-elem background-green fs-badge-style  console-info-memory-text"></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-mem-fragmentation-ratio" class="b-534c6d fs-state-right-badge">mem fragmentation ratio:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-hits-ratio" class="b-0079cc fs-state-right-badge">hits ratio:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-delta-hits-ratio" class="b-0079cc fs-state-right-badge">24h hits ratio:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-uptime-in-seconds" class="b-0051b9 fs-state-right-badge">uptime in seconds:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+            '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-connected-clients" class="b-534c6d fs-state-right-badge">connected clients:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
             '</div>';
         if (this.mobile) {
             str += '<hr id="console-info-line" class="console-info-line-style">' +
@@ -143,7 +142,7 @@ class MachineStatus {
     setEventListener() {
         if (window.addEventListener) {
             document.getElementById('fs-info-close').addEventListener('click', function clickClose() {
-                document.getElementById('fs-info-back').style.display = 'none';
+                document.getElementById('fs-background').style.display = 'none';
                 document.getElementById('fs-info-container').style.display = 'none';
                 document.getElementsByTagName('body')[0].style.overflowX = 'auto';
                 document.getElementsByTagName('body')[0].style.overflowY = 'auto';
@@ -152,13 +151,15 @@ class MachineStatus {
                 }
             });
 
-            document.getElementById('fs-info-back').addEventListener('click', function clickBack() {
-                document.getElementById('fs-info-back').style.display = 'none';
-                document.getElementById('fs-info-container').style.display = 'none';
-                document.getElementsByTagName('body')[0].style.overflowX = 'auto';
-                document.getElementsByTagName('body')[0].style.overflowY = 'auto';
-                if (document.getElementById('fs-state-circular')) {
-                    document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
+            document.getElementById('fs-background').addEventListener('click', function clickBack(e) {
+                if (String(e.target.id) === 'fs-background') {
+                    document.getElementById('fs-background').style.display = 'none';
+                    document.getElementById('fs-info-container').style.display = 'none';
+                    document.getElementsByTagName('body')[0].style.overflowX = 'auto';
+                    document.getElementsByTagName('body')[0].style.overflowY = 'auto';
+                    if (document.getElementById('fs-state-circular')) {
+                        document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
+                    }
                 }
             });
 
