@@ -66,12 +66,9 @@ def record_timer(app, interval):
     app.lock_flask_state = Lock.get_file_lock()
     with app.app_context():
         try:
-            try:
-                current_app.lock_flask_state.acquire()
-                logger.info(InfoMsg.ACQUIRED_LOCK.get_msg('. process ID: %d' % os.getpid()))
-            except BlockingIOError:
-                logger.exception(ErrorMsg.ACQUIRED_LOCK_FAILED.get_msg('. process ID: %d' % os.getpid()))
-                return
+            current_app.lock_flask_state.acquire()
+            logger.info(InfoMsg.ACQUIRED_LOCK.get_msg('. process ID: %d' % os.getpid()))
+
             s = sched.scheduler(time.time, time.sleep)
             in_time = time.time()
             target_time = int(int((time.time()) / ONE_MINUTE_SECONDS + 1) * ONE_MINUTE_SECONDS)
@@ -82,6 +79,8 @@ def record_timer(app, interval):
                 now_time = time.time()
                 s.enter(target_time - now_time, 1, record_flask_state_host, (interval,))
                 s.run()
+        except BlockingIOError:
+            pass
         except Exception as e:
             current_app.lock_flask_state.release()
             raise e
