@@ -54,7 +54,7 @@
     color: #fff;
     text-align: center;
     white-space: nowrap;
-    vertical-align: middle;
+    vertical-align:top;
     background-color: #777;
 }
 
@@ -65,15 +65,28 @@
     color: #fff !important;
 }
 
+.fs-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    top: 0;
+    left: 0;
+    z-index: 2001;
+    background: rgba(255, 255, 255, .6);
+}
+
+.fs-background::-webkit-scrollbar-thumb {
+    background-color: #bfbfbf;
+    border-radius: 10px;
+}
+
 .console-info-container-style {
     z-index: 2002;
-    position: fixed;
     display: block;
-    top: 5rem;
-    left: 0;
-    right: 0;
-    height: fit-content;
-    margin: 0 auto 20px auto;
+    margin: 0 auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
     background: #ffffff;
     border-top: 3px solid #d2d6de;
     border-radius: 3px;
@@ -95,17 +108,6 @@
 .console-info-close-style > svg {
     width: 24px;
     height: 24px;
-}
-
-.console-info-back-style {
-    z-index: 2001;
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: none;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, .6);
 }
 
 .console-info-line-style {
@@ -154,6 +156,7 @@
 .fs-select-days {
     padding: 0 20px 0 5px;
     border-radius: 3px;
+    line-height: 15px;
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -164,6 +167,7 @@
     display: flex;
     width: 16px;
     height: 16px;
+    top: 0;
     left: 12px;
     padding: 3px 5px 2px 8px;
     align-items: center;
@@ -257,7 +261,6 @@
 }
 
 .fs-chart-content {
-    float: left;
     width: 100%;
     max-height: 710px;
     overflow-y: auto;
@@ -282,7 +285,6 @@
 @media (min-width: 992px) {
     .console-info-container-box {
         display: none;
-        float: left;
         width: 75%;
     }
 
@@ -309,10 +311,6 @@
 
 .margin-bottom-10 {
     margin-bottom: 10px;
-}
-
-.margin-top-m3 {
-    margin-top: -3px;
 }
 
 .margin-right-3 {
