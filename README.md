@@ -36,92 +36,38 @@ npm install flask-state --save
 ```
 
 
+## Documentation
+To check out [live example](https://flask-state.herokuapp.com/), and visit [tutorials doc](https://github.com/yoobool/flask-state/wiki/Tutorials).
+
+
 ## Usage
 
 After the Flask-State is installed, you also need to import JavaScript file and CSS file to bind a convention ID value for your element. In some configurations, you can also choose to modify them.
 
 
-### Firstly：we'll set up a Flask app.
-```python
-from flask import Flask
-app = Flask(__name__)
-```
-
-### Secondly：Bind database address.
+### Firstly：Bind database address.
 ```python
 from flask_state import DEFAULT_BIND_SQLITE
 app.config['SQLALCHEMY_BINDS'] = {DEFAULT_BIND_SQLITE: 'sqlite:///path'}
 ```
 
-### Thirdly：Call the init_app method of the flask-state to initialize the configuration.
+### Secondly：Call the init_app method of the flask-state to initialize the configuration.
 ```python
 import flask_state
 flask_state.init_app(app)
 ```
 
-### Lastly：Select the appropriate method to import the view file.
-```html
-<!--CDN-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/flask-state.min.css">
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
-<script type="text/javascript">
-    // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
-    flaskState.init({dom:document.getElementById('test')});
-</script>
-```
+### Thirdly：Import the view file.
 ```javascript
 // npm
-import 'flask-state/flask-state.css';
+import 'echarts';
+import 'flask-state/flask-state.min.css';
 import {init} from 'flask-state';
 // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
 init({dom:document.getElementById('test')});
 ```
 
-### Extra：You can also customize some configuration(non-essential).
-
-#### Monitor the redis status.
-```python
-app.config['REDIS_CONF'] = {'REDIS_STATUS': True, 'REDIS_HOST': '192.168.1.1', 'REDIS_PORT':16380, 'REDIS_PASSWORD': 'psw'}
-```
-
-#### Modify the time interval for saving monitoring records.
-```python
-# The minimum interval is 60 seconds. The default interval is 60 seconds
-import flask_state
-SECS = 60
-flask_state.init_app(app, SECS)
-```
-
-#### Custom logger object.
-```python
-import flask_state
-import logging
-custom_logger = logging.getLogger(__name__)
-flask_state.init_app(app, interval=60, log_instance=custom_logger)
-```
-
-#### Custom binding triggers the object of the window.
-```javascript
-/* When the initialization plug-in does not pass in an object, the plug-in will automatically create a right-hand suspension ball */
-/* Note: all pages share a plug-in instance. Calling init() method multiple times will only trigger plug-in events for new object binding */
-flaskState.init();
-```
-
-#### Select the language in which the plug-in is displayed, now support en, zh.
-```html
-<!--Note: the language file imported through the tag must be after the plug-in is imported-->
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/zh.js"></script>
-<script type="text/javascript">
-    flaskState.init({lang:flaskState.zh});
-</script>
-```
-```javascript
-import {init} from 'flask-state';
-import {zh} from 'flask-state/i18n.js';
-init({lang:zh});
-```
-
+Learn more about some configurations by reading [documentation](https://github.com/yoobool/flask-state/wiki/Configuration)
 
 ## Contributing
 Welcome to [open an issue](https://github.com/yoobool/flask-state/issues/new)!
