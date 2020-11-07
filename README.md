@@ -9,7 +9,14 @@
 
 # Flask-State
 
-Flask-State is a visual plug-in based on flask. It can record the local state every minute and read the status of redis if you have configured redis, and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
+Flask-State is a lightweight chart plugin to show machine state.
+
+* Monitoring indicators: CPU, Memory, Disk usage, LoadAVG, Boot time.
+* Extensible: It has rich options for extended functions, including redis monitoring, user authentication, custom logging, i18n and etc.
+* Stable: Lightweight dependencies, meanwhile solving multi-progress concurrency problems (if you use [gunicorn](https://gunicorn.org/)).
+
+Flask-State is an active project, well-tested and complete update roadmap.
+
 
 ![](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
@@ -54,7 +61,7 @@ flask_state.init_app(app)
 ### Lastly：Select the appropriate method to import the view file.
 ```html
 <!--CDN-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/flask-state.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/flask-state.min.css">
 <script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
 <script type="text/javascript">
     // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window

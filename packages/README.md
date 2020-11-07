@@ -1,13 +1,22 @@
 ![](https://github.com/yoobool/flask-state/blob/master/src/flask_state/static/flask_state.png)
-# Flask-State
 
-Flask-State is a visual plug-in based on flask. It can record the local state every minute and read the status of redis if you have configured redis, and generate data chart to show to users through [Echarts](https://github.com/apache/incubator-echarts).
 
 [![](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
 [![](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
 [![](https://img.shields.io/npm/v/flask-state)](https://www.npmjs.com/package/flask-state)
 [![](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
 [![](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)](https://pypi.org/project/Flask-State/)
+
+# Flask-State
+
+Flask-State is a lightweight chart plugin to show machine state.
+
+* Monitoring indicators: CPU, Memory, Disk usage, LoadAVG, Boot time.
+* Extensible: It has rich options for extended functions, including redis monitoring, user authentication, custom logging, i18n and etc.
+* Stable: Lightweight dependencies, meanwhile solving multi-progress concurrency problems (if you use [gunicorn](https://gunicorn.org/)).
+
+Flask-State is an active project, well-tested and complete update roadmap.
+
 
 ![](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
@@ -19,7 +28,7 @@ $ pip install Flask-State
 
 Display components can use ```<script>``` tag from a CDN, or as a flask-state package on npm.
 ```html
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
 ```
 ```
 npm install flask-state --save
@@ -52,8 +61,8 @@ flask_state.init_app(app)
 ### Lastly：Select the appropriate method to import the view file.
 ```html
 <!--CDN-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/flask-state.css">
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/flask-state.min.css">
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
 <script type="text/javascript">
     // Create a DOM node with ID 'test'. After init() binds the node, click to open the listening window
     flaskState.init({dom:document.getElementById('test')});
@@ -100,8 +109,8 @@ flaskState.init();
 #### Select the language in which the plug-in is displayed, now support en, zh.
 ```html
 <!--Note: the language file imported through the tag must be after the plug-in is imported-->
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/zh.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/zh.js"></script>
 <script type="text/javascript">
     flaskState.init({lang:flaskState.zh});
 </script>

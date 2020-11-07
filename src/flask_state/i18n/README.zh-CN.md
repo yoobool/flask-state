@@ -3,7 +3,14 @@
 ![](https://github.com/yoobool/flask-state/blob/master/src/flask_state/static/flask_state.png)
 # Flask-State
 
-Flask-State是一款基于Flask运行的可视化插件。它能记录每分钟的本机状态以及读取Redis状态（可选项），并通过 [Echarts](https://github.com/apache/incubator-echarts) 生成数据图表展示给用户。
+Flask-State是一款轻便的、图表化插件。
+
+* 监控状态：CPU，内存，磁盘，LoadAvg，基本时长。
+* 可扩展：除记录本机状态外，还包括丰富的扩展功能选择。其中有Redis监控、用户验证、自定义logging和i18n等。
+* 稳定：轻量级的依赖关系，同时解决了多进程并发问题。
+
+Flask-State是一个活跃的项目，经过了充分的测试以及有一系列的更新计划。
+
 
 [![](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
 [![](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
@@ -22,7 +29,7 @@ $ pip install Flask-State
 
 载入显示组件方式可通过标签引入或npm安装
 ```html
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
 ```
 ```
 npm install flask-state --save
@@ -54,8 +61,8 @@ flask_state.init_app(app)
 #### 第四步：选择合适的导入方式导入视图文件
 ```html
 <!--cdn方式导入-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.css">
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.css">
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
 <script type="text/javascript">
     // 创建一个id为'test'的dom节点，init()绑定节点后点击即可打开监听窗口
     flaskState.init({dom:document.getElementById('test')});
@@ -101,8 +108,8 @@ flaskState.init();
 选择插件显示的语言
 ```html
 <!--注意：通过标签导入语言文件必须在导入插件之后-->
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/flask-state.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.2/packages/umd/zh.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/zh.js"></script>
 <script type="text/javascript">
     flaskState.init({lang:flaskState.zh});
 </script>
