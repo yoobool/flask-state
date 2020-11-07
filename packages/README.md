@@ -42,9 +42,6 @@ To check out [live example](https://flask-state.herokuapp.com/), and visit [tuto
 
 ## Usage
 
-After the Flask-State is installed, you also need to import JavaScript file and CSS file to bind a convention ID value for your element. In some configurations, you can also choose to modify them.
-
-
 ### Firstly：Bind database address.
 ```python
 from flask_state import DEFAULT_BIND_SQLITE
