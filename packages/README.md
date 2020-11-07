@@ -1,4 +1,4 @@
-![](https://github.com/yoobool/flask-state/blob/master/src/flask_state/static/flask_state.png)
+![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.3/src/flask_state/static/flask_state.png)
 
 
 [![](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
@@ -11,14 +11,15 @@
 
 Flask-State is a lightweight chart plugin to show machine state.
 
-* Monitoring indicators: CPU, Memory, Disk usage, LoadAVG, Boot time.
-* Extensible: It has rich options for extended functions, including redis monitoring, user authentication, custom logging, i18n and etc.
-* Stable: Lightweight dependencies, meanwhile solving multi-progress concurrency problems (if you use [gunicorn](https://gunicorn.org/)).
+* **Monitoring indicators:** CPU, Memory, Disk usage, LoadAVG, Boot time.
+* **Extensible:** It has rich options for extended functions, including redis monitoring, user authentication, custom logging, i18n and etc.
+* **Stable:** Lightweight dependencies, meanwhile solving multi-progress concurrency problems (if you use [gunicorn](https://gunicorn.org/)).
 
 Flask-State is an active project, well-tested and complete update roadmap.
 
+###
 
-![](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
+![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.3/examples/static/flask_state.png)
 
 ## Installation
 Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):

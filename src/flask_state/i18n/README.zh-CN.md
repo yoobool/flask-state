@@ -1,16 +1,6 @@
 [English](https://github.com/yoobool/flask-state/blog/master/master/README.md) | 简体中文
 
-![](https://github.com/yoobool/flask-state/blob/master/src/flask_state/static/flask_state.png)
-# Flask-State
-
-Flask-State是一款轻便的、图表化插件。
-
-* 监控状态：CPU，内存，磁盘，LoadAvg，基本时长。
-* 可扩展：除记录本机状态外，还包括丰富的扩展功能选择。其中有Redis监控、用户验证、自定义logging和i18n等。
-* 稳定：轻量级的依赖关系，同时解决了多进程并发问题。
-
-Flask-State是一个活跃的项目，经过了充分的测试以及有一系列的更新计划。
-
+![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.3/src/flask_state/static/flask_state.png)
 
 [![](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
 [![](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
@@ -18,7 +8,19 @@ Flask-State是一个活跃的项目，经过了充分的测试以及有一系列
 [![](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
 [![](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)](https://pypi.org/project/Flask-State/)
 
-![](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
+# Flask-State
+
+Flask-State是一款轻便的、图表化插件。
+
+* **监控状态**：CPU，内存，磁盘，LoadAvg，基本时长。
+* **可扩展**：除记录本机状态外，还包括丰富的扩展功能选择。其中有Redis监控、用户验证、自定义logging和i18n等。
+* **稳定**：轻量级的依赖关系，同时解决了多进程并发问题。
+
+Flask-State是一个活跃的项目，经过了充分的测试以及有一系列的更新计划。
+
+###
+
+![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.3/examples/static/flask_state.png)
 
 
 ## Installation
