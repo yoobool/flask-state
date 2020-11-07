@@ -67,7 +67,7 @@ import {init} from 'flask-state';
 init({dom:document.getElementById('test')});
 ```
 
-Learn more about some configurations by reading [documentation](https://github.com/yoobool/flask-state/wiki/Configuration)
+**Learn more about advanced configurations by reading** [documentation](https://github.com/yoobool/flask-state/wiki/Configuration).
 
 ## Contributing
 Welcome to [open an issue](https://github.com/yoobool/flask-state/issues/new)!

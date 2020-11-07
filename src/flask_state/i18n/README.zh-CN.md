@@ -12,7 +12,7 @@
 
 Flask-State是一款轻便的、图表化插件。
 
-* **监控状态**：CPU，内存，磁盘，LoadAvg，基本时长。
+* **监控状态**：CPU，内存，磁盘，LoadAvg，启动时长。
 * **可扩展**：除记录本机状态外，还包括丰富的扩展功能选择。其中有Redis监控、用户验证、自定义logging和i18n等。
 * **稳定**：轻量级的依赖关系，同时解决了多进程并发问题。
 
@@ -78,7 +78,7 @@ import {init} from 'flask-state';
 init({dom:document.getElementById('test')});
 ```
 
-#### 额外的：你也可以自定义某些配置文件（非必须）
+#### 额外：你也可以自定义某些配置文件（可选择）
 如果你还需要监控REDIS状态，你可以在Flask app上配置你的redis地址参数
 ```python
 app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.3', 'REDIS_PORT':16380, 'REDIS_PASSWORD': 'psw'}
@@ -129,7 +129,7 @@ init({lang:zh});
 Flask-State遵循[《贡献者公约》](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) 行为准则。
 
 ## Community Channel
-我们在 [Gitter](https://gitter.im/flaskstate/community) 等你! 请加入我们.
+我们在 [Gitter](https://gitter.im/flaskstate/community) 等你! 请加入我们。
 
 ## License
 Flask State使用BSD-3-Clause许可证。
