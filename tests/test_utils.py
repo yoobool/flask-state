@@ -6,7 +6,7 @@ from flask import make_response
 
 from src.flask_state.conf.config import Constant
 from src.flask_state.exceptions.log_msg import ErrorMsg
-from src.flask_state.utils import format_conf, date, file_lock, auth
+from src.flask_state.utils import auth, date, file_lock, format_conf
 
 
 # auth

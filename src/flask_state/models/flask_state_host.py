@@ -1,8 +1,8 @@
 from sqlalchemy import func
 from sqlalchemy.sql import text
 
-from . import db
 from ..conf.config import Constant
+from . import db
 
 
 # model
