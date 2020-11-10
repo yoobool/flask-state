@@ -72,10 +72,8 @@ def test_file_lock():
     try:
         lock_copy.acquire()
     except BlockingIOError as e:
-        if os.getenv("GITHUB_ACTIONS"):
-            assert str(e) == "[Errno 11] Resource temporarily unavailable"
-        else:
-            assert str(e) == "[Errno 35] Resource temporarily unavailable"
+        errno = 11 if os.getenv("GITHUB_ACTIONS") else 35
+        assert str(e) == f"[Errno {errno}] Resource temporarily unavailable"
 
     lock.release()
     assert not lock_copy.acquire()
