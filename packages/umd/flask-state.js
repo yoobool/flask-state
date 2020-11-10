@@ -579,7 +579,7 @@
             return new Promise((resolve, reject) => {
                 xhr.open(opt.type, opt.url, opt.async);
                 xhr.onreadystatechange = () => {
-                    // readyState: 0: init, 1: connect has set up, 2: recive request, 3: request.. , 4: request end, send response
+                    // readyState: 0: init, 1: connect has set up, 2: receive request, 3: request.. , 4: request end, send response
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
                             // status: 200: OK,  404: Not Found Page
