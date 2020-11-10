@@ -16,7 +16,7 @@ def format_sec(secs) -> int:
     """
     if not isinstance(secs, int):
         raise TypeError(
-            ErrorMsg.DATA_TYPE_ERROR.get_msg('. The target type is %s, not %s' % (int.__name__, type(secs).__name__)))
+            ErrorMsg.DATA_TYPE_ERROR.get_msg('. The target type is {}, not {}'.format(int.__name__, type(secs).__name__)))
     if secs < Constant.MIN_SECONDS:
         logger.warning(WarningMsg.TIME_SMALL.get_msg())
         return Constant.DEFAULT_SECONDS
@@ -31,7 +31,7 @@ def format_address(address) -> str:
     """
     if not isinstance(address, str):
         raise TypeError(
-            ErrorMsg.DATA_TYPE_ERROR.get_msg('.The target type is %s, not %s' % (str.__name__, type(address).__name__)))
+            ErrorMsg.DATA_TYPE_ERROR.get_msg('.The target type is {}, not {}'.format(str.__name__, type(address).__name__)))
     if len(address) < Constant.MIN_ADDRESS_LENGTH or address[:Constant.MIN_ADDRESS_LENGTH - 1] != DB_URL_HEADER:
         raise ValueError(ErrorMsg.ERROR_ADDRESS.get_msg('.Error sqlite url: %s' % address))
     if platform.system() == Constant.WINDOWS_SYSTEM:

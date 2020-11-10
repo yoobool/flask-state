@@ -23,7 +23,7 @@ class FileLock:
         else:
             lock_dir = '/tmp'
 
-        self.file = '%s%s%s' % (lock_dir, os.sep, lock_file)
+        self.file = f'{lock_dir}{os.sep}{lock_file}'
         self._fn = None
         self.release()
 

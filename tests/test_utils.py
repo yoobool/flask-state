@@ -120,7 +120,7 @@ def test_format_address():
             if not isinstance(test_type_list.get(key), str):
                 raise TypeError(
                     ErrorMsg.DATA_TYPE_ERROR.get_msg(
-                        '. The target type is %s, not %s' % (str.__name__, type(test_type_list.get(key)).__name__)))
+                        '. The target type is {}, not {}'.format(str.__name__, type(test_type_list.get(key)).__name__)))
         except TypeError as t:
             target_type_error_count += 1
             assert t.__str__() == 'Data type format error. The target type is str, not %s' % key
