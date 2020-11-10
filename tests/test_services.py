@@ -2,7 +2,7 @@ import redis
 
 from src.flask_state.exceptions import ErrorResponse, SuccessResponse
 from src.flask_state.models import model_init_app
-from src.flask_state.services import redis_conn, host_status
+from src.flask_state.services import host_status, redis_conn
 
 
 def test_redis(app):

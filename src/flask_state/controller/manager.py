@@ -3,20 +3,20 @@ import sched
 import threading
 import time
 
-from flask import request, current_app
+from flask import current_app, request
 
-from .response_methods import make_response_content
-from ..conf.config import HttpMethod, Constant
+from ..conf.config import Constant, HttpMethod
 from ..exceptions import ErrorResponse
 from ..exceptions.error_code import MsgCode
 from ..exceptions.log_msg import ErrorMsg, InfoMsg
 from ..models import model_init_app
 from ..services import redis_conn
 from ..services.host_status import query_flask_state_host, record_flask_state_host
-from ..utils.auth import auth_user, auth_method
+from ..utils.auth import auth_method, auth_user
 from ..utils.file_lock import Lock
 from ..utils.format_conf import format_address, format_sec
-from ..utils.logger import logger, DefaultLogger
+from ..utils.logger import DefaultLogger, logger
+from .response_methods import make_response_content
 
 ONE_MINUTE_SECONDS = 60
 
