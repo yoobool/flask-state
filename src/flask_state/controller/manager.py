@@ -97,7 +97,7 @@ def query_flask_state():
         b2d = request.json
         if not isinstance(b2d, dict):
             logger.warning(ErrorMsg.DATA_TYPE_ERROR).get_msg(
-                '.The target type is %s, not %s' % (dict.__name__, type(b2d).__name__))
+                '.The target type is {}, not {}'.format(dict.__name__, type(b2d).__name__))
             return make_response_content(ErrorResponse(MsgCode.JSON_FORMAT_ERROR))
         time_quantum = b2d.get('timeQuantum')
         return make_response_content(resp=query_flask_state_host(time_quantum))
