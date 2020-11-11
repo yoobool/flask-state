@@ -29,9 +29,8 @@ class FileLock:
 
     def acquire(self):
         if SYSTEM == Constant.WINDOWS_SYSTEM:
-            while os.path.exists(self.file):
-                time.sleep(0.01)  # wait 10ms
-                continue
+            if os.path.exists(self.file):
+                return
 
             with open(self.file, 'w') as f:
                 f.write('1')
