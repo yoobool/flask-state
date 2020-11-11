@@ -1,5 +1,5 @@
-from abc import abstractmethod, ABC
-from enum import unique, Enum
+from abc import ABC, abstractmethod
+from enum import Enum, unique
 
 
 class FlaskStateResponse(ABC):

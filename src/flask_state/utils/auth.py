@@ -1,4 +1,4 @@
-from flask import current_app, _request_ctx_stack, request
+from flask import _request_ctx_stack, current_app, request
 from werkzeug.local import LocalProxy
 
 from ..controller.response_methods import make_response_content

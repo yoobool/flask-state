@@ -1,6 +1,6 @@
 from flask import Flask
 
-from src.flask_state import init_app, DEFAULT_BIND_SQLITE
+from src.flask_state import DEFAULT_BIND_SQLITE, init_app
 
 
 def setting_app():

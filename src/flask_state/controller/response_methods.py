@@ -1,4 +1,4 @@
-from flask import make_response, jsonify
+from flask import jsonify, make_response
 
 
 def make_response_content(resp, msg=None, http_status=200):

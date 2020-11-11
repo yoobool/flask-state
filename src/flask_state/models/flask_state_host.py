@@ -1,8 +1,8 @@
 from sqlalchemy import func
 from sqlalchemy.sql import text
 
-from . import db
 from ..conf.config import Constant
+from . import db
 
 
 # model
@@ -40,5 +40,5 @@ class FlaskStateHost(db.Model):
     delta_hits_ratio = db.Column(db.Float, server_default=text("0"))
 
     def __repr__(self):
-        return "<FlaskStateHost cpu: %s, memory:%s, load_avg:%s, disk_usage:%s, boot_seconds:%s, ts:%s>" % (
+        return "<FlaskStateHost cpu: {}, memory:{}, load_avg:{}, disk_usage:{}, boot_seconds:{}, ts:{}>".format(
             self.cpu, self.memory, self.load_avg, self.disk_usage, self.boot_seconds, self.ts)

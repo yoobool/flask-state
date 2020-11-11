@@ -4,14 +4,19 @@ from datetime import datetime, timezone
 
 import psutil
 
-from . import redis_conn
-from ..conf.config import Constant, DAYS_SCOPE
-from ..dao.host_status import create_host_status, retrieve_host_status, retrieve_host_status_yesterday, \
-    delete_thirty_days_status, retrieve_latest_host_status
-from ..exceptions import FlaskStateResponse, SuccessResponse, ErrorResponse
+from ..conf.config import DAYS_SCOPE, Constant
+from ..dao.host_status import (
+    create_host_status,
+    delete_thirty_days_status,
+    retrieve_host_status,
+    retrieve_host_status_yesterday,
+    retrieve_latest_host_status,
+)
+from ..exceptions import ErrorResponse, FlaskStateResponse, SuccessResponse
 from ..exceptions.error_code import MsgCode
 from ..utils.date import get_current_ms, get_current_s
 from ..utils.logger import logger
+from . import redis_conn
 
 SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
 DEFAULT_HITS_RATIO = 100  # Default hits ratio value

@@ -6,7 +6,7 @@ from flask import make_response
 
 from src.flask_state.conf.config import Constant
 from src.flask_state.exceptions.log_msg import ErrorMsg
-from src.flask_state.utils import format_conf, date, file_lock, auth
+from src.flask_state.utils import auth, date, file_lock, format_conf
 
 
 # auth
@@ -72,7 +72,8 @@ def test_file_lock():
     try:
         lock_copy.acquire()
     except BlockingIOError as e:
-        assert e.__str__() == "[Errno 35] Resource temporarily unavailable"
+        errno = 11 if os.getenv("GITHUB_ACTIONS") else 35
+        assert str(e) == f"[Errno {errno}] Resource temporarily unavailable"
 
     lock.release()
     assert not lock_copy.acquire()
@@ -120,7 +121,7 @@ def test_format_address():
             if not isinstance(test_type_list.get(key), str):
                 raise TypeError(
                     ErrorMsg.DATA_TYPE_ERROR.get_msg(
-                        '. The target type is %s, not %s' % (str.__name__, type(test_type_list.get(key)).__name__)))
+                        '. The target type is {}, not {}'.format(str.__name__, type(test_type_list.get(key)).__name__)))
         except TypeError as t:
             target_type_error_count += 1
             assert t.__str__() == 'Data type format error. The target type is str, not %s' % key
