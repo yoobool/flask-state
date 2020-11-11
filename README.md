@@ -21,6 +21,11 @@ Flask-State is an active project, well-tested and complete update roadmap.
 
 ![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.4/examples/static/flask_state.png)
 
+
+## Documentation
+To check out [live example](https://flask-state.herokuapp.com/), and visit [tutorials doc](https://github.com/yoobool/flask-state/wiki/Tutorials).
+
+
 ## Installation
 Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):
 ```
@@ -34,10 +39,6 @@ Display components can use ```<script>``` tag from a CDN, or as a flask-state pa
 ```
 npm install flask-state --save
 ```
-
-
-## Documentation
-To check out [live example](https://flask-state.herokuapp.com/), and visit [tutorials doc](https://github.com/yoobool/flask-state/wiki/Tutorials).
 
 
 ## Usage
