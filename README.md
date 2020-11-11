@@ -1,4 +1,4 @@
-![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.3/src/flask_state/static/flask_state.png)
+![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.4/src/flask_state/static/flask_state.png)
 
 
 [![](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
@@ -19,7 +19,7 @@ Flask-State is an active project, well-tested and complete update roadmap.
 
 ###
 
-![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.3/examples/static/flask_state.png)
+![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.4/examples/static/flask_state.png)
 
 ## Installation
 Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):
@@ -29,7 +29,7 @@ $ pip install Flask-State
 
 Display components can use ```<script>``` tag from a CDN, or as a flask-state package on npm.
 ```html
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.3/packages/umd/flask-state.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.4/packages/umd/flask-state.min.js"></script>
 ```
 ```
 npm install flask-state --save
