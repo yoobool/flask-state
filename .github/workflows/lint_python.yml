@@ -10,8 +10,8 @@ jobs:
       - run: black --check . || true
       - run: codespell --quiet-level=2  # --ignore-words-list="" --skip=""
       - run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-      - run: isort --profile black . || true
+      - run: isort --profile black .
       - run: pip install -r requirements.txt || true
       - run: pip install Flask Flask-SQLAlchemy psutil redis
       - run: pytest .
-      - run: shopt -s globstar && pyupgrade --py36-plus **/*.py || true
+      - run: shopt -s globstar && pyupgrade --py36-plus **/*.py
