@@ -2,10 +2,10 @@
 const zh = {
     "language": "zh",
     "host_status": "本机状态",
-    "cpu": "中央处理器",
+    "cpu": "CPU",
     "memory": "内存",
     "disk_usage": "磁盘使用率",
-    "load_avg": "LoadAvg",
+    "load_avg": "Load Avg",
     "boot_seconds": "启动时长",
     "redis_status": "Redis状态",
     "used_memory": "分配总内存",

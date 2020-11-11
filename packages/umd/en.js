@@ -6,20 +6,20 @@ const en = {
     "memory": "Memory",
     "disk_usage": "Disk Usage",
     "load_avg": "Load Avg",
-    "boot_seconds": "boot seconds",
+    "boot_seconds": "Uptime",
     "redis_status": "Redis Status",
-    "used_memory": "used memory",
-    "used_memory_rss": "used memory rss",
-    "mem_fragmentation_ratio": "mem fragmentation ratio",
-    "hits_ratio": "hits ratio",
-    "delta_hits_ratio": "delta hits ratio",
-    "uptime_in_seconds": "uptime in seconds",
-    "connected_clients": "connected clients",
+    "used_memory": "Used Mem",
+    "used_memory_rss": "Used Mem Rss",
+    "mem_fragmentation_ratio": "Mem Fragmentation Ratio",
+    "hits_ratio": "Cache Hits Ratio",
+    "delta_hits_ratio": "24h's Cache Hits Ratio",
+    "uptime_in_seconds": "Uptime",
+    "connected_clients": "Connections",
     "days": "days",
     "hours": "hours",
     "minutes": "min",
     "seconds": "seconds",
-    "today": "today"
+    "today": "Today"
 };
 
 flaskState.en = en;
