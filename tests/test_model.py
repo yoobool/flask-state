@@ -18,7 +18,10 @@ def test_model(app):
     # insert data
     cpu = psutil.cpu_percent(interval=config.Constant.CPU_PERCENT_INTERVAL)
     memory = psutil.virtual_memory().percent
-    load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
+    try:
+        load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
+    except AttributeError:
+        load_avg = '0, 0, 0'
     disk_usage = psutil.disk_usage('/').percent
     boot_ts = psutil.boot_time()
     result_conf = {'ts': date.get_current_ms(), 'cpu': cpu, 'memory': memory, 'load_avg': load_avg,
@@ -52,7 +55,10 @@ def test_clear_expire_data(app):
     for i in range(expire_data_length):
         cpu = psutil.cpu_percent(interval=config.Constant.CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
-        load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
+        try:
+            load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
+        except AttributeError:
+            load_avg = '0, 0, 0'
         disk_usage = psutil.disk_usage('/').percent
         boot_ts = psutil.boot_time()
         result_conf = {'ts': 0, 'cpu': cpu, 'memory': memory, 'load_avg': load_avg,
