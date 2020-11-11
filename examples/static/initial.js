@@ -54,7 +54,7 @@ class MachineStatus {
             '<button type="button" class="flask-state-elem console-info-close-style" id="fs-info-close">' +
             '<svg t="1604544405227" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3278" width="32" height="32" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><style type="text/css"></style></defs><path d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z" p-id="3279" fill="#161e2e"></path></svg>' +
             '</button>' +
-            '<h4 id="fs-host-status-title" class="flask-state-elem fs-font-box box-style no-padding margin-top-10 fs-h4-style">host status</h4>' +
+            '<h4 id="fs-host-status-title" class="flask-state-elem fs-font-box box-style no-padding margin-top-10 fs-h4-style">Host Status</h4>' +
             '<div id="fs-host-status" class="flask-state-elem fs-font-box box-style no-padding">' +
             '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-memory" class="b-0079cc fs-state-right-badge">memory:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
             '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-cpu" class="b-0079cc fs-state-right-badge">cpu:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
@@ -62,7 +62,7 @@ class MachineStatus {
             '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-load-avg" class="b-007dc8 fs-state-right-badge">LoadAvg:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
             '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-boot-seconds" class="b-0051b9 fs-state-right-badge">boot seconds:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
             '</div>' +
-            '<h4 id="fs-redis-status-title" class="flask-state-elem fs-font-box box-style no-padding fs-h4-style">redis status</h4>' +
+            '<h4 id="fs-redis-status-title" class="flask-state-elem fs-font-box box-style no-padding fs-h4-style">Redis Status</h4>' +
             '<div id="fs-redis-status" class="flask-state-elem fs-font-box box-style no-padding margin-bottom-10 ">' +
             '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory" class="b-99cb3d fs-state-right-badge">used memory:</div><span class="flask-state-elem background-green fs-badge-style  console-info-memory-text"></span></div>' +
             '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory-rss" class="b-99cb3d fs-state-right-badge">used memory rss:</div><span class="flask-state-elem background-green fs-badge-style  console-info-memory-text"></span></div>' +
@@ -208,10 +208,10 @@ class MachineStatus {
         if (Object.keys(this.language).length !== 0) {
             document.getElementById('fs-host-status-title').innerHTML = this.language.host_status;
             document.getElementById('fs-redis-status-title').innerHTML = this.language.redis_status;
-            document.getElementById('fs-cpu').innerHTML = this.language.cpu;
-            document.getElementById('fs-memory').innerHTML = this.language.memory;
-            document.getElementById('fs-disk-usage').innerHTML = this.language.disk_usage;
-            document.getElementById('fs-load-avg').innerHTML = this.language.load_avg;
+            document.getElementById('fs-cpu').innerHTML = this.language.cpu.toLowerCase();
+            document.getElementById('fs-memory').innerHTML = this.language.memory.toLowerCase();
+            document.getElementById('fs-disk-usage').innerHTML = this.language.disk_usage.toLowerCase();
+            document.getElementById('fs-load-avg').innerHTML = this.language.load_avg.toLowerCase();
             document.getElementById('fs-boot-seconds').innerHTML = this.language.boot_seconds;
             document.getElementById('fs-used-memory').innerHTML = this.language.used_memory;
             document.getElementById('fs-used-memory-rss').innerHTML = this.language.used_memory_rss;
@@ -232,7 +232,7 @@ class MachineStatus {
         this.consoleDiskusageChart = echarts.init(document.getElementById('fs-info-diskusage-chart'), null, {renderer: 'svg'});
         this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today || 'today');
         this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today || 'today');
-        this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'DiskUsage', '', this.language.today || 'today');
+        this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'Disk Usage', '', this.language.today || 'today');
         this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes || 'min');
     }
 
