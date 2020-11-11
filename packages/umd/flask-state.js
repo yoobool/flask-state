@@ -67,40 +67,40 @@
                 '<div class="flask-state-elem fs-select-container">' +
                 '<svg t="1604570316831" class="icon fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3994" width="16" height="16" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><style type="text/css"></style></defs><path d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z" fill="#161e2e" p-id="3995"></path></svg>' +
                 '<select id="fs-select-days" class="margin-right-5 fs-select-days">' +
-                '<option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><span id="fs-days">days</span></div>' +
+                '<option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><p id="fs-days" class="fs-capitalize"> days</p></div>' +
                 '<button type="button" class="flask-state-elem console-info-close-style" id="fs-info-close">' +
                 '<svg t="1604544405227" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3278" width="32" height="32" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><style type="text/css"></style></defs><path d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z" p-id="3279" fill="#161e2e"></path></svg>' +
                 '</button>' +
                 '<h4 id="fs-host-status-title" class="flask-state-elem fs-font-box box-style no-padding margin-top-10 fs-h4-style">Host Status</h4>' +
                 '<div id="fs-host-status" class="flask-state-elem fs-font-box box-style no-padding">' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-memory" class="b-0079cc fs-state-right-badge">memory:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-cpu" class="b-0079cc fs-state-right-badge">cpu:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-disk-usage" class="b-0079cc fs-state-right-badge">disk usage:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-load-avg" class="b-007dc8 fs-state-right-badge">LoadAvg:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-boot-seconds" class="b-0051b9 fs-state-right-badge">boot seconds:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-memory" class="b-0079cc fs-state-right-badge">Memory</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-cpu" class="b-0079cc fs-state-right-badge">CPU</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-disk-usage" class="b-0079cc fs-state-right-badge">Disk Usage</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-load-avg" class="b-007dc8 fs-state-right-badge">Load Avg</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-boot-seconds" class="b-0051b9 fs-state-right-badge">Uptime</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
                 '</div>' +
                 '<h4 id="fs-redis-status-title" class="flask-state-elem fs-font-box box-style no-padding fs-h4-style">Redis Status</h4>' +
                 '<div id="fs-redis-status" class="flask-state-elem fs-font-box box-style no-padding margin-bottom-10 ">' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory" class="b-99cb3d fs-state-right-badge">used memory:</div><span class="flask-state-elem background-green fs-badge-style  console-info-memory-text"></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory-rss" class="b-99cb3d fs-state-right-badge">used memory rss:</div><span class="flask-state-elem background-green fs-badge-style  console-info-memory-text"></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-mem-fragmentation-ratio" class="b-534c6d fs-state-right-badge">mem fragmentation ratio:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-hits-ratio" class="b-0079cc fs-state-right-badge">hits ratio:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-delta-hits-ratio" class="b-0079cc fs-state-right-badge">24h hits ratio:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-uptime-in-seconds" class="b-0051b9 fs-state-right-badge">uptime in seconds:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
-                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-connected-clients" class="b-534c6d fs-state-right-badge">connected clients:</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory" class="b-99cb3d fs-state-right-badge">Used Mem</div><span class="flask-state-elem background-green fs-badge-style  console-info-memory-text"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-used-memory-rss" class="b-99cb3d fs-state-right-badge">Used Mem Rss</div><span class="flask-state-elem background-green fs-badge-style  console-info-memory-text"></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-mem-fragmentation-ratio" class="b-534c6d fs-state-right-badge">Mem Fragmentation Ratio</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-hits-ratio" class="b-0079cc fs-state-right-badge">Cache Hits Ratio</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-delta-hits-ratio" class="b-0079cc fs-state-right-badge">24h Hits Ratio</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-uptime-in-seconds" class="b-0051b9 fs-state-right-badge">Uptime</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
+                '<div class="inline-block margin-bottom-10 margin-right-18"><div id="fs-connected-clients" class="b-534c6d fs-state-right-badge">Connections</div><span class="flask-state-elem fs-badge-style background-green "></span></div>' +
                 '</div>';
             if (this.mobile) {
                 str += '<hr id="console-info-line" class="console-info-line-style">' +
                     '<div class="flask-state-elem fs-ul-tabs-box no-margin ">' +
                     '<ul id="fs-info-tab" class="flask-state-elem fs-ul-tabs">' +
                     '<li class="flask-state-elem active"><a href="#console_info_tab_memory" data-toggle="tab">' +
-                    '<strong>memory</strong></a></li>' +
+                    '<strong>Memory</strong></a></li>' +
                     '<li class="flask-state-elem"><a href="#console_info_tab_cpu" data-toggle="tab">' +
-                    '<strong>cpu</strong></a></li>' +
+                    '<strong>CPU</strong></a></li>' +
                     '<li class="flask-state-elem"><a href="#console_info_tab_diskusage" data-toggle="tab">' +
-                    '<strong>disk usage</strong></a></li>' +
+                    '<strong>Disk Usage</strong></a></li>' +
                     '<li class="flask-state-elem"><a href="#console_info_tab_loadavg" data-toggle="tab">' +
-                    '<strong>LoadAvg</strong></a></li>' +
+                    '<strong>Load Avg</strong></a></li>' +
                     '</ul>' +
                     '<div class="flask-state-elem form-group no-margin ">' +
                     '<div class="flask-state-elem state-tab-content ">' +
@@ -225,10 +225,10 @@
             if (Object.keys(this.language).length !== 0) {
                 document.getElementById('fs-host-status-title').innerHTML = this.language.host_status;
                 document.getElementById('fs-redis-status-title').innerHTML = this.language.redis_status;
-                document.getElementById('fs-cpu').innerHTML = this.language.cpu.toLowerCase();
-                document.getElementById('fs-memory').innerHTML = this.language.memory.toLowerCase();
-                document.getElementById('fs-disk-usage').innerHTML = this.language.disk_usage.toLowerCase();
-                document.getElementById('fs-load-avg').innerHTML = this.language.load_avg.toLowerCase();
+                document.getElementById('fs-cpu').innerHTML = this.language.cpu;
+                document.getElementById('fs-memory').innerHTML = this.language.memory;
+                document.getElementById('fs-disk-usage').innerHTML = this.language.disk_usage;
+                document.getElementById('fs-load-avg').innerHTML = this.language.load_avg;
                 document.getElementById('fs-boot-seconds').innerHTML = this.language.boot_seconds;
                 document.getElementById('fs-used-memory').innerHTML = this.language.used_memory;
                 document.getElementById('fs-used-memory-rss').innerHTML = this.language.used_memory_rss;
@@ -247,9 +247,9 @@
             this.consoleMemoryChart = echarts.init(document.getElementById('fs-info-memory-chart'), null, {renderer: 'svg'});
             this.consoleLoadavgChart = echarts.init(document.getElementById('fs-info-loadavg-chart'), null, {renderer: 'svg'});
             this.consoleDiskusageChart = echarts.init(document.getElementById('fs-info-diskusage-chart'), null, {renderer: 'svg'});
-            this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today || 'today');
-            this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today || 'today');
-            this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'Disk Usage', '', this.language.today || 'today');
+            this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today || 'Today');
+            this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today || 'Today');
+            this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'Disk Usage', '', this.language.today || 'Today');
             this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes || 'min');
         }
 
@@ -315,10 +315,10 @@
                             hostInfoKeysList.forEach((item, index) => {
                                 switch (item) {
                                     case 'used_memory':
-                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + 'M';
+                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
                                         break;
                                     case 'used_memory_rss':
-                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + 'M';
+                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
                                         break;
                                     case 'mem_fragmentation_ratio':
                                         let ratio = currentStatistic[item];
@@ -480,7 +480,7 @@
                 ]
             };
             if (tableName === 'loadavg') {
-                baseData.legend.data = ['1' + lineName, '5' + lineName, '15' + lineName];
+                baseData.legend.data = ['1 ' + lineName, '5 ' + lineName, '15 ' + lineName];
                 baseData.series = [];
                 baseData.legend.data.forEach((name) => {
                     baseData.series.push({
@@ -541,13 +541,13 @@
                 result = secondTime + seconds;
             }
             if (minuteTime > 0) {
-                result = Math.floor(minuteTime) + minutes;
+                result = Math.floor(minuteTime) + ' ' + minutes;
             }
             if (hourTime > 0) {
-                result = Math.floor(hourTime) + hours;
+                result = Math.floor(hourTime) + ' ' + hours;
             }
             if (dayTime > 0) {
-                result = Math.floor(dayTime) + days;
+                result = Math.floor(dayTime) + ' ' + days;
             }
             return result;
         };

@@ -54,7 +54,7 @@
     color: #fff;
     text-align: center;
     white-space: nowrap;
-    vertical-align:top;
+    vertical-align: top;
     background-color: #777;
 }
 
@@ -370,4 +370,14 @@
 
 .inline-block {
     display: inline-block;
+}
+
+.fs-capitalize {
+    text-transform: capitalize;
+}
+
+#fs-days {
+    margin: 0;
+    display: inline-block;
+    vertical-align: top;
 }
