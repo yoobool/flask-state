@@ -1,2 +1,5 @@
+Flask
+Flask-SQLAlchemy
+redis
 pytest
 psutil
