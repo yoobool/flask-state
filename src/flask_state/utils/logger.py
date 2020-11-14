@@ -22,7 +22,7 @@ class LoggingWrap:
     def __init__(self):
         self.logger = None
 
-    def find_caller(self, stack_info=False):
+    def find_caller(self, stack_info=False, stacklevel=1):
         """
         Overwrite
         Find the stack frame of the caller so that we can note the source
