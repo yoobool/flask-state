@@ -1,5 +1,6 @@
 import os
 import platform
+import warnings
 
 from ..conf.config import MAX_TIME_SCALE, Constant, TimeScale
 from ..exceptions.log_msg import ErrorMsg, WarningMsg
@@ -12,6 +13,7 @@ LAST_TIME_SCALE_LENGTH = 1
 
 
 def format_sec(secs) -> int:
+    warnings.warn('format_sec will be deprecated', DeprecationWarning)
     """
     Format incoming time
     :param secs: initial time
