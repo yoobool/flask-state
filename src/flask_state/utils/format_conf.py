@@ -60,7 +60,7 @@ def format_cron(scope_tuple) -> list:
     :rtype: list
     """
     scale_name, scope = scope_tuple
-    now_time_scale = Constant.MIN_DAY_SCALE if scale_name == TimeScale[scale_name].value else Constant.MIN_TIME_SCALE
+    now_time_scale = Constant.MIN_DAY_SCALE if scale_name == TimeScale.DAY.value else Constant.MIN_TIME_SCALE
     max_time_scale = MAX_TIME_SCALE.get(scale_name, 0)
     if not isinstance(scope, str):
         raise TypeError(
@@ -90,7 +90,7 @@ def format_cron(scope_tuple) -> list:
                 raise ValueError
         except ValueError:
             raise ValueError(
-                ErrorMsg.ERROR_CRON.get_msg('.Wrong parameter is {}: {}'.format(scale_name, scope)))
+                ErrorMsg.ERROR_CRON.get_msg(f'.Wrong parameter is {scale_name}: {scope}'))
     return get_range
 
 
@@ -105,13 +105,14 @@ def format_cron_sec(cron_sec) -> int:
         raise TypeError(
             ErrorMsg.DATA_TYPE_ERROR.get_msg(
                 '.The target type is {}, not {}'.format(str.__name__, type(cron_sec).__name__)))
+    scale_name = TimeScale.SECOND.value
     min_second_scale = Constant.MIN_TIME_SCALE
-    max_second_scale = MAX_TIME_SCALE.get(TimeScale.SECOND.value)
+    max_second_scale = MAX_TIME_SCALE.get(scale_name)
     try:
         time_scale = int(cron_sec)
         if not min_second_scale < time_scale < max_second_scale:
             raise ValueError
     except ValueError:
         raise ValueError(
-            ErrorMsg.ERROR_CRON.get_msg('.Wrong parameter is {}: {}'.format('SECOND', cron_sec)))
+            ErrorMsg.ERROR_CRON.get_msg(f'.Wrong parameter is {scale_name}: {cron_sec}'))
     return time_scale

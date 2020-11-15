@@ -33,6 +33,22 @@ MAX_TIME_SCALE = {
     'DAY': 32
 }
 
+# The mean of the month
+MONTH_NAME = {
+    1: 'SOLAR',
+    2: 'FEBRUARY',
+    3: 'SOLAR',
+    4: 'LUNAR',
+    5: 'SOLAR',
+    6: 'LUNAR',
+    7: 'SOLAR',
+    8: 'SOLAR',
+    9: 'LUNAR',
+    10: 'SOLAR',
+    11: 'LUNAR',
+    12: 'SOLAR',
+}
+
 # Date selection range
 DAYS_SCOPE = {
     1: 'ONE_DAY',
