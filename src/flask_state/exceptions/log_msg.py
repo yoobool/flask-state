@@ -8,6 +8,7 @@ class ErrorMsg(ExceptionMsg):
                  'level': 'error'}
     DATA_TYPE_ERROR = {'msg': 'Data type format error', 'level': 'error'}
     ACQUIRED_LOCK_FAILED = {'msg': 'File lock not obtained', 'level': 'error'}
+    ERROR_CRON = {'msg': 'Wrong cron parameter, make sure the parameters you enter meet the format requirements', 'level': 'error'}
 
 
 class WarningMsg(ExceptionMsg):

@@ -13,7 +13,17 @@ class Constant:
     UNIX_SYSTEM = 'Unix'  # Unix system
     MIN_ADDRESS_LENGTH = 11  # Minimum number of address length
     MAX_RETURN_RECORDS = 480  # Return the maximum number of records
+    MIN_TIME_SCALE = -1  # Minimum time scale
+    MIN_DAY_SCALE = 0  # Minimum day scale
 
+
+# Maximum time scale
+MAX_TIME_SCALE = {
+    'SECOND': 60,
+    'MINUTE': 60,
+    'HOUR': 24,
+    'DAY': 31
+}
 
 # Date selection range
 DAYS_SCOPE = {
