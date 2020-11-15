@@ -17,12 +17,20 @@ class Constant:
     MIN_DAY_SCALE = 0  # Minimum day scale
 
 
+@unique
+class TimeScale(Enum):
+    SECOND = 'SECOND'
+    MINUTE = 'MINUTE'
+    HOUR = 'HOUR'
+    DAY = 'DAY'
+
+
 # Maximum time scale
 MAX_TIME_SCALE = {
     'SECOND': 60,
     'MINUTE': 60,
     'HOUR': 24,
-    'DAY': 31
+    'DAY': 32
 }
 
 # Date selection range
