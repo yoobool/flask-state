@@ -1,0 +1,41 @@
+name: Tests
+on: [pull_request, push]
+jobs:
+  lint_python:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {name: Linux, python: '3.9', os: ubuntu-latest}
+          - {name: Windows, python: '3.9', os: windows-latest}
+          - {name: Mac, python: '3.9', os: macos-latest}
+          - {name: '3.9', python: '3.9', os: ubuntu-latest}
+          - {name: '3.8', python: '3.8', os: ubuntu-latest}
+          - {name: '3.7', python: '3.7', os: ubuntu-latest}
+          - {name: '3.6', python: '3.6', os: ubuntu-latest}
+          - {name: '3.5', python: '3.5', os: ubuntu-latest}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - name: update pip
+        run: |
+          pip install -U wheel
+          pip install -U setuptools
+          python -m pip install -U pip
+      - name: lint python
+        run: |
+          pip install black codespell flake8 isort
+          black --check . || true
+          codespell --quiet-level=2
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          isort --profile black .
+        if: matrix.python != '3.5'
+      - name: utils test
+        run: |
+          pip install pytest
+          pip install -r requirements/tests.txt
+          pytest .
