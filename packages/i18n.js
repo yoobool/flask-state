@@ -70,4 +70,52 @@ const ja = {
     "today": "ょう"
 };
 
-export {zh, en, ja};
+/* Language: Spanish */
+const es = {
+    "language": "es",
+    "host_status": "Estado del host",
+    "cpu": "CPU",
+    "memory": "Memoria",
+    "disk_usage": "Uso del disco",
+    "load_avg": "Promedio de carga",
+    "boot_seconds": "Tiempo de actividad",
+    "redis_status": "Estado de Redis",
+    "used_memory": "Memoria total",
+    "used_memory_rss": "Usar memoria",
+    "mem_fragmentation_ratio": "Fragmentación de mem",
+    "hits_ratio": "Aciertos de caché",
+    "delta_hits_ratio": "Aciertos de caché de 24 horas",
+    "uptime_in_seconds": "Tiempo de actividad",
+    "connected_clients": "Conexiones",
+    "days": "dias",
+    "hours": "horas",
+    "minutes": "min",
+    "seconds": "segundos",
+    "today": "Hoy"
+};
+
+/* Language: Indonesian */
+const IN = {
+    "language": "in",
+    "host_status": "Status Host",
+    "cpu": "CPU",
+    "memory": "Penyimpanan",
+    "disk_usage": "Penggunaan Disk",
+    "load_avg": "Beban Rata",
+    "boot_seconds": "Uptime",
+    "redis_status": "Status Redis",
+    "used_memory": "Memori Total",
+    "used_memory_rss": "Gunakan Memori",
+    "mem_fragmentation_ratio": "Rasio Fragmentasi Mem",
+    "hits_ratio": "Rasio Cache Hit",
+    "delta_hits_ratio": "Rasio Hit Cache 24 jam",
+    "uptime_in_seconds": "Uptime",
+    "connected_clients": "Koneksi",
+    "days": "hari",
+    "hours": "jam",
+    "minutes": "min",
+    "seconds": "seconds",
+    "today": "Hari ini"
+};
+
+export {zh, en, ja, es, IN};
