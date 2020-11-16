@@ -1,5 +1,5 @@
 import time
-from bisect import bisect, bisect_left, bisect_right
+from bisect import bisect_left, bisect_right
 
 from ..conf.config import MONTH_NAME, TimeScale
 from .format_conf import format_cron, format_cron_sec
@@ -22,7 +22,7 @@ REMAINDER_ZERO = 0
 
 
 class Cron:
-    def __init__(self, second="0", minutes="0, 10, 59", hours="0, 10, 23", days="1, 10, 31"):
+    def __init__(self, second="0", minutes="0-59", hours="0-23", days="1-31"):
         self.second = format_cron_sec(second)
         self.minutes = format_cron((TimeScale.MINUTE.value, minutes))
         self.hours = format_cron((TimeScale.HOUR.value, hours))
@@ -36,7 +36,7 @@ class Cron:
         self.leap_day_count = LEAP_YEAR_FEBRUARY_DAY
         self.average_day_count = AVERAGE_YEAR_FEBRUARY_DAY
         self.max_day_index = self._get_max_day_index(int(time.strftime("%m")), int(time.strftime("%y")))
-        self.minute_index, self.hour_index, self.day_index, self.month, self.year = self._get_initial_index()
+        self.year, self.month, self.day_index, self.hour_index, self.minute_index = self._get_initial_index()
 
     def get(self):
         target_time_stamp = time.mktime(
@@ -102,18 +102,18 @@ class Cron:
             (CARRY, INITIAL_INDEX) if minute_position == self.max_minute_index else (NO_CARRY, minute_position)
         )
 
-        hour_position = bisect(self.hours, _hour + hour_carry)
+        hour_position = bisect_left(self.hours, _hour + hour_carry)
         day_carry, hour_index = (
             (CARRY, INITIAL_INDEX) if hour_position == self.max_hour_index else (NO_CARRY, hour_position)
         )
 
-        day_position = bisect(self.days, _day + day_carry)
+        day_position = bisect_left(self.days, _day + day_carry)
         month_carry, day_index = (
             (CARRY, INITIAL_INDEX) if day_position == self.max_day_index else (NO_CARRY, day_position)
         )
 
         year_carry, month_index = (
-            (CARRY, INITIAL_MONTH_DAY) if month_carry and _month == MAX_MONTH else (NO_CARRY, _month + CARRY)
+            (CARRY, INITIAL_MONTH_DAY) if month_carry and _month == MAX_MONTH else (NO_CARRY, _month + month_carry)
         )
 
         year_index = _year + CARRY if year_carry else _year
@@ -131,4 +131,4 @@ class Cron:
             minute_index, hour_index = INITIAL_INDEX, INITIAL_INDEX
         elif hour_carry:
             month_index = INITIAL_INDEX
-        return minute_index, hour_index, day_index, month_index, year_index
+        return year_index, month_index, day_index, hour_index, minute_index

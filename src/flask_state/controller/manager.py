@@ -13,19 +13,23 @@ from ..models import model_init_app
 from ..services import redis_conn
 from ..services.host_status import query_flask_state_host, record_flask_state_host
 from ..utils.auth import auth_method, auth_user
+from ..utils.cron import Cron
 from ..utils.file_lock import Lock
-from ..utils.format_conf import format_address, format_sec
+from ..utils.format_conf import format_address
 from ..utils.logger import DefaultLogger, logger
 from .response_methods import make_response_content
 
 ONE_MINUTE_SECONDS = 60
 
 
-def init_app(app, interval=Constant.DEFAULT_SECONDS, log_instance=None):
+def init_app(app, days="1-31", hours="0-23", minutes="0-59", second="0", log_instance=None):
     """
     Plugin entry
     :param app: Flask app
-    :param interval: record interval
+    :param days:
+    :param hours:
+    :param minutes:
+    :param second:
     :param log_instance: custom logger object
     """
     logger.set(log_instance or DefaultLogger().get())
@@ -40,12 +44,14 @@ def init_app(app, interval=Constant.DEFAULT_SECONDS, log_instance=None):
     model_init_app(app)
 
     # Timing recorder
-    interval = format_sec(interval)
     t = threading.Thread(
         target=record_timer,
         args=(
             app,
-            interval,
+            days,
+            hours,
+            minutes,
+            second,
         ),
     )
     t.setDaemon(True)
@@ -73,7 +79,7 @@ def init_db(app):
     )
 
 
-def record_timer(app, interval):
+def record_timer(app, days, hours, minutes, second):
     app.lock_flask_state = Lock.get_file_lock()
     with app.app_context():
         try:
@@ -81,14 +87,10 @@ def record_timer(app, interval):
             logger.info(InfoMsg.ACQUIRED_LOCK.get_msg(". process ID: %d" % os.getpid()))
 
             s = sched.scheduler(time.time, time.sleep)
-            in_time = time.time()
-            target_time = int(int((time.time()) / ONE_MINUTE_SECONDS + 1) * ONE_MINUTE_SECONDS)
-            time.sleep(ONE_MINUTE_SECONDS - in_time % ONE_MINUTE_SECONDS)
-            record_flask_state_host(interval)
+            cron = Cron(days=days, hours=hours, minutes=minutes, second=second)
             while True:
-                target_time += interval
-                now_time = time.time()
-                s.enter(target_time - now_time, 1, record_flask_state_host, (interval,))
+                target_time = cron.get()
+                s.enterabs(target_time, 1, record_flask_state_host, (60,))
                 s.run()
         except BlockingIOError:
             pass
