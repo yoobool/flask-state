@@ -92,7 +92,7 @@ def format_cron(scope_tuple) -> list:
                 raise ValueError
         except ValueError:
             raise ValueError(
-                ErrorMsg.ERROR_CRON.get_msg(f'.Wrong parameter is {scale_name}: {scope}'))
+                ErrorMsg.ERROR_CRON.get_msg('.Wrong parameter is {}: {}'.format(scale_name, scope)))
     return get_range
 
 
@@ -116,5 +116,5 @@ def format_cron_sec(cron_sec) -> int:
             raise ValueError
     except ValueError:
         raise ValueError(
-            ErrorMsg.ERROR_CRON.get_msg(f'.Wrong parameter is {scale_name}: {cron_sec}'))
+            ErrorMsg.ERROR_CRON.get_msg('.Wrong parameter is {}: {}'.format(scale_name, cron_sec)))
     return time_scale
