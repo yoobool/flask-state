@@ -11,7 +11,6 @@ jobs:
           - {name: Linux, python: '3.9', os: ubuntu-latest}
           - {name: Windows, python: '3.9', os: windows-latest}
           - {name: Mac, python: '3.9', os: macos-latest}
-          - {name: '3.9', python: '3.9', os: ubuntu-latest}
           - {name: '3.8', python: '3.8', os: ubuntu-latest}
           - {name: '3.7', python: '3.7', os: ubuntu-latest}
           - {name: '3.6', python: '3.6', os: ubuntu-latest}
