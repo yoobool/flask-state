@@ -1,6 +1,5 @@
 import os
 import platform
-import time
 
 from ..conf.config import Constant
 

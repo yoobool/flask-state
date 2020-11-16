@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import time
 
 from flask import make_response
@@ -72,7 +73,7 @@ def test_file_lock():
     try:
         lock_copy.acquire()
     except BlockingIOError as e:
-        errno = 11 if os.getenv("GITHUB_ACTIONS") else 35
+        errno = 11 if os.getenv("GITHUB_ACTIONS") and sys.platform != 'darwin' else 35
         assert str(e) == "[Errno {}] Resource temporarily unavailable".format(errno)
 
     lock.release()
