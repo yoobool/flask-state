@@ -9,15 +9,18 @@ def test_redis(app):
     """
     Test whether the custom redis class method can be used normally
     """
-    app.config['REDIS_CONF'] = {
-        'REDIS_STATUS': True,
-        'REDIS_HOST': '192.168.0.2',
-        'REDIS_PORT': 16379,
-        'REDIS_PASSWORD': 'fish09'
+    app.config["REDIS_CONF"] = {
+        "REDIS_STATUS": True,
+        "REDIS_HOST": "192.168.0.2",
+        "REDIS_PORT": 16379,
+        "REDIS_PASSWORD": "fish09",
     }
-    redis_state = app.config['REDIS_CONF']
-    redis_conf = {'REDIS_HOST': redis_state.get('REDIS_HOST'), 'REDIS_PORT': redis_state.get('REDIS_PORT'),
-                  'REDIS_PASSWORD': redis_state.get('REDIS_PASSWORD')}
+    redis_state = app.config["REDIS_CONF"]
+    redis_conf = {
+        "REDIS_HOST": redis_state.get("REDIS_HOST"),
+        "REDIS_PORT": redis_state.get("REDIS_PORT"),
+        "REDIS_PASSWORD": redis_state.get("REDIS_PASSWORD"),
+    }
     redis_conn.set_redis(redis_conf)
 
     # get redis
@@ -44,9 +47,9 @@ def test_query_flask_state_host(app):
         for day in test_right_day:
             response_content = host_status.query_flask_state_host(day)
             assert 200 == response_content.get_code()
-            assert 'Search success' == response_content.get_msg()
-            assert isinstance(response_content.data.get('currentStatistic'), dict)
-            assert isinstance(response_content.data.get('items'), list)
+            assert "Search success" == response_content.get_msg()
+            assert isinstance(response_content.data.get("currentStatistic"), dict)
+            assert isinstance(response_content.data.get("items"), list)
             assert isinstance(response_content, SuccessResponse)
 
         for day in test_error_day:

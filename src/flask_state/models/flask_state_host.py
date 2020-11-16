@@ -11,10 +11,10 @@ class FlaskStateHost(db.Model):
     __tablename__ = "flask_state_host"
 
     __table_args__ = (
-        db.PrimaryKeyConstraint('id'),
+        db.PrimaryKeyConstraint("id"),
         {
-            'extend_existing': True,
-        }
+            "extend_existing": True,
+        },
     )
     id = db.Column(db.Integer, autoincrement=True)
     create_time = db.Column(db.DateTime, server_default=func.now())
@@ -41,4 +41,10 @@ class FlaskStateHost(db.Model):
 
     def __repr__(self):
         return "<FlaskStateHost cpu: {}, memory:{}, load_avg:{}, disk_usage:{}, boot_seconds:{}, ts:{}>".format(
-            self.cpu, self.memory, self.load_avg, self.disk_usage, self.boot_seconds, self.ts)
+            self.cpu,
+            self.memory,
+            self.load_avg,
+            self.disk_usage,
+            self.boot_seconds,
+            self.ts,
+        )

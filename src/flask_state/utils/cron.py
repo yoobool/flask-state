@@ -12,21 +12,21 @@ SOLAR_MONTH_LAST_DAY = 31
 LUNAR_MONTH_LAST_DAY = 30
 LEAP_YEAR_FEBRUARY_DAY = 28
 AVERAGE_YEAR_FEBRUARY_DAY = 29
-SOLAR = 'SOLAR'  # Solar month
-LUNAR = 'LUNAR'  # Lunar month
+SOLAR = "SOLAR"  # Solar month
+LUNAR = "LUNAR"  # Lunar month
 FOUR_TIMES = 4
 A_HUNDRED_TIMES = 100
 REMAINDER_ZERO = 0
 
 
 class Cron:
-    def __init__(self, second='0', minutes='0, 10, 59', hours='0-23', days='1-31'):
+    def __init__(self, second="0", minutes="0, 10, 59", hours="0-23", days="1-31"):
         self.second = format_cron_sec(second)
         self.minutes = format_cron((TimeScale.MINUTE.value, minutes))
         self.hours = format_cron((TimeScale.HOUR.value, hours))
         self.days = format_cron((TimeScale.DAY.value, days))
-        self.month = int(time.strftime('%m'))
-        self.year = int(time.strftime('%y'))
+        self.month = int(time.strftime("%m"))
+        self.year = int(time.strftime("%y"))
         self.minute_index = 0
         self.hour_index = 0
         self.day_index = 0
@@ -39,9 +39,19 @@ class Cron:
         self.average_day_count = AVERAGE_YEAR_FEBRUARY_DAY
 
     def get(self):
-        target_time_stamp = time.mktime(time.strptime(
-            '{}-{}-{} {}:{}:{}'.format(self.year, self.month, self.days[self.day_index], self.hours[self.hour_index],
-                                       self.minutes[self.minute_index], self.second), '%Y-%m-%d %H:%M:%S'))
+        target_time_stamp = time.mktime(
+            time.strptime(
+                "{}-{}-{} {}:{}:{}".format(
+                    self.year,
+                    self.month,
+                    self.days[self.day_index],
+                    self.hours[self.hour_index],
+                    self.minutes[self.minute_index],
+                    self.second,
+                ),
+                "%Y-%m-%d %H:%M:%S",
+            )
+        )
         self._update_index()
         return target_time_stamp
 

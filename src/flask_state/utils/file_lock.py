@@ -16,13 +16,13 @@ class Lock:
 
 class FileLock:
     def __init__(self):
-        lock_file = '821e9dab54fec92e3d054b3367a50b70d328caed'
+        lock_file = "821e9dab54fec92e3d054b3367a50b70d328caed"
         if SYSTEM == Constant.WINDOWS_SYSTEM:
-            lock_dir = os.environ['tmp']
+            lock_dir = os.environ["tmp"]
         else:
-            lock_dir = '/tmp'
+            lock_dir = "/tmp"
 
-        self.file = '{}{}{}'.format(lock_dir, os.sep, lock_file)
+        self.file = "{}{}{}".format(lock_dir, os.sep, lock_file)
         self._fn = None
         self.release()
 
@@ -31,12 +31,12 @@ class FileLock:
             if os.path.exists(self.file):
                 return
 
-            with open(self.file, 'w') as f:
-                f.write('1')
+            with open(self.file, "w") as f:
+                f.write("1")
         else:
-            self._fn = open(self.file, 'w')
+            self._fn = open(self.file, "w")
             fcntl.flock(self._fn.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-            self._fn.write('1')
+            self._fn.write("1")
 
     def release(self):
         if SYSTEM == Constant.WINDOWS_SYSTEM:

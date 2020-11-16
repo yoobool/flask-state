@@ -19,14 +19,19 @@ def test_model(app):
     cpu = psutil.cpu_percent(interval=config.Constant.CPU_PERCENT_INTERVAL)
     memory = psutil.virtual_memory().percent
     try:
-        load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
+        load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
     except AttributeError:
-        load_avg = '0, 0, 0'
-    disk_usage = psutil.disk_usage('/').percent
+        load_avg = "0, 0, 0"
+    disk_usage = psutil.disk_usage("/").percent
     boot_ts = psutil.boot_time()
-    result_conf = {'ts': date.get_current_ms(), 'cpu': cpu, 'memory': memory, 'load_avg': load_avg,
-                   'disk_usage': disk_usage,
-                   'boot_seconds': int(date.get_current_s() - boot_ts)}
+    result_conf = {
+        "ts": date.get_current_ms(),
+        "cpu": cpu,
+        "memory": memory,
+        "load_avg": load_avg,
+        "disk_usage": disk_usage,
+        "boot_seconds": int(date.get_current_s() - boot_ts),
+    }
     with app.app_context():
         host_status.create_host_status(result_conf)
 
@@ -56,14 +61,19 @@ def test_clear_expire_data(app):
         cpu = psutil.cpu_percent(interval=config.Constant.CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
         try:
-            load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
+            load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
         except AttributeError:
-            load_avg = '0, 0, 0'
-        disk_usage = psutil.disk_usage('/').percent
+            load_avg = "0, 0, 0"
+        disk_usage = psutil.disk_usage("/").percent
         boot_ts = psutil.boot_time()
-        result_conf = {'ts': 0, 'cpu': cpu, 'memory': memory, 'load_avg': load_avg,
-                       'disk_usage': disk_usage,
-                       'boot_seconds': int(date.get_current_s() - boot_ts)}
+        result_conf = {
+            "ts": 0,
+            "cpu": cpu,
+            "memory": memory,
+            "load_avg": load_avg,
+            "disk_usage": disk_usage,
+            "boot_seconds": int(date.get_current_s() - boot_ts),
+        }
         with app.app_context():
             host_status.create_host_status(result_conf)
 
@@ -71,7 +81,8 @@ def test_clear_expire_data(app):
     with app.app_context():
         target_time = date.get_current_ms() - date.get_query_ms(thirty_day)
         result = host_status.FlaskStateHost.query.filter(host_status.FlaskStateHost.ts < target_time).delete(
-            synchronize_session=False)
+            synchronize_session=False
+        )
         assert result == expire_data_length
         if result:
             host_status.db.session.commit()

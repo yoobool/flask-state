@@ -29,37 +29,48 @@ def init_app(app, interval=Constant.DEFAULT_SECONDS, log_instance=None):
     :param log_instance: custom logger object
     """
     logger.set(log_instance or DefaultLogger().get())
-    app.add_url_rule('/v0/state/hoststatus', endpoint='state_host_status', view_func=query_flask_state,
-                     methods=[HttpMethod.POST.value])
+    app.add_url_rule(
+        "/v0/state/hoststatus",
+        endpoint="state_host_status",
+        view_func=query_flask_state,
+        methods=[HttpMethod.POST.value],
+    )
     init_db(app)
     init_redis(app)
     model_init_app(app)
 
     # Timing recorder
     interval = format_sec(interval)
-    t = threading.Thread(target=record_timer, args=(app, interval,))
+    t = threading.Thread(
+        target=record_timer,
+        args=(
+            app,
+            interval,
+        ),
+    )
     t.setDaemon(True)
     t.start()
 
 
 def init_redis(app):
-    redis_state = app.config.get('REDIS_CONF', {})
+    redis_state = app.config.get("REDIS_CONF", {})
 
-    if not redis_state.get('REDIS_STATUS'):
+    if not redis_state.get("REDIS_STATUS"):
         return
 
-    redis_conf_keys = ['REDIS_HOST', 'REDIS_PORT', 'REDIS_PASSWORD']
+    redis_conf_keys = ["REDIS_HOST", "REDIS_PORT", "REDIS_PASSWORD"]
     redis_conf = {key: value for key, value in redis_state.items() if key in redis_conf_keys}
 
     redis_conn.set_redis(redis_conf)
 
 
 def init_db(app):
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    if not app.config.get('SQLALCHEMY_BINDS', {}).get(Constant.DEFAULT_BIND_SQLITE):
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+    if not app.config.get("SQLALCHEMY_BINDS", {}).get(Constant.DEFAULT_BIND_SQLITE):
         raise KeyError(ErrorMsg.LACK_SQLITE.get_msg())
-    app.config['SQLALCHEMY_BINDS'][Constant.DEFAULT_BIND_SQLITE] = format_address(
-        app.config['SQLALCHEMY_BINDS'].get(Constant.DEFAULT_BIND_SQLITE))
+    app.config["SQLALCHEMY_BINDS"][Constant.DEFAULT_BIND_SQLITE] = format_address(
+        app.config["SQLALCHEMY_BINDS"].get(Constant.DEFAULT_BIND_SQLITE)
+    )
 
 
 def record_timer(app, interval):
@@ -67,7 +78,7 @@ def record_timer(app, interval):
     with app.app_context():
         try:
             current_app.lock_flask_state.acquire()
-            logger.info(InfoMsg.ACQUIRED_LOCK.get_msg('. process ID: %d' % os.getpid()))
+            logger.info(InfoMsg.ACQUIRED_LOCK.get_msg(". process ID: %d" % os.getpid()))
 
             s = sched.scheduler(time.time, time.sleep)
             in_time = time.time()
@@ -97,9 +108,10 @@ def query_flask_state():
         b2d = request.json
         if not isinstance(b2d, dict):
             logger.warning(ErrorMsg.DATA_TYPE_ERROR).get_msg(
-                '.The target type is {}, not {}'.format(dict.__name__, type(b2d).__name__))
+                ".The target type is {}, not {}".format(dict.__name__, type(b2d).__name__)
+            )
             return make_response_content(ErrorResponse(MsgCode.JSON_FORMAT_ERROR))
-        time_quantum = b2d.get('timeQuantum')
+        time_quantum = b2d.get("timeQuantum")
         return make_response_content(resp=query_flask_state_host(time_quantum))
     except Exception as e:
         logger.exception(e)

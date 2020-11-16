@@ -21,7 +21,7 @@ from . import redis_conn
 SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
 DEFAULT_HITS_RATIO = 100  # Default hits ratio value
 DEFAULT_DELTA_HITS_RATIO = 100  # Default 24h hits ratio value
-DEFAULT_WINDOWS_LOAD_AVG = '0, 0, 0'  # Windows system cannot calculate load AVG
+DEFAULT_WINDOWS_LOAD_AVG = "0, 0, 0"  # Windows system cannot calculate load AVG
 PERCENTAGE = 100  # Percentage calculation
 
 
@@ -33,54 +33,68 @@ def record_flask_state_host(interval):
     try:
         cpu = psutil.cpu_percent(interval=Constant.CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
-        if platform.system() == 'Windows':
+        if platform.system() == "Windows":
             load_avg = DEFAULT_WINDOWS_LOAD_AVG
         else:
-            load_avg = ','.join([str(float('%.2f' % x)) for x in os.getloadavg()])
-        disk_usage = psutil.disk_usage('/').percent
+            load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
+        disk_usage = psutil.disk_usage("/").percent
         boot_ts = psutil.boot_time()
-        result_conf = {'ts': get_current_ms(), 'cpu': cpu, 'memory': memory, 'load_avg': load_avg,
-                       'disk_usage': disk_usage,
-                       'boot_seconds': int(get_current_s() - boot_ts)}
+        result_conf = {
+            "ts": get_current_ms(),
+            "cpu": cpu,
+            "memory": memory,
+            "load_avg": load_avg,
+            "disk_usage": disk_usage,
+            "boot_seconds": int(get_current_s() - boot_ts),
+        }
         redis_handler = redis_conn.get_redis()
         if redis_handler:
             try:
                 redis_info = redis_handler.info()
-                used_memory = redis_info.get('used_memory')
-                used_memory_rss = redis_info.get('used_memory_rss')
-                connected_clients = redis_info.get('connected_clients')
-                uptime_in_seconds = redis_info.get('uptime_in_seconds')
-                mem_fragmentation_ratio = redis_info.get('mem_fragmentation_ratio')
-                keyspace_hits = redis_info.get('keyspace_hits')
-                keyspace_misses = redis_info.get('keyspace_misses')
-                hits_ratio = float('%.2f' % (keyspace_hits * PERCENTAGE / (keyspace_hits + keyspace_misses))) if \
-                    (keyspace_hits + keyspace_misses) != 0 else DEFAULT_HITS_RATIO
+                used_memory = redis_info.get("used_memory")
+                used_memory_rss = redis_info.get("used_memory_rss")
+                connected_clients = redis_info.get("connected_clients")
+                uptime_in_seconds = redis_info.get("uptime_in_seconds")
+                mem_fragmentation_ratio = redis_info.get("mem_fragmentation_ratio")
+                keyspace_hits = redis_info.get("keyspace_hits")
+                keyspace_misses = redis_info.get("keyspace_misses")
+                hits_ratio = (
+                    float("%.2f" % (keyspace_hits * PERCENTAGE / (keyspace_hits + keyspace_misses)))
+                    if (keyspace_hits + keyspace_misses) != 0
+                    else DEFAULT_HITS_RATIO
+                )
                 delta_hits_ratio = hits_ratio
                 yesterday_current_statistic = retrieve_host_status_yesterday()
                 if yesterday_current_statistic:
                     yesterday_keyspace_hits = yesterday_current_statistic.keyspace_hits
                     yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
                     if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
-                        be_divided_num = keyspace_hits + keyspace_misses - (
-                                yesterday_keyspace_hits + yesterday_keyspace_misses)
-                        delta_hits_ratio = float(
-                            '%.2f' % ((keyspace_hits - yesterday_keyspace_hits) * PERCENTAGE / be_divided_num)) \
-                            if be_divided_num != 0 else DEFAULT_DELTA_HITS_RATIO
-                result_conf.update(used_memory=used_memory,
-                                   used_memory_rss=used_memory_rss,
-                                   connected_clients=connected_clients,
-                                   uptime_in_seconds=uptime_in_seconds,
-                                   mem_fragmentation_ratio=mem_fragmentation_ratio,
-                                   keyspace_hits=keyspace_hits,
-                                   keyspace_misses=keyspace_misses,
-                                   hits_ratio=hits_ratio,
-                                   delta_hits_ratio=delta_hits_ratio)
+                        be_divided_num = (
+                            keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
+                        )
+                        delta_hits_ratio = (
+                            float("%.2f" % ((keyspace_hits - yesterday_keyspace_hits) * PERCENTAGE / be_divided_num))
+                            if be_divided_num != 0
+                            else DEFAULT_DELTA_HITS_RATIO
+                        )
+                result_conf.update(
+                    used_memory=used_memory,
+                    used_memory_rss=used_memory_rss,
+                    connected_clients=connected_clients,
+                    uptime_in_seconds=uptime_in_seconds,
+                    mem_fragmentation_ratio=mem_fragmentation_ratio,
+                    keyspace_hits=keyspace_hits,
+                    keyspace_misses=keyspace_misses,
+                    hits_ratio=hits_ratio,
+                    delta_hits_ratio=delta_hits_ratio,
+                )
             except Exception as t:
                 logger.warning(t)
         create_host_status(result_conf)
         now_time = get_current_s()
-        new_day_utc = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0,
-                                                tzinfo=timezone.utc).timestamp()
+        new_day_utc = (
+            datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc).timestamp()
+        )
         if now_time <= new_day_utc + interval:
             delete_thirty_days_status()
 
@@ -103,15 +117,22 @@ def query_flask_state_host(days) -> FlaskStateResponse:
         if days not in DAYS_SCOPE:
             return ErrorResponse(MsgCode.OVERSTEP_DAYS_SCOPE)
         current_status = retrieve_latest_host_status()
-        current_status['load_avg'] = (current_status.get('load_avg') or '').split(',')
+        current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
         result = retrieve_host_status(days)
         result = control_result_counts(result)
         arr = []
         for status in result:
-            arr.append([int(status.ts / SECONDS_TO_MILLISECOND_MULTIPLE), status.cpu, status.memory,
-                        status.load_avg.split(','), status.disk_usage])
+            arr.append(
+                [
+                    int(status.ts / SECONDS_TO_MILLISECOND_MULTIPLE),
+                    status.cpu,
+                    status.memory,
+                    status.load_avg.split(","),
+                    status.disk_usage,
+                ]
+            )
         data = {"currentStatistic": current_status, "items": arr}
-        return SuccessResponse(msg='Search success', data=data)
+        return SuccessResponse(msg="Search success", data=data)
     except Exception as e:
         logger.exception(e)
         return ErrorResponse(MsgCode.UNKNOWN_ERROR)
@@ -143,6 +164,6 @@ def row2dict(field):
     """
     d = {}
     for column in field.__table__.columns:
-        if column.name not in ('create_time', 'update_time'):
+        if column.name not in ("create_time", "update_time"):
             d[column.name] = getattr(field, column.name)
     return d

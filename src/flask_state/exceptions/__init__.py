@@ -20,7 +20,7 @@ class FlaskStateResponse(ABC):
 class SuccessResponse(FlaskStateResponse):
     def __init__(self, msg=None, data=None):
         if msg is None:
-            msg = 'SUCCESS'
+            msg = "SUCCESS"
         self.code = 200
         self.msg = msg
         self.data = data
@@ -55,16 +55,16 @@ class ErrorResponse(FlaskStateResponse):
 @unique
 class ErrorCode(Enum):
     def get_code(self):
-        return self.value.get('code')
+        return self.value.get("code")
 
     def get_msg(self):
-        return self.value.get('msg')
+        return self.value.get("msg")
 
 
 @unique
 class ExceptionMsg(Enum):
     def get_level(self):
-        return self.value.get('level')
+        return self.value.get("level")
 
-    def get_msg(self, supplement=''):
-        return self.value.get('msg') + supplement
+    def get_msg(self, supplement=""):
+        return self.value.get("msg") + supplement
