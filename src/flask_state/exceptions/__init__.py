@@ -68,3 +68,28 @@ class ExceptionMsg(Enum):
 
     def get_msg(self, supplement=""):
         return self.value.get("msg") + supplement
+
+
+class FlaskStateError(Exception):
+    def __init__(self, **kwargs):
+        """
+        :param int status_code: standard http status code use by FlaskState
+        :param str msg:
+        """
+        self.status_code = int(kwargs.get('status_code'))
+        self.msg = str(kwargs.get('msg'))
+        self.reply_code = kwargs.get('code', self.status_code)
+        self.data = list()
+
+    def get_msg(self):
+        return self.msg
+
+    def get_code(self):
+        return self.reply_code
+
+    def get_data(self):
+        return self.data
+
+    def __repr__(self):
+        return '{}: ({}) {!r} {!r}'.format(self.__class__.__name__, self.status_code,
+                                           self.reply_code, self.msg, )
