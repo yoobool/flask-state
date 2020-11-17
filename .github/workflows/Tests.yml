@@ -44,7 +44,7 @@ jobs:
         if: matrix.python == '3.5'
       - name: lint python
         run: |
-          black --check . || true
+          black -l 120 --check . || true
           codespell --quiet-level=2
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           isort --profile black .
