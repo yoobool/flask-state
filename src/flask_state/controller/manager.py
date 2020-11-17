@@ -5,8 +5,10 @@ import time
 
 from flask import current_app, request
 
+from .response_methods import make_response_content
 from ..conf.config import Constant, HttpMethod
-from ..exceptions import ErrorResponse
+from ..controller.interceptors import json_required
+from ..exceptions import ErrorResponse, FlaskStateError
 from ..exceptions.error_code import MsgCode
 from ..exceptions.log_msg import ErrorMsg, InfoMsg
 from ..models import model_init_app
@@ -17,7 +19,6 @@ from ..utils.cron import Cron
 from ..utils.file_lock import Lock
 from ..utils.format_conf import format_address
 from ..utils.logger import DefaultLogger, logger
-from .response_methods import make_response_content
 
 ONE_MINUTE_SECONDS = 60
 
@@ -101,6 +102,7 @@ def record_timer(app, days, hours, minutes, second):
 
 @auth_user
 @auth_method
+@json_required
 def query_flask_state():
     """
     Query the local state and redis status
@@ -108,13 +110,11 @@ def query_flask_state():
     """
     try:
         b2d = request.json
-        if not isinstance(b2d, dict):
-            logger.warning(ErrorMsg.DATA_TYPE_ERROR).get_msg(
-                ".The target type is {}, not {}".format(dict.__name__, type(b2d).__name__)
-            )
-            return make_response_content(ErrorResponse(MsgCode.JSON_FORMAT_ERROR))
         time_quantum = b2d.get("timeQuantum")
         return make_response_content(resp=query_flask_state_host(time_quantum))
+    except FlaskStateError as e:
+        logger.warning(e)
+        return make_response_content(e, http_status=e.status_code)
     except Exception as e:
         logger.exception(e)
         return make_response_content(ErrorResponse(MsgCode.UNKNOWN_ERROR), http_status=500)
