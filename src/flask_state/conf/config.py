@@ -69,3 +69,12 @@ class HttpMethod(Enum):
     PUT = "PUT"
     DELETE = "DELETE"
     PATCH = "PATCH"
+
+
+class HTTPStatus:
+    """Http standard status code"""
+    OK = 200
+    BAD_REQUEST = 400
+    METHOD_NOT_ALLOWED = 405
+    UNAUTHORIZED = 401
+    INTERNAL_SERVER_ERROR = 500
