@@ -21,5 +21,5 @@ def setting_app():
 
     # log_instance = logging.getLogger(__name__)
     # use init_app initial configuration
-    init_app(app, 60)
+    init_app(app, days="1-31", hours="0-23", minutes="0-59", second="0")
     return app
