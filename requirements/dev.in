@@ -1,6 +1,7 @@
 -r docs.in
 -r tests.in
 pip-tools
+pre-commit
 setuptools
 wheel
 twine
