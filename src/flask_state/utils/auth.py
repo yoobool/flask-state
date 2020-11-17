@@ -4,6 +4,7 @@ from werkzeug.local import LocalProxy
 from ..controller.response_methods import make_response_content
 from ..exceptions import ErrorResponse
 from ..exceptions.error_code import MsgCode
+from ..conf.config import HTTPStatus, HttpMethod
 
 
 def auth_user(func):
@@ -27,7 +28,7 @@ def auth_user(func):
             return getattr(_request_ctx_stack.top, "user", None)
 
         if not (current_user and current_user.is_authenticated):
-            return make_response_content(ErrorResponse(MsgCode.AUTH_FAIL), http_status=401)
+            return make_response_content(ErrorResponse(MsgCode.AUTH_FAIL), http_status=HTTPStatus.UNAUTHORIZED)
         return func()
 
     return wrapper
@@ -41,8 +42,9 @@ def auth_method(func):
     """
 
     def wrapper():
-        if request.method != "POST":
-            return make_response_content(ErrorResponse(MsgCode.REQUEST_METHOD_ERROR), http_status=401)
+        if request.method != HttpMethod.POST.value:
+            return make_response_content(ErrorResponse(MsgCode.REQUEST_METHOD_ERROR),
+                                         http_status=HTTPStatus.METHOD_NOT_ALLOWED)
         return func()
 
     return wrapper

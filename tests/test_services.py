@@ -1,8 +1,20 @@
+import contextlib
+
 import redis
 
-from src.flask_state.exceptions import ErrorResponse, SuccessResponse
+from src.flask_state.exceptions import ErrorResponse, SuccessResponse, FlaskStateError
 from src.flask_state.models import model_init_app
 from src.flask_state.services import host_status, redis_conn
+
+
+@contextlib.contextmanager
+def raises(custom_exception):
+    try:
+        yield
+    except custom_exception as e:
+        assert True
+    else:
+        assert False
 
 
 def test_redis(app):
@@ -42,7 +54,7 @@ def test_query_flask_state_host(app):
     """
     model_init_app(app)
     test_right_day = [1, 3, 7, 30]
-    test_error_day = [5, 10, 31, 100]
+    test_error_day = [100, 'hello']
     with app.app_context():
         for day in test_right_day:
             response_content = host_status.query_flask_state_host(day)
@@ -53,7 +65,8 @@ def test_query_flask_state_host(app):
             assert isinstance(response_content, SuccessResponse)
 
         for day in test_error_day:
-            response_content = host_status.query_flask_state_host(day)
-            assert isinstance(response_content.get_code(), int)
-            assert isinstance(response_content.get_msg(), str)
-            assert isinstance(response_content, ErrorResponse)
+            with raises(FlaskStateError):
+                response_content = host_status.query_flask_state_host(day)
+                assert isinstance(response_content.get_code(), int)
+                assert isinstance(response_content.get_msg(), str)
+                assert isinstance(response_content, ErrorResponse)
