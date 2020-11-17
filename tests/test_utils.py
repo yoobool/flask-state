@@ -27,7 +27,7 @@ def test_auth_method(app):
     get_response = c.get("/test_method")
 
     ok = 200
-    error = 406
+    error = 405
     error_request_method = 'Method Not Allowed'
     assert ok == post_response.status_code
     assert error == get_response.status_code
