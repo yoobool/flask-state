@@ -4,7 +4,9 @@ from datetime import datetime, timezone
 
 import psutil
 
+from . import redis_conn
 from ..conf.config import DAYS_SCOPE, Constant
+from ..conf.config import HTTPStatus
 from ..dao.host_status import (
     create_host_status,
     delete_thirty_days_status,
@@ -12,11 +14,10 @@ from ..dao.host_status import (
     retrieve_host_status_yesterday,
     retrieve_latest_host_status,
 )
-from ..exceptions import ErrorResponse, FlaskStateResponse, SuccessResponse
+from ..exceptions import FlaskStateResponse, SuccessResponse, FlaskStateError
 from ..exceptions.error_code import MsgCode
 from ..utils.date import get_current_ms, get_current_s
 from ..utils.logger import logger
-from . import redis_conn
 
 SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
 DEFAULT_HITS_RATIO = 100  # Default hits ratio value
@@ -70,7 +71,7 @@ def record_flask_state_host(interval):
                     yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
                     if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
                         be_divided_num = (
-                            keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
+                                keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
                         )
                         delta_hits_ratio = (
                             float("%.2f" % ((keyspace_hits - yesterday_keyspace_hits) * PERCENTAGE / be_divided_num))
@@ -108,34 +109,30 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     :param days: the query days
     :return: flask response
     """
-    try:
-        try:
-            if not isinstance(days, int):
-                days = int(days)
-        except Exception as t:
-            raise t
-        if days not in DAYS_SCOPE:
-            return ErrorResponse(MsgCode.OVERSTEP_DAYS_SCOPE)
-        current_status = retrieve_latest_host_status()
-        current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
-        result = retrieve_host_status(days)
-        result = control_result_counts(result)
-        arr = []
-        for status in result:
-            arr.append(
-                [
-                    int(status.ts / SECONDS_TO_MILLISECOND_MULTIPLE),
-                    status.cpu,
-                    status.memory,
-                    status.load_avg.split(","),
-                    status.disk_usage,
-                ]
-            )
-        data = {"currentStatistic": current_status, "items": arr}
-        return SuccessResponse(msg="Search success", data=data)
-    except Exception as e:
-        logger.exception(e)
-        return ErrorResponse(MsgCode.UNKNOWN_ERROR)
+    if str(days).isnumeric():
+        days = int(days)
+    else:
+        raise FlaskStateError(**MsgCode.PARAMETER_ERROR.value, status_code=HTTPStatus.BAD_REQUEST)
+
+    if days not in DAYS_SCOPE:
+        raise FlaskStateError(**MsgCode.OVERSTEP_DAYS_SCOPE.value, status_code=HTTPStatus.BAD_REQUEST)
+    current_status = retrieve_latest_host_status()
+    current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
+    result = retrieve_host_status(days)
+    result = control_result_counts(result)
+    arr = []
+    for status in result:
+        arr.append(
+            [
+                int(status.ts / SECONDS_TO_MILLISECOND_MULTIPLE),
+                status.cpu,
+                status.memory,
+                status.load_avg.split(","),
+                status.disk_usage,
+            ]
+        )
+    data = {"currentStatistic": current_status, "items": arr}
+    return SuccessResponse(msg="Search success", data=data)
 
 
 def control_result_counts(result) -> list:
