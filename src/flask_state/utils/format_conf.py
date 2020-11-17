@@ -1,35 +1,13 @@
 import os
 import platform
-import warnings
 
 from ..conf.config import MAX_TIME_SCALE, Constant, TimeScale
-from ..exceptions.log_msg import ErrorMsg, WarningMsg
-from ..utils.logger import logger
+from ..exceptions.log_msg import ErrorMsg
 
 DB_URL_HEADER = "sqlite:///"  # Database URL specification header
 TIME_LENGTH = 1
 TIME_RANGE_LENGTH = 2
 LAST_TIME_SCALE_LENGTH = 1
-
-
-def format_sec(secs) -> int:
-    warnings.warn("format_sec will be deprecated", DeprecationWarning)
-    """
-    Format incoming time
-    :param secs: initial time
-    :return: format time
-    :rtype: int
-    """
-    if not isinstance(secs, int):
-        raise TypeError(
-            ErrorMsg.DATA_TYPE_ERROR.get_msg(
-                ". The target type is {}, not {}".format(int.__name__, type(secs).__name__)
-            )
-        )
-    if secs < Constant.MIN_SECONDS:
-        logger.warning(WarningMsg.TIME_SMALL.get_msg())
-        return Constant.DEFAULT_SECONDS
-    return secs
 
 
 def format_address(address) -> str:

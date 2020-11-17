@@ -90,47 +90,6 @@ def test_file_lock():
 
 
 # format_conf
-def test_format_sec():
-    """
-    Test whether the error in the number of seconds passed in is thrown normally,
-    and whether the number of seconds is returned correctly
-    """
-    # key is type, value is input param
-    # Test the input error type and throw the appropriate error
-    target_type_error_count = 0
-    test_type_list = {
-        "str": "test",
-        "tuple": tuple(),
-        "dict": dict(),
-        "list": list(),
-        "int": 60,
-        "float": 60.5,
-        "bool": True,
-    }  # The number of correct values is 2, bool is treated as int
-    for key in test_type_list:
-        try:
-            format_conf.format_sec(test_type_list.get(key))
-        except TypeError as t:
-            target_type_error_count += 1
-            assert t.__str__() == "Data type format error. The target type is int, not %s" % key
-            assert isinstance(t, TypeError)
-    assert target_type_error_count == len(test_type_list) - 2
-
-    # key is input, value is correct output
-    # Test whether the correct number of seconds can be returned
-    test_seconds_list = {
-        -100: 60,
-        0: 60,
-        10: 60,
-        50: 60,
-        60: 60,
-        100: 100,
-        10000: 10000,
-    }  # The number of correct values is 3
-    for key in test_seconds_list:
-        assert test_seconds_list.get(key) == format_conf.format_sec(key)
-
-
 def test_format_address():
     """
     Test whether the incoming error address can throw the correct error
