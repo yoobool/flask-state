@@ -27,8 +27,8 @@ def test_auth_method(app):
     get_response = c.get("/test_method")
 
     ok = 200
-    error = 401
-    error_request_method = "The request method cannot be get"
+    error = 406
+    error_request_method = 'Method Not Allowed'
     assert ok == post_response.status_code
     assert error == get_response.status_code
     assert error_request_method == json.loads(str(get_response.data, "utf-8")).get("msg")
