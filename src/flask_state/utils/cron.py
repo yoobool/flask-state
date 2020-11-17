@@ -12,8 +12,8 @@ NO_CARRY = 0
 MAX_MONTH = 12
 SOLAR_MONTH_LAST_DAY = 31
 LUNAR_MONTH_LAST_DAY = 30
-LEAP_YEAR_FEBRUARY_DAY = 28
-AVERAGE_YEAR_FEBRUARY_DAY = 29
+LEAP_YEAR_FEBRUARY_DAY = 29
+AVERAGE_YEAR_FEBRUARY_DAY = 28
 SOLAR = "SOLAR"  # Solar month
 LUNAR = "LUNAR"  # Lunar month
 FOUR_TIMES = 4
@@ -80,19 +80,24 @@ class Cron:
 
     def _get_max_day_index(self, month, year):
         month_name = MONTH_NAME.get(month)
+        common_max_index = len(self.days)
         if month_name == SOLAR:
-            position = bisect_left(self.days, self.solar_day_count)
-            return position if self.days[position] + 1 != self.solar_day_count else position + 2
+            return common_max_index
         elif month_name == LUNAR:
-            position = bisect_left(self.days, self.lunar_day_count)
-            return position if self.days[position] + 1 != self.lunar_day_count else position + 2
+            return common_max_index if self.days[-1] < SOLAR_MONTH_LAST_DAY else common_max_index - 1
         else:
             if year % FOUR_TIMES == REMAINDER_ZERO and year % A_HUNDRED_TIMES != REMAINDER_ZERO:
-                position = bisect_left(self.days, self.leap_day_count)
-                return position if self.days[position] + 1 != self.leap_day_count else position + 2
+                return (
+                    common_max_index
+                    if self.days[-1] < LEAP_YEAR_FEBRUARY_DAY
+                    else bisect_right(self.days, LEAP_YEAR_FEBRUARY_DAY)
+                )
             else:
-                position = bisect_left(self.days, self.average_day_count)
-                return position if self.days[position] + 1 != self.average_day_count else position + 2
+                return (
+                    common_max_index
+                    if self.days[-1] < AVERAGE_YEAR_FEBRUARY_DAY
+                    else bisect_right(self.days, AVERAGE_YEAR_FEBRUARY_DAY)
+                )
 
     def _get_initial_index(self):
         _year, _month, _day, _hour, _minute = map(int, time.strftime("%Y,%m,%d,%H,%M").split(","))
