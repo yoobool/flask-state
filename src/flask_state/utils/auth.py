@@ -1,13 +1,15 @@
+from functools import wraps
+
 from flask import _request_ctx_stack, current_app, request
 from werkzeug.local import LocalProxy
 
+from ..conf.config import HttpMethod, HTTPStatus
 from ..controller.response_methods import make_response_content
 from ..exceptions import ErrorResponse
 from ..exceptions.error_code import MsgCode
-from ..conf.config import HTTPStatus, HttpMethod
 
 
-def auth_user(func):
+def auth_user(f):
     """
     Verify whether the user logs in through the flask-login package.
     If the user does not install flask-login, it will pass by default.
@@ -15,9 +17,10 @@ def auth_user(func):
     :rtype: bool
     """
 
-    def wrapper():
+    @wraps(f)
+    def wrapper(*args, **kwargs):
         if not hasattr(current_app, "login_manager"):
-            return func()
+            return f(*args, **kwargs)
 
         cr = current_app.login_manager
         current_user = LocalProxy(lambda: get_user())
@@ -29,22 +32,24 @@ def auth_user(func):
 
         if not (current_user and current_user.is_authenticated):
             return make_response_content(ErrorResponse(MsgCode.AUTH_FAIL), http_status=HTTPStatus.UNAUTHORIZED)
-        return func()
+        return f(*args, **kwargs)
 
     return wrapper
 
 
-def auth_method(func):
+def auth_method(f):
     """
     Determine whether request methods is post
     :return: auth result
     :rtype: bool
     """
 
-    def wrapper():
+    @wraps(f)
+    def wrapper(*args, **kwargs):
         if request.method != HttpMethod.POST.value:
-            return make_response_content(ErrorResponse(MsgCode.REQUEST_METHOD_ERROR),
-                                         http_status=HTTPStatus.METHOD_NOT_ALLOWED)
-        return func()
+            return make_response_content(
+                ErrorResponse(MsgCode.REQUEST_METHOD_ERROR), http_status=HTTPStatus.METHOD_NOT_ALLOWED
+            )
+        return f(*args, **kwargs)
 
     return wrapper
