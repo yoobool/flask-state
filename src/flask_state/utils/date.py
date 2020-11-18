@@ -1,8 +1,7 @@
 import time
 
 from ..conf.config import DAYS_SCOPE, DaysMilliseconds
-
-SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
+from .constants import TimeConstants
 
 
 def get_current_ms():
@@ -10,7 +9,7 @@ def get_current_ms():
     Return the current millisecond time
     :return: the current millisecond time
     """
-    return int(round(time.time() * SECONDS_TO_MILLISECOND_MULTIPLE))
+    return int(round(time.time() * TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
 
 
 def get_current_s():

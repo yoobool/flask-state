@@ -5,9 +5,9 @@ import time
 
 from flask import make_response
 
-from src.flask_state.conf.config import Constant
 from src.flask_state.exceptions.log_msg import ErrorMsg
-from src.flask_state.utils import auth, date, file_lock, format_conf
+from src.flask_state.utils import auth, date, file_lock
+from src.flask_state.utils.constants import DBAddressConstants, TimeConstants
 
 
 # auth
@@ -28,7 +28,7 @@ def test_auth_method(app):
 
     ok = 200
     error = 405
-    error_request_method = 'Method Not Allowed'
+    error_request_method = "Method Not Allowed"
     assert ok == post_response.status_code
     assert error == get_response.status_code
     assert error_request_method == json.loads(str(get_response.data, "utf-8")).get("msg")
@@ -39,9 +39,8 @@ def test_get_current_ms():
     """
     Test whether the current MS is obtained correctly
     """
-    from src.flask_state.utils.date import SECONDS_TO_MILLISECOND_MULTIPLE
 
-    now_ms = int(round(time.time() * SECONDS_TO_MILLISECOND_MULTIPLE))
+    now_ms = int(round(time.time() * TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
     assert now_ms == date.get_current_ms()
 
 
@@ -97,6 +96,8 @@ def test_format_address():
     # key is type, value is input param
     # Test the input error type and throw the appropriate error
     target_type_error_count = 0
+    min_address_length = DBAddressConstants.MIN_ADDRESS_LENGTH
+    db_url_header = DBAddressConstants.DB_URL_HEADER
     test_type_list = {
         "str": "test",
         "tuple": tuple(),
@@ -133,10 +134,7 @@ def test_format_address():
     ]  # The number of correct values is 1
     for address in test_address_list:
         try:
-            if (
-                len(address) < Constant.MIN_ADDRESS_LENGTH
-                or address[: Constant.MIN_ADDRESS_LENGTH - 1] != format_conf.DB_URL_HEADER
-            ):
+            if len(address) < min_address_length or address[: min_address_length - 1] != db_url_header:
                 raise ValueError(ErrorMsg.ERROR_ADDRESS.get_msg(". Error Sqlite url: %s" % address))
         except ValueError as v:
             target_address_error_count += 1
@@ -148,8 +146,8 @@ def test_format_address():
 
     correct_address_list = ["sqlite:///test.db", "sqlite:////"]
     for address in correct_address_list:
-        index = address[Constant.MIN_ADDRESS_LENGTH - 1 :].rfind("/")
-        address_path = address[Constant.MIN_ADDRESS_LENGTH - 1 :][:index] if index != -1 else "./"
+        index = address[min_address_length - 1 :].rfind("/")
+        address_path = address[min_address_length - 1 :][:index] if index != -1 else "./"
         try:
             if not os.access(address_path, os.W_OK):
                 raise ValueError(ErrorMsg.NO_ACCESS.get_msg(". No access path: %s" % address))

@@ -1,13 +1,9 @@
 import os
 import platform
 
-from ..conf.config import MAX_TIME_SCALE, Constant, TimeScale
+from ..conf.config import MAX_TIME_SCALE, TimeScale
 from ..exceptions.log_msg import ErrorMsg
-
-DB_URL_HEADER = "sqlite:///"  # Database URL specification header
-TIME_LENGTH = 1
-TIME_RANGE_LENGTH = 2
-LAST_TIME_SCALE_LENGTH = 1
+from .constants import CronConstants, DBAddressConstants, OperatingSystem
 
 
 def format_address(address) -> str:
@@ -23,16 +19,19 @@ def format_address(address) -> str:
                 ".The target type is {}, not {}".format(str.__name__, type(address).__name__)
             )
         )
-    if len(address) < Constant.MIN_ADDRESS_LENGTH or address[: Constant.MIN_ADDRESS_LENGTH - 1] != DB_URL_HEADER:
+    if (
+        len(address) < DBAddressConstants.MIN_ADDRESS_LENGTH
+        or address[: DBAddressConstants.MIN_ADDRESS_LENGTH - 1] != DBAddressConstants.DB_URL_HEADER
+    ):
         raise ValueError(ErrorMsg.ERROR_ADDRESS.get_msg(".Error sqlite url: %s" % address))
-    if platform.system() == Constant.WINDOWS_SYSTEM:
+    if platform.system() == OperatingSystem.WINDOWS_SYSTEM:
         index = max(
-            address[Constant.MIN_ADDRESS_LENGTH - 1 :].rfind("\\"),
-            address[Constant.MIN_ADDRESS_LENGTH - 1 :].rfind("/"),
+            address[DBAddressConstants.MIN_ADDRESS_LENGTH - 1 :].rfind("\\"),
+            address[DBAddressConstants.MIN_ADDRESS_LENGTH - 1 :].rfind("/"),
         )
     else:
-        index = address[Constant.MIN_ADDRESS_LENGTH - 1 :].rfind("/")
-    db_path = address[Constant.MIN_ADDRESS_LENGTH - 1 :][:index] if index != -1 else "./"
+        index = address[DBAddressConstants.MIN_ADDRESS_LENGTH - 1 :].rfind("/")
+    db_path = address[DBAddressConstants.MIN_ADDRESS_LENGTH - 1 :][:index] if index != -1 else "./"
     if not os.access(db_path, os.W_OK):
         raise ValueError(ErrorMsg.NO_ACCESS.get_msg(". No access path: %s" % address))
     return address
@@ -46,7 +45,9 @@ def format_cron(scope_tuple) -> list:
     :rtype: list
     """
     scale_name, scope = scope_tuple
-    now_time_scale = Constant.MIN_DAY_SCALE if scale_name == TimeScale.DAY.value else Constant.MIN_TIME_SCALE
+    not_allow_time_scale = (
+        CronConstants.NOT_ALLOW_DAY_SCALE if scale_name == TimeScale.DAY.value else CronConstants.NOT_ALLOW_TIME_SCALE
+    )
     max_time_scale = MAX_TIME_SCALE.get(scale_name, 0)
     if not isinstance(scope, str):
         raise TypeError(
@@ -60,17 +61,17 @@ def format_cron(scope_tuple) -> list:
         range_tmp = separation.split("-")
         range_tmp_len = len(range_tmp)
         try:
-            if range_tmp_len == TIME_LENGTH:
+            if range_tmp_len == CronConstants.NOT_RANGE_LENGTH:
                 time_scale = int(range_tmp[0])
-                if now_time_scale < time_scale < max_time_scale:
-                    now_time_scale = time_scale
+                if not_allow_time_scale < time_scale < max_time_scale:
+                    not_allow_time_scale = time_scale
                 else:
                     raise ValueError
                 get_range.append(time_scale)
-            elif range_tmp_len == TIME_RANGE_LENGTH:
-                for time_scale in range(int(range_tmp[0]), int(range_tmp[1]) + LAST_TIME_SCALE_LENGTH):
-                    if now_time_scale < time_scale < max_time_scale:
-                        now_time_scale = time_scale
+            elif range_tmp_len == CronConstants.IS_RANGE_LENGTH:
+                for time_scale in range(int(range_tmp[0]), int(range_tmp[1]) + CronConstants.SELECT_LAST_TIME_SCALE):
+                    if not_allow_time_scale < time_scale < max_time_scale:
+                        not_allow_time_scale = time_scale
                     else:
                         raise ValueError
                     get_range.append(time_scale)
@@ -95,11 +96,11 @@ def format_cron_sec(cron_sec) -> int:
             )
         )
     scale_name = TimeScale.SECOND.value
-    min_second_scale = Constant.MIN_TIME_SCALE
+    not_allow_second_scale = CronConstants.NOT_ALLOW_TIME_SCALE
     max_second_scale = MAX_TIME_SCALE.get(scale_name)
     try:
         time_scale = int(cron_sec)
-        if not min_second_scale < time_scale < max_second_scale:
+        if not not_allow_second_scale < time_scale < max_second_scale:
             raise ValueError
     except ValueError:
         raise ValueError(ErrorMsg.ERROR_CRON.get_msg(".Wrong parameter is {}: {}".format(scale_name, cron_sec)))

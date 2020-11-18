@@ -1,10 +1,14 @@
 import os
 import platform
 
-from ..conf.config import Constant
+from .constants import OperatingSystem
 
-SYSTEM = Constant.WINDOWS_SYSTEM if platform.system() == Constant.WINDOWS_SYSTEM else Constant.UNIX_SYSTEM
-if SYSTEM == Constant.UNIX_SYSTEM:
+SYSTEM = (
+    OperatingSystem.WINDOWS_SYSTEM
+    if platform.system() == OperatingSystem.WINDOWS_SYSTEM
+    else OperatingSystem.UNIX_SYSTEM
+)
+if SYSTEM == OperatingSystem.UNIX_SYSTEM:
     import fcntl
 
 
@@ -17,7 +21,7 @@ class Lock:
 class FileLock:
     def __init__(self):
         lock_file = "821e9dab54fec92e3d054b3367a50b70d328caed"
-        if SYSTEM == Constant.WINDOWS_SYSTEM:
+        if SYSTEM == OperatingSystem.WINDOWS_SYSTEM:
             lock_dir = os.environ["tmp"]
         else:
             lock_dir = "/tmp"
@@ -27,7 +31,7 @@ class FileLock:
         self.release()
 
     def acquire(self):
-        if SYSTEM == Constant.WINDOWS_SYSTEM:
+        if SYSTEM == OperatingSystem.WINDOWS_SYSTEM:
             if os.path.exists(self.file):
                 return
 
@@ -39,7 +43,7 @@ class FileLock:
             self._fn.write("1")
 
     def release(self):
-        if SYSTEM == Constant.WINDOWS_SYSTEM:
+        if SYSTEM == OperatingSystem.WINDOWS_SYSTEM:
             if os.path.exists(self.file):
                 os.remove(self.file)
         else:

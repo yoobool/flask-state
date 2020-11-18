@@ -5,7 +5,6 @@ import time
 
 from flask import current_app, request
 
-from .response_methods import make_response_content
 from ..conf.config import Constant, HttpMethod
 from ..controller.interceptors import json_required
 from ..exceptions import ErrorResponse, FlaskStateError
@@ -19,8 +18,7 @@ from ..utils.cron import Cron
 from ..utils.file_lock import Lock
 from ..utils.format_conf import format_address
 from ..utils.logger import DefaultLogger, logger
-
-ONE_MINUTE_SECONDS = 60
+from .response_methods import make_response_content
 
 
 def init_app(app, days="1-31", hours="0-23", minutes="0-59", second="0", log_instance=None):

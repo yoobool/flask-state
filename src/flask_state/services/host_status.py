@@ -4,9 +4,7 @@ from datetime import datetime, timezone
 
 import psutil
 
-from . import redis_conn
-from ..conf.config import DAYS_SCOPE, Constant
-from ..conf.config import HTTPStatus
+from ..conf.config import DAYS_SCOPE, Constant, HTTPStatus
 from ..dao.host_status import (
     create_host_status,
     delete_thirty_days_status,
@@ -14,16 +12,12 @@ from ..dao.host_status import (
     retrieve_host_status_yesterday,
     retrieve_latest_host_status,
 )
-from ..exceptions import FlaskStateResponse, SuccessResponse, FlaskStateError
+from ..exceptions import FlaskStateError, FlaskStateResponse, SuccessResponse
 from ..exceptions.error_code import MsgCode
+from ..utils.constants import NumericConstants, TimeConstants
 from ..utils.date import get_current_ms, get_current_s
 from ..utils.logger import logger
-
-SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
-DEFAULT_HITS_RATIO = 100  # Default hits ratio value
-DEFAULT_DELTA_HITS_RATIO = 100  # Default 24h hits ratio value
-DEFAULT_WINDOWS_LOAD_AVG = "0, 0, 0"  # Windows system cannot calculate load AVG
-PERCENTAGE = 100  # Percentage calculation
+from . import redis_conn
 
 
 def record_flask_state_host(interval):
@@ -35,7 +29,7 @@ def record_flask_state_host(interval):
         cpu = psutil.cpu_percent(interval=Constant.CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
         if platform.system() == "Windows":
-            load_avg = DEFAULT_WINDOWS_LOAD_AVG
+            load_avg = Constant.DEFAULT_WINDOWS_LOAD_AVG
         else:
             load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
         disk_usage = psutil.disk_usage("/").percent
@@ -60,9 +54,9 @@ def record_flask_state_host(interval):
                 keyspace_hits = redis_info.get("keyspace_hits")
                 keyspace_misses = redis_info.get("keyspace_misses")
                 hits_ratio = (
-                    float("%.2f" % (keyspace_hits * PERCENTAGE / (keyspace_hits + keyspace_misses)))
+                    float("%.2f" % (keyspace_hits * NumericConstants.PERCENTAGE / (keyspace_hits + keyspace_misses)))
                     if (keyspace_hits + keyspace_misses) != 0
-                    else DEFAULT_HITS_RATIO
+                    else Constant.DEFAULT_HITS_RATIO
                 )
                 delta_hits_ratio = hits_ratio
                 yesterday_current_statistic = retrieve_host_status_yesterday()
@@ -71,12 +65,19 @@ def record_flask_state_host(interval):
                     yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
                     if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
                         be_divided_num = (
-                                keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
+                            keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
                         )
                         delta_hits_ratio = (
-                            float("%.2f" % ((keyspace_hits - yesterday_keyspace_hits) * PERCENTAGE / be_divided_num))
+                            float(
+                                "%.2f"
+                                % (
+                                    (keyspace_hits - yesterday_keyspace_hits)
+                                    * NumericConstants.PERCENTAGE
+                                    / be_divided_num
+                                )
+                            )
                             if be_divided_num != 0
-                            else DEFAULT_DELTA_HITS_RATIO
+                            else Constant.DEFAULT_DELTA_HITS_RATIO
                         )
                 result_conf.update(
                     used_memory=used_memory,
@@ -124,7 +125,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     for status in result:
         arr.append(
             [
-                int(status.ts / SECONDS_TO_MILLISECOND_MULTIPLE),
+                int(status.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE),
                 status.cpu,
                 status.memory,
                 status.load_avg.split(","),

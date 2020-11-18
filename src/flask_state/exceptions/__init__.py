@@ -76,9 +76,9 @@ class FlaskStateError(Exception):
         :param int status_code: standard http status code use by FlaskState
         :param str msg:
         """
-        self.status_code = int(kwargs.get('status_code'))
-        self.msg = str(kwargs.get('msg'))
-        self.reply_code = kwargs.get('code', self.status_code)
+        self.status_code = int(kwargs.get("status_code"))
+        self.msg = str(kwargs.get("msg"))
+        self.reply_code = kwargs.get("code", self.status_code)
         self.data = list()
 
     def get_msg(self):
@@ -91,5 +91,9 @@ class FlaskStateError(Exception):
         return self.data
 
     def __repr__(self):
-        return '{}: ({}) {!r} {!r}'.format(self.__class__.__name__, self.status_code,
-                                           self.reply_code, self.msg, )
+        return "{}: ({}) {!r} {!r}".format(
+            self.__class__.__name__,
+            self.status_code,
+            self.reply_code,
+            self.msg,
+        )

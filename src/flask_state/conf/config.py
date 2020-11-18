@@ -1,20 +1,21 @@
 from enum import Enum, unique
 
 
-# Constant class
 class Constant:
-    DEFAULT_SECONDS = 60  # Record local state interval
-    MIN_SECONDS = 60  # Optional minimum number of seconds
+    """ Constant """
+
     REDIS_TIMEOUT = 1  # Redis connection timeout
     CPU_PERCENT_INTERVAL = 0  # Time interval to calculate CPU utilization using psutil
     DEFAULT_BIND_SQLITE = "flask_state_sqlite"  # Default binding database URL key
-    DEFAULT_DB_URL = "sqlite:///flask_state_host.db"  # Default database URL
+    DEFAULT_HITS_RATIO = 100  # Default hits ratio value
+    DEFAULT_DELTA_HITS_RATIO = 100  # Default 24h hits ratio value
+    DEFAULT_WINDOWS_LOAD_AVG = "0, 0, 0"  # Windows system cannot calculate load AVG
+    MAX_RETURN_RECORDS = 480  # Return the maximum number of records
+
+
+class OperatingSystem:
     WINDOWS_SYSTEM = "Windows"  # Windows system
     UNIX_SYSTEM = "Unix"  # Unix system
-    MIN_ADDRESS_LENGTH = 11  # Minimum number of address length
-    MAX_RETURN_RECORDS = 480  # Return the maximum number of records
-    MIN_TIME_SCALE = -1  # Minimum time scale
-    MIN_DAY_SCALE = 0  # Minimum day scale
 
 
 @unique
@@ -73,6 +74,7 @@ class HttpMethod(Enum):
 
 class HTTPStatus:
     """Http standard status code"""
+
     OK = 200
     BAD_REQUEST = 400
     METHOD_NOT_ALLOWED = 405

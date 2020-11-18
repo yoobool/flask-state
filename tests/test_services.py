@@ -2,7 +2,7 @@ import contextlib
 
 import redis
 
-from src.flask_state.exceptions import ErrorResponse, SuccessResponse, FlaskStateError
+from src.flask_state.exceptions import ErrorResponse, FlaskStateError, SuccessResponse
 from src.flask_state.models import model_init_app
 from src.flask_state.services import host_status, redis_conn
 
@@ -54,7 +54,7 @@ def test_query_flask_state_host(app):
     """
     model_init_app(app)
     test_right_day = [1, 3, 7, 30]
-    test_error_day = [100, 'hello']
+    test_error_day = [100, "hello"]
     with app.app_context():
         for day in test_right_day:
             response_content = host_status.query_flask_state_host(day)

@@ -2,23 +2,8 @@ import time
 from bisect import bisect_left, bisect_right
 
 from ..conf.config import MONTH_NAME, TimeScale
+from .constants import NumericConstants, TimeConstants
 from .format_conf import format_cron, format_cron_sec
-
-INITIAL_INDEX = 0
-INITIAL_HOUR_MIN = 0
-INITIAL_MONTH_DAY = 1
-CARRY = 1
-NO_CARRY = 0
-MAX_MONTH = 12
-SOLAR_MONTH_LAST_DAY = 31
-LUNAR_MONTH_LAST_DAY = 30
-LEAP_YEAR_FEBRUARY_DAY = 29
-AVERAGE_YEAR_FEBRUARY_DAY = 28
-SOLAR = "SOLAR"  # Solar month
-LUNAR = "LUNAR"  # Lunar month
-FOUR_TIMES = 4
-A_HUNDRED_TIMES = 100
-REMAINDER_ZERO = 0
 
 
 class Cron:
@@ -31,10 +16,6 @@ class Cron:
         self.max_minute_index = len(self.minutes)
         self.max_hour_index = len(self.hours)
 
-        self.solar_day_count = SOLAR_MONTH_LAST_DAY
-        self.lunar_day_count = LUNAR_MONTH_LAST_DAY
-        self.leap_day_count = LEAP_YEAR_FEBRUARY_DAY
-        self.average_day_count = AVERAGE_YEAR_FEBRUARY_DAY
         self.max_day_index = self._get_max_day_index(int(time.strftime("%m")), int(time.strftime("%y")))
         self.year, self.month, self.day_index, self.hour_index, self.minute_index = self._get_initial_index()
 
@@ -56,84 +37,98 @@ class Cron:
         return target_time_stamp
 
     def _update_index(self):
-        self.minute_index = (self.minute_index + CARRY) % self.max_minute_index
+        carry = NumericConstants.CARRY
+        no_carry = NumericConstants.NO_CARRY
+        initial_index = NumericConstants.INITIAL_INDEX
+        initial_month = TimeConstants.INITIAL_MONTH
 
-        hour_carry = CARRY if self.minute_index == INITIAL_INDEX else NO_CARRY
+        self.minute_index = (self.minute_index + carry) % self.max_minute_index
+        hour_carry = carry if self.minute_index == initial_index else no_carry
         if hour_carry:
             self.hour_index = (self.hour_index + hour_carry) % self.max_hour_index
 
-        day_carry = CARRY if hour_carry == CARRY and self.hour_index == INITIAL_INDEX else NO_CARRY
+        day_carry = carry if hour_carry == carry and self.hour_index == initial_index else no_carry
 
         if day_carry:
             self.max_day_index = self._get_max_day_index(self.month, self.year)
             self.day_index = (self.day_index + day_carry) % self.max_day_index
 
-        month_carry = CARRY if day_carry == CARRY and self.day_index == INITIAL_INDEX else NO_CARRY
+        month_carry = carry if day_carry == carry and self.day_index == initial_index else no_carry
 
         if month_carry:
             new_month = self.month + month_carry
-            self.month = INITIAL_MONTH_DAY if new_month > MAX_MONTH else new_month
+            self.month = initial_month if new_month > TimeConstants.MAX_MONTH else new_month
 
-        year_carry = CARRY if month_carry == CARRY and self.month == INITIAL_MONTH_DAY else NO_CARRY
+        year_carry = carry if month_carry == carry and self.month == initial_month else no_carry
         if year_carry:
             self.year = self.year + year_carry
 
     def _get_max_day_index(self, month, year):
         month_name = MONTH_NAME.get(month)
         common_max_index = len(self.days)
-        if month_name == SOLAR:
+        if month_name == TimeConstants.SOLAR:
             return common_max_index
-        elif month_name == LUNAR:
-            return common_max_index if self.days[-1] < SOLAR_MONTH_LAST_DAY else common_max_index - 1
+        elif month_name == TimeConstants.LUNAR:
+            return common_max_index if self.days[-1] < TimeConstants.SOLAR_MONTH_LAST_DAY else common_max_index - 1
         else:
-            if year % FOUR_TIMES == REMAINDER_ZERO and year % A_HUNDRED_TIMES != REMAINDER_ZERO:
+            if (
+                year % NumericConstants.FOUR_TIMES == NumericConstants.REMAINDER_ZERO
+                and year % NumericConstants.A_HUNDRED_TIMES != NumericConstants.REMAINDER_ZERO
+            ):
+                """ Determine whether this year is a leap year """
                 return (
                     common_max_index
-                    if self.days[-1] < LEAP_YEAR_FEBRUARY_DAY
-                    else bisect_right(self.days, LEAP_YEAR_FEBRUARY_DAY)
+                    if self.days[-1] < TimeConstants.LEAP_YEAR_FEBRUARY_DAY
+                    else bisect_right(self.days, TimeConstants.LEAP_YEAR_FEBRUARY_DAY)
                 )
             else:
                 return (
                     common_max_index
-                    if self.days[-1] < AVERAGE_YEAR_FEBRUARY_DAY
-                    else bisect_right(self.days, AVERAGE_YEAR_FEBRUARY_DAY)
+                    if self.days[-1] < TimeConstants.AVERAGE_YEAR_FEBRUARY_DAY
+                    else bisect_right(self.days, TimeConstants.AVERAGE_YEAR_FEBRUARY_DAY)
                 )
 
     def _get_initial_index(self):
         _year, _month, _day, _hour, _minute = map(int, time.strftime("%Y,%m,%d,%H,%M").split(","))
+        carry = NumericConstants.CARRY
+        no_carry = NumericConstants.NO_CARRY
+        initial_index = NumericConstants.INITIAL_INDEX
+        initial_month = TimeConstants.INITIAL_MONTH
 
         minute_position = bisect_right(self.minutes, _minute)
         hour_carry, minute_index = (
-            (CARRY, INITIAL_INDEX) if minute_position == self.max_minute_index else (NO_CARRY, minute_position)
+            (carry, initial_index) if minute_position == self.max_minute_index else (no_carry, minute_position)
         )
 
         hour_position = bisect_left(self.hours, _hour + hour_carry)
         day_carry, hour_index = (
-            (CARRY, INITIAL_INDEX) if hour_position == self.max_hour_index else (NO_CARRY, hour_position)
+            (carry, initial_index) if hour_position == self.max_hour_index else (no_carry, hour_position)
         )
 
         day_position = bisect_left(self.days, _day + day_carry)
         month_carry, day_index = (
-            (CARRY, INITIAL_INDEX) if day_position == self.max_day_index else (NO_CARRY, day_position)
+            (carry, initial_index) if day_position == self.max_day_index else (no_carry, day_position)
         )
 
-        year_carry, month_index = (
-            (CARRY, INITIAL_MONTH_DAY) if month_carry and _month == MAX_MONTH else (NO_CARRY, _month + month_carry)
+        year_carry, month = (
+            (carry, initial_month)
+            if month_carry and _month == TimeConstants.MAX_MONTH
+            else (no_carry, _month + month_carry)
         )
 
-        year_index = _year + CARRY if year_carry else _year
+        year = _year + carry if year_carry else _year
 
         if year_carry:
-            minute_index, hour_index, day_index, month_index = (
-                INITIAL_INDEX,
-                INITIAL_INDEX,
-                INITIAL_INDEX,
-                INITIAL_INDEX,
+            minute_index, hour_index, day_index, month = (
+                initial_index,
+                initial_index,
+                initial_index,
+                initial_index,
             )
         elif month_carry:
-            minute_index, hour_index, day_index = INITIAL_INDEX, INITIAL_INDEX, INITIAL_INDEX
+            minute_index, hour_index, day_index = initial_index, initial_index, initial_index
         elif day_carry:
-            minute_index, hour_index = INITIAL_INDEX, INITIAL_INDEX
+            minute_index, hour_index = initial_index, initial_index
         elif hour_carry:
-            month_index = INITIAL_INDEX
-        return year_index, month_index, day_index, hour_index, minute_index
+            month = initial_index
+        return year, month, day_index, hour_index, minute_index
