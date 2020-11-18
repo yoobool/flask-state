@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 import psutil
 
-from ..conf.config import DAYS_SCOPE, Constant, HTTPStatus
+from ..conf.config import Config
 from ..dao.host_status import (
     create_host_status,
     delete_thirty_days_status,
@@ -14,7 +14,7 @@ from ..dao.host_status import (
 )
 from ..exceptions import FlaskStateError, FlaskStateResponse, SuccessResponse
 from ..exceptions.error_code import MsgCode
-from ..utils.constants import NumericConstants, TimeConstants
+from ..utils.constants import HTTPStatus, NumericConstants, TimeConstants
 from ..utils.date import get_current_ms, get_current_s
 from ..utils.logger import logger
 from . import redis_conn
@@ -26,10 +26,10 @@ def record_flask_state_host(interval):
 
     """
     try:
-        cpu = psutil.cpu_percent(interval=Constant.CPU_PERCENT_INTERVAL)
+        cpu = psutil.cpu_percent(interval=Config.CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
         if platform.system() == "Windows":
-            load_avg = Constant.DEFAULT_WINDOWS_LOAD_AVG
+            load_avg = Config.DEFAULT_WINDOWS_LOAD_AVG
         else:
             load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
         disk_usage = psutil.disk_usage("/").percent
@@ -56,7 +56,7 @@ def record_flask_state_host(interval):
                 hits_ratio = (
                     float("%.2f" % (keyspace_hits * NumericConstants.PERCENTAGE / (keyspace_hits + keyspace_misses)))
                     if (keyspace_hits + keyspace_misses) != 0
-                    else Constant.DEFAULT_HITS_RATIO
+                    else Config.DEFAULT_HITS_RATIO
                 )
                 delta_hits_ratio = hits_ratio
                 yesterday_current_statistic = retrieve_host_status_yesterday()
@@ -77,7 +77,7 @@ def record_flask_state_host(interval):
                                 )
                             )
                             if be_divided_num != 0
-                            else Constant.DEFAULT_DELTA_HITS_RATIO
+                            else Config.DEFAULT_DELTA_HITS_RATIO
                         )
                 result_conf.update(
                     used_memory=used_memory,
@@ -115,7 +115,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     else:
         raise FlaskStateError(**MsgCode.PARAMETER_ERROR.value, status_code=HTTPStatus.BAD_REQUEST)
 
-    if days not in DAYS_SCOPE:
+    if days not in TimeConstants.DAYS_SCOPE:
         raise FlaskStateError(**MsgCode.OVERSTEP_DAYS_SCOPE.value, status_code=HTTPStatus.BAD_REQUEST)
     current_status = retrieve_latest_host_status()
     current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
@@ -143,11 +143,11 @@ def control_result_counts(result) -> list:
     :return: result after treatment
     """
     result_length = len(result)
-    if result_length > Constant.MAX_RETURN_RECORDS:
+    if result_length > Config.MAX_RETURN_RECORDS:
         refine_result = list()
-        interval = round(result_length / Constant.MAX_RETURN_RECORDS, 2)
+        interval = round(result_length / Config.MAX_RETURN_RECORDS, 2)
         index = 0
-        while index <= result_length - 1 and len(refine_result) < Constant.MAX_RETURN_RECORDS:
+        while index <= result_length - 1 and len(refine_result) < Config.MAX_RETURN_RECORDS:
             refine_result.append(result[int(index)])
             index += interval
         result = refine_result

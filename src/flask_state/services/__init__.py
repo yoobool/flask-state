@@ -1,4 +1,4 @@
-from ..conf.config import Constant
+from ..conf.config import Config
 
 
 # Create redis object
@@ -14,7 +14,7 @@ class RedisConn:
                 host=redis_conf.get("REDIS_HOST"),
                 port=redis_conf.get("REDIS_PORT"),
                 password=redis_conf.get("REDIS_PASSWORD"),
-                socket_connect_timeout=Constant.REDIS_TIMEOUT,
+                socket_connect_timeout=Config.REDIS_TIMEOUT,
             )
         except ImportError:
             self.redis = None

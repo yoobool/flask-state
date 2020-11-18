@@ -16,7 +16,7 @@ def test_model(app):
     model_init_app(app)
 
     # insert data
-    cpu = psutil.cpu_percent(interval=config.Constant.CPU_PERCENT_INTERVAL)
+    cpu = psutil.cpu_percent(interval=config.Config.CPU_PERCENT_INTERVAL)
     memory = psutil.virtual_memory().percent
     try:
         load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
@@ -58,7 +58,7 @@ def test_clear_expire_data(app):
 
     # insert expire data
     for i in range(expire_data_length):
-        cpu = psutil.cpu_percent(interval=config.Constant.CPU_PERCENT_INTERVAL)
+        cpu = psutil.cpu_percent(interval=config.Config.CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
         try:
             load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])

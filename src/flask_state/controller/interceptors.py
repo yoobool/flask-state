@@ -3,10 +3,10 @@ from functools import wraps
 
 from flask import request
 
-from ..conf.config import HTTPStatus
 from ..controller.response_methods import make_response_content
 from ..exceptions import ErrorResponse
 from ..exceptions.error_code import MsgCode
+from ..utils.constants import HTTPStatus
 
 
 def json_required(f):

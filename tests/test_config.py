@@ -6,7 +6,7 @@ def test_constant():
     """
     Test whether the constant value is correct
     """
-    constant = config.Constant
+    constant = config.Config
     operating_system = constants.OperatingSystem
     assert 1 == constant.REDIS_TIMEOUT
     assert 0 == constant.CPU_PERCENT_INTERVAL
@@ -20,9 +20,10 @@ def test_days_scope():
     """
     Test whether milliseconds can be correctly obtained within the date range
     """
-    for day in config.DAYS_SCOPE:
+    days_scope = constants.TimeConstants.DAYS_SCOPE
+    for day in days_scope:
         try:
-            value = config.DaysMilliseconds[config.DAYS_SCOPE.get(day)].value
+            value = constants.DaysMilliseconds[days_scope.get(day)].value
         except Exception as e:
             assert type(e) == KeyError
 
@@ -33,4 +34,4 @@ def test_http_method():
     """
     http_method_list = ["POST", "GET", "PUT", "DELETE", "PATCH"]
     for method in http_method_list:
-        assert method == config.HttpMethod[method].value
+        assert method == constants.HttpMethod[method].value

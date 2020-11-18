@@ -1,9 +1,8 @@
 import os
 import platform
 
-from ..conf.config import MAX_TIME_SCALE, TimeScale
 from ..exceptions.log_msg import ErrorMsg
-from .constants import CronConstants, DBAddressConstants, OperatingSystem
+from .constants import CronConstants, DBAddressConstants, OperatingSystem, TimeScale
 
 
 def format_address(address) -> str:
@@ -48,7 +47,7 @@ def format_cron(scope_tuple) -> list:
     not_allow_time_scale = (
         CronConstants.NOT_ALLOW_DAY_SCALE if scale_name == TimeScale.DAY.value else CronConstants.NOT_ALLOW_TIME_SCALE
     )
-    max_time_scale = MAX_TIME_SCALE.get(scale_name, 0)
+    max_time_scale = CronConstants.MAX_TIME_SCALE.get(scale_name, 0)
     if not isinstance(scope, str):
         raise TypeError(
             ErrorMsg.DATA_TYPE_ERROR.get_msg(
@@ -97,7 +96,7 @@ def format_cron_sec(cron_sec) -> int:
         )
     scale_name = TimeScale.SECOND.value
     not_allow_second_scale = CronConstants.NOT_ALLOW_TIME_SCALE
-    max_second_scale = MAX_TIME_SCALE.get(scale_name)
+    max_second_scale = CronConstants.MAX_TIME_SCALE.get(scale_name)
     try:
         time_scale = int(cron_sec)
         if not not_allow_second_scale < time_scale < max_second_scale:

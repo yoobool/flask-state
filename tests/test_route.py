@@ -1,8 +1,8 @@
 from flask import json
 
-from src.flask_state.conf import config
 from src.flask_state.controller import manager
 from src.flask_state.models import model_init_app
+from src.flask_state.utils import constants
 
 
 def test_init_app(app):
@@ -11,7 +11,7 @@ def test_init_app(app):
         "/v0/state/hoststatus",
         endpoint="state_host_status",
         view_func=manager.query_flask_state,
-        methods=[config.HttpMethod.POST.value],
+        methods=[constants.HttpMethod.POST.value],
     )
     c = app.test_client()
     response = c.post(

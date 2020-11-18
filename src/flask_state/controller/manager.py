@@ -5,7 +5,7 @@ import time
 
 from flask import current_app, request
 
-from ..conf.config import Constant, HttpMethod
+from ..conf.config import Config
 from ..controller.interceptors import json_required
 from ..exceptions import ErrorResponse, FlaskStateError
 from ..exceptions.error_code import MsgCode
@@ -14,6 +14,7 @@ from ..models import model_init_app
 from ..services import redis_conn
 from ..services.host_status import query_flask_state_host, record_flask_state_host
 from ..utils.auth import auth_method, auth_user
+from ..utils.constants import HttpMethod
 from ..utils.cron import Cron
 from ..utils.file_lock import Lock
 from ..utils.format_conf import format_address
@@ -70,10 +71,10 @@ def init_redis(app):
 
 
 def init_db(app):
-    if not app.config.get("SQLALCHEMY_BINDS", {}).get(Constant.DEFAULT_BIND_SQLITE):
+    if not app.config.get("SQLALCHEMY_BINDS", {}).get(Config.DEFAULT_BIND_SQLITE):
         raise KeyError(ErrorMsg.LACK_SQLITE.get_msg())
-    app.config["SQLALCHEMY_BINDS"][Constant.DEFAULT_BIND_SQLITE] = format_address(
-        app.config["SQLALCHEMY_BINDS"].get(Constant.DEFAULT_BIND_SQLITE)
+    app.config["SQLALCHEMY_BINDS"][Config.DEFAULT_BIND_SQLITE] = format_address(
+        app.config["SQLALCHEMY_BINDS"].get(Config.DEFAULT_BIND_SQLITE)
     )
 
 

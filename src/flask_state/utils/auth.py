@@ -3,10 +3,10 @@ from functools import wraps
 from flask import _request_ctx_stack, current_app, request
 from werkzeug.local import LocalProxy
 
-from ..conf.config import HttpMethod, HTTPStatus
 from ..controller.response_methods import make_response_content
 from ..exceptions import ErrorResponse
 from ..exceptions.error_code import MsgCode
+from ..utils.constants import HttpMethod, HTTPStatus
 
 
 def auth_user(f):
