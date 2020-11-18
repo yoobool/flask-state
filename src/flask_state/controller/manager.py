@@ -72,7 +72,6 @@ def init_redis(app):
 
 
 def init_db(app):
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
     if not app.config.get("SQLALCHEMY_BINDS", {}).get(Constant.DEFAULT_BIND_SQLITE):
         raise KeyError(ErrorMsg.LACK_SQLITE.get_msg())
     app.config["SQLALCHEMY_BINDS"][Constant.DEFAULT_BIND_SQLITE] = format_address(
