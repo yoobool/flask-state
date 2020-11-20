@@ -247,11 +247,13 @@ class MachineStatus {
             url: '/v0/state/hoststatus',
             data: {'timeQuantum': days},
             success: response => {
-                const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
-                const data = response.data;
-                if (data.code !== 200) {
+                if (response.code !== 200) {
                     return;
                 }
+
+                const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
+                const data = response.data;
+
                 data.items = data.items.map(item => {
                     let element = {};
                     fields.forEach((field, index) => {
