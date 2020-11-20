@@ -96,7 +96,7 @@
 .console-info-close-style {
     z-index: 2;
     position: absolute;
-    top: 8px;
+    top: 6px;
     right: 15px;
     padding: 0;
     line-height: 1;
@@ -154,6 +154,8 @@
 }
 
 .fs-select-days {
+    display: inline-block;
+    vertical-align: top;
     padding: 0 20px 0 5px;
     border-radius: 3px;
     line-height: 15px;
@@ -165,11 +167,11 @@
 .fs-select-arrow {
     position: absolute;
     display: flex;
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
     top: 0;
     left: 12px;
-    padding: 3px 5px 2px 8px;
+    padding-left: 8px;
     align-items: center;
     pointer-events: none;
     -webkit-box-sizing: content-box;
@@ -377,7 +379,8 @@
 }
 
 #fs-days {
-    margin: 0;
     display: inline-block;
     vertical-align: top;
+    margin: 0;
+    line-height: 17px;
 }
