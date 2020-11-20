@@ -22,14 +22,11 @@ from ..utils.logger import DefaultLogger, logger
 from .response_methods import make_response_content
 
 
-def init_app(app, days="1-31", hours="0-23", minutes="0-59", second="0", log_instance=None):
+def init_app(app, interval=180, log_instance=None):
     """
     Plugin entry
     :param app: Flask app
-    :param days:
-    :param hours:
-    :param minutes:
-    :param second:
+    :param interval:
     :param log_instance: custom logger object
     """
     logger.set(log_instance or DefaultLogger().get())
@@ -43,16 +40,16 @@ def init_app(app, days="1-31", hours="0-23", minutes="0-59", second="0", log_ins
     init_redis(app)
     model_init_app(app)
 
+    step = int(interval / 60) if int(interval) > 60 else 1
+    minutes_array = [i for i in range(0, 60, step)]
+    minutes = ""
+    for i in minutes_array:
+        minutes += str(i) + ","
+
     # Timing recorder
     t = threading.Thread(
         target=record_timer,
-        args=(
-            app,
-            days,
-            hours,
-            minutes,
-            second,
-        ),
+        args=(app, minutes[:-1]),
     )
     t.setDaemon(True)
     t.start()
@@ -78,7 +75,7 @@ def init_db(app):
     )
 
 
-def record_timer(app, days, hours, minutes, second):
+def record_timer(app, minutes="0-59", days="1-31", hours="0-23", second="0"):
     app.lock_flask_state = Lock.get_file_lock()
     with app.app_context():
         try:
