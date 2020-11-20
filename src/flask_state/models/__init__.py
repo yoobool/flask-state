@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 
-from ..conf.config import Constant
+from ..conf.config import Config
 
 db = SQLAlchemy()
 
@@ -8,4 +8,4 @@ db = SQLAlchemy()
 def model_init_app(app):
     db.init_app(app)
     with app.app_context():
-        db.create_all(bind=Constant.DEFAULT_BIND_SQLITE)
+        db.create_all(bind=Config.DEFAULT_BIND_SQLITE)

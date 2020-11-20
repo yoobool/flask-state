@@ -1,8 +1,6 @@
 import time
 
-from ..conf.config import DAYS_SCOPE, DaysMilliseconds
-
-SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
+from .constants import DaysMilliseconds, TimeConstants
 
 
 def get_current_ms():
@@ -10,7 +8,7 @@ def get_current_ms():
     Return the current millisecond time
     :return: the current millisecond time
     """
-    return int(round(time.time() * SECONDS_TO_MILLISECOND_MULTIPLE))
+    return int(round(time.time() * TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
 
 
 def get_current_s():
@@ -27,4 +25,5 @@ def get_query_ms(days):
     :param days: query limited days
     :return: a limited time period of milliseconds
     """
-    return DaysMilliseconds[DAYS_SCOPE.get(days)].value if days in DAYS_SCOPE else 0
+    days_scope = TimeConstants.DAYS_SCOPE
+    return DaysMilliseconds[days_scope.get(days)].value if days in days_scope else 0

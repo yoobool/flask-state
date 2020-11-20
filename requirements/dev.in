@@ -1,6 +1,11 @@
 -r docs.in
 -r tests.in
+black
+codespell
+flake8
+isort
 pip-tools
+pre-commit
 setuptools
-wheel
 twine
+wheel
