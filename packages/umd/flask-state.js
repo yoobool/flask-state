@@ -265,6 +265,7 @@
                 data: {'timeQuantum': days},
                 success: response => {
                     if (response.code !== 200) {
+                        window.alert(response.msg);
                         return;
                     }
 
