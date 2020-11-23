@@ -91,7 +91,7 @@ def record_flask_state_host(interval):
                     delta_hits_ratio=delta_hits_ratio,
                 )
             except Exception as t:
-                logger.warning(t)
+                logger.exception(t)
         create_host_status(result_conf)
         now_time = get_current_s()
         new_day_utc = (
