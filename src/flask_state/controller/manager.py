@@ -29,7 +29,7 @@ def init_app(app, interval=180, log_instance=None):
     :param interval:
     :param log_instance: custom logger object
     """
-    logger.set(log_instance or DefaultLogger().get())
+    logger.set(log_instance or DefaultLogger())
     app.add_url_rule(
         "/v0/state/hoststatus",
         endpoint="state_host_status",
