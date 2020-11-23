@@ -14,7 +14,10 @@ class RedisConn:
                 host=redis_conf.get("REDIS_HOST"),
                 port=redis_conf.get("REDIS_PORT"),
                 password=redis_conf.get("REDIS_PASSWORD"),
-                socket_connect_timeout=Config.REDIS_TIMEOUT,
+                socket_connect_timeout=Config.REDIS_CONNECT_TIMEOUT,
+                socket_timeout=Config.REDIS_TIMEOUT,
+                retry_on_timeout=True,
+                health_check_interval=Config.HEALTH_CHECK_INTERVAL,
             )
         except ImportError:
             self.redis = None
