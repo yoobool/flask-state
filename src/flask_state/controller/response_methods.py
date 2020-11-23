@@ -1,7 +1,9 @@
 from flask import jsonify, make_response
 
+from ..utils.constants import HTTPStatus
 
-def make_response_content(resp, msg=None, http_status=200):
+
+def make_response_content(resp, msg=None, http_status=HTTPStatus.OK):
     """
     Construct response
     :param resp: response class
