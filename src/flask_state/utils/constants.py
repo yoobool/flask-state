@@ -97,3 +97,26 @@ class HTTPStatus:
     METHOD_NOT_ALLOWED = 405
     UNAUTHORIZED = 401
     INTERNAL_SERVER_ERROR = 500
+
+
+class LogLevels:
+    """Log level"""
+
+    INFO = "INFO"
+    WARNING = "WARNING"
+    DEBUG = "DEBUG"
+    ERROR = "ERROR"
+    EXCEPTION = "EXCEPTION"
+    DEFAULT = "INFO"
+
+
+class AnsiColor:
+    """ANSI escape code"""
+
+    RED = "31"
+    GREEN = "32"
+    YELLOW = "33"
+    BLUE = "34"
+    MAGENTA = "35"
+    CYAN = "36"
+    WHITE = "37"
