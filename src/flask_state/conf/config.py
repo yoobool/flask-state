@@ -1,7 +1,9 @@
 class Config:
     """ Config """
 
-    REDIS_TIMEOUT = 1  # Redis connection timeout
+    REDIS_CONNECT_TIMEOUT = 1  # Redis socket connection timeout
+    REDIS_TIMEOUT = 5  # Redis socket timeout
+    HEALTH_CHECK_INTERVAL = 20  # health beat interval
     CPU_PERCENT_INTERVAL = 0  # Time interval to calculate CPU utilization using psutil
     DEFAULT_BIND_SQLITE = "flask_state_sqlite"  # Default binding database URL key
     DEFAULT_HITS_RATIO = 100  # Default hits ratio value
