@@ -14,15 +14,14 @@ from ..models import model_init_app
 from ..services import redis_conn
 from ..services.host_status import query_flask_state_host, record_flask_state_host
 from ..utils.auth import auth_method, auth_user
-from ..utils.constants import HttpMethod
-from ..utils.cron import Cron
+from ..utils.constants import HttpMethod, HTTPStatus
 from ..utils.file_lock import Lock
 from ..utils.format_conf import format_address
 from ..utils.logger import DefaultLogger, logger
 from .response_methods import make_response_content
 
 
-def init_app(app, interval=180, log_instance=None):
+def init_app(app, interval=60, log_instance=None):
     """
     Plugin entry
     :param app: Flask app
@@ -40,16 +39,20 @@ def init_app(app, interval=180, log_instance=None):
     init_redis(app)
     model_init_app(app)
 
-    step = int(interval / 60) if int(interval) > 60 else 1
-    minutes_array = [i for i in range(0, 60, step)]
-    minutes = ""
-    for i in minutes_array:
-        minutes += str(i) + ","
+    if not isinstance(interval, int):
+        raise TypeError(
+            ErrorMsg.DATA_TYPE_ERROR.get_msg(
+                ".The target type is {}, not {}".format(int.__name__, type(interval).__name__)
+            )
+        )
 
     # Timing recorder
     t = threading.Thread(
         target=record_timer,
-        args=(app, minutes[:-1]),
+        args=(
+            app,
+            interval,
+        ),
     )
     t.setDaemon(True)
     t.start()
@@ -75,7 +78,7 @@ def init_db(app):
     )
 
 
-def record_timer(app, minutes="0-59", days="1-31", hours="0-23", second="0"):
+def record_timer(app, interval):
     app.lock_flask_state = Lock.get_file_lock()
     with app.app_context():
         try:
@@ -83,10 +86,14 @@ def record_timer(app, minutes="0-59", days="1-31", hours="0-23", second="0"):
             logger.info(InfoMsg.ACQUIRED_LOCK.get_msg(". process ID: %d" % os.getpid()))
 
             s = sched.scheduler(time.time, time.sleep)
-            cron = Cron(days=days, hours=hours, minutes=minutes, second=second)
+            in_time = time.time()
+            target_time = int(int((time.time()) / 60 + 1) * 60)
+            time.sleep(60 - in_time % 60)
+            record_flask_state_host(interval)
             while True:
-                target_time = cron.get()
-                s.enterabs(target_time, 1, record_flask_state_host, (60,))
+                target_time += interval
+                now_time = time.time()
+                s.enter(target_time - now_time, 1, record_flask_state_host, (interval,))
                 s.run()
         except BlockingIOError:
             pass
@@ -112,4 +119,4 @@ def query_flask_state():
         return make_response_content(e, http_status=e.status_code)
     except Exception as e:
         logger.exception(e)
-        return make_response_content(ErrorResponse(MsgCode.UNKNOWN_ERROR), http_status=500)
+        return make_response_content(ErrorResponse(MsgCode.UNKNOWN_ERROR), http_status=HTTPStatus.INTERNAL_SERVER_ERROR)
