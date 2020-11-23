@@ -8,7 +8,8 @@ def test_constant():
     """
     constant = config.Config
     operating_system = constants.OperatingSystem
-    assert 1 == constant.REDIS_TIMEOUT
+    assert 1 == constant.REDIS_CONNECT_TIMEOUT
+    assert 5 == constant.REDIS_TIMEOUT
     assert 0 == constant.CPU_PERCENT_INTERVAL
     assert "flask_state_sqlite" == constant.DEFAULT_BIND_SQLITE
     assert "Windows" == operating_system.WINDOWS_SYSTEM
