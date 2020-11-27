@@ -622,7 +622,7 @@ function Init(initMap) {
         targetDom.addEventListener('click', () => FlaskStateInstance(language).setFlaskStateData());
     } else {
         if (document.getElementById('fs-state-circular')) return;
-        let str = "<div id='fs-state-circular' class='fs-circular fs-circular-animation' style='border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
+        let str = "<div id='fs-state-circular' class='fs-circular' style='top:300px;border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
         let domBody = document.getElementsByTagName('body')[0];
         domBody.insertAdjacentHTML('beforeend', str);
         let triggerCircular = document.getElementById('fs-state-circular');
@@ -630,43 +630,24 @@ function Init(initMap) {
             this.classList.add('fs-circular-out');
             FlaskStateInstance(language).setFlaskStateData();
         };
-        let timeOutId;
+
         let mousePosition;
+
+        function circularMove(moveEvent) {
+            triggerCircular.style.top = moveEvent.clientY - mousePosition + 300 + 'px';
+        }
+
         triggerCircular.onmousedown = function (downEvent) {
             mousePosition = mousePosition || downEvent.clientY;
-            triggerCircular.classList.remove('fs-circular-animation');
-            timeOutId = setTimeout(function () {
-                triggerCircular.style.cursor = 'move';
-                domBody.style.cursor = 'move';
-                domBody.onmousemove = function (moveEvent) {
-                    triggerCircular.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
-                }
-            }, 1500)
+            document.addEventListener("mousemove", circularMove);
         };
-        domBody.onmouseup = function () {
-            triggerCircular.style.cursor = 'pointer';
-            triggerCircular.classList.add('fs-circular-animation');
-            domBody.onmousemove = null;
-            this.style.cursor = 'default';
-            clearTimeout(timeOutId);
-        };
-        triggerCircular.ontouchstart = function (downEvent) {
-            mousePosition = mousePosition || downEvent.clientY;
-            triggerCircular.classList.remove('fs-circular-animation');
-            timeOutId = setTimeout(function () {
-                triggerCircular.style.cursor = 'move';
-                domBody.style.cursor = 'move';
-                domBody.ontouchmove = function (moveEvent) {
-                    triggerCircular.style.top = Math.max(moveEvent.clientY - mousePosition + 300, 20) + 'px';
-                }
-            }, 1500)
-        };
-        domBody.ontouchend = function () {
-            triggerCircular.style.cursor = 'pointer';
-            triggerCircular.classList.add('fs-circular-animation');
-            domBody.ontouchmove = null;
-            this.style.cursor = 'default';
-            clearTimeout(timeOutId);
+
+        document.onmouseup = function () {
+            document.removeEventListener("mousemove", circularMove);
+            const circularHeight = parseInt(triggerCircular.style.top);
+            triggerCircular.classList.add("fs-circular-animation");
+            triggerCircular.style.top = Math.min(Math.max(circularHeight, 50), window.screen.height - 200) + 'px';
+            setTimeout(() => triggerCircular.classList.remove("fs-circular-animation"), 500);
         };
     }
 }
