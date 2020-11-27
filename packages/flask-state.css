@@ -127,7 +127,6 @@
 .fs-circular {
     z-index: 2000;
     position: fixed;
-    top: 300px;
     right: 15px;
     width: 3rem;
     height: 3rem;
