@@ -48,56 +48,7 @@ def record_flask_state_host(interval, target_time):
             "disk_usage": disk_usage,
             "boot_seconds": int(get_current_s() - boot_ts),
         }
-        redis_handler = redis_conn.get_redis()
-        if redis_handler:
-            try:
-                redis_info = redis_handler.info()
-                used_memory = redis_info.get("used_memory")
-                used_memory_rss = redis_info.get("used_memory_rss")
-                connected_clients = redis_info.get("connected_clients")
-                uptime_in_seconds = redis_info.get("uptime_in_seconds")
-                mem_fragmentation_ratio = redis_info.get("mem_fragmentation_ratio")
-                keyspace_hits = redis_info.get("keyspace_hits")
-                keyspace_misses = redis_info.get("keyspace_misses")
-                hits_ratio = (
-                    float("%.2f" % (keyspace_hits * NumericConstants.PERCENTAGE / (keyspace_hits + keyspace_misses)))
-                    if (keyspace_hits + keyspace_misses) != 0
-                    else Config.DEFAULT_HITS_RATIO
-                )
-                delta_hits_ratio = hits_ratio
-                yesterday_current_statistic = retrieve_host_status_yesterday()
-                if yesterday_current_statistic:
-                    yesterday_keyspace_hits = yesterday_current_statistic.keyspace_hits
-                    yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
-                    if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
-                        be_divided_num = (
-                            keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
-                        )
-                        delta_hits_ratio = (
-                            float(
-                                "%.2f"
-                                % (
-                                    (keyspace_hits - yesterday_keyspace_hits)
-                                    * NumericConstants.PERCENTAGE
-                                    / be_divided_num
-                                )
-                            )
-                            if be_divided_num != 0
-                            else Config.DEFAULT_DELTA_HITS_RATIO
-                        )
-                result_conf.update(
-                    used_memory=used_memory,
-                    used_memory_rss=used_memory_rss,
-                    connected_clients=connected_clients,
-                    uptime_in_seconds=uptime_in_seconds,
-                    mem_fragmentation_ratio=mem_fragmentation_ratio,
-                    keyspace_hits=keyspace_hits,
-                    keyspace_misses=keyspace_misses,
-                    hits_ratio=hits_ratio,
-                    delta_hits_ratio=delta_hits_ratio,
-                )
-            except Exception as t:
-                logger.exception(t)
+        result_conf.update(query_redis_info())
         create_host_status(result_conf)
         now_time = get_current_s()
         new_day_utc = (
@@ -108,6 +59,62 @@ def record_flask_state_host(interval, target_time):
 
     except Exception as e:
         logger.exception(e)
+
+
+def query_redis_info():
+    """
+    Collect redis status
+    :return: redis status dict
+    :rtype: dict
+    """
+    result = dict()
+    redis_handler = redis_conn.get_redis()
+    if redis_handler:
+        try:
+            redis_info = redis_handler.info()
+            used_memory = redis_info.get("used_memory")
+            used_memory_rss = redis_info.get("used_memory_rss")
+            connected_clients = redis_info.get("connected_clients")
+            uptime_in_seconds = redis_info.get("uptime_in_seconds")
+            mem_fragmentation_ratio = redis_info.get("mem_fragmentation_ratio")
+            keyspace_hits = redis_info.get("keyspace_hits")
+            keyspace_misses = redis_info.get("keyspace_misses")
+            hits_ratio = (
+                float("%.2f" % (keyspace_hits * NumericConstants.PERCENTAGE / (keyspace_hits + keyspace_misses)))
+                if (keyspace_hits + keyspace_misses) != 0
+                else Config.DEFAULT_HITS_RATIO
+            )
+            delta_hits_ratio = hits_ratio
+            yesterday_current_statistic = retrieve_host_status_yesterday()
+            if yesterday_current_statistic:
+                yesterday_keyspace_hits = yesterday_current_statistic.keyspace_hits
+                yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
+                if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
+                    be_divided_num = (
+                        keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
+                    )
+                    delta_hits_ratio = (
+                        float(
+                            "%.2f"
+                            % ((keyspace_hits - yesterday_keyspace_hits) * NumericConstants.PERCENTAGE / be_divided_num)
+                        )
+                        if be_divided_num != 0
+                        else Config.DEFAULT_DELTA_HITS_RATIO
+                    )
+            result.update(
+                used_memory=used_memory,
+                used_memory_rss=used_memory_rss,
+                connected_clients=connected_clients,
+                uptime_in_seconds=uptime_in_seconds,
+                mem_fragmentation_ratio=mem_fragmentation_ratio,
+                keyspace_hits=keyspace_hits,
+                keyspace_misses=keyspace_misses,
+                hits_ratio=hits_ratio,
+                delta_hits_ratio=delta_hits_ratio,
+            )
+        except Exception as t:
+            logger.exception(t)
+    return result
 
 
 def query_flask_state_host(days) -> FlaskStateResponse:
