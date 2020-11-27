@@ -20,6 +20,10 @@ class ErrorMsg(ExceptionMsg):
         "msg": "Wrong cron parameter, make sure the parameters you enter meet the format requirements",
         "level": "error",
     }
+    RUN_TIME_ERROR = {
+        "msg": "Exceed the maximum allowable execution time",
+        "level": "error",
+    }
 
 
 class WarningMsg(ExceptionMsg):

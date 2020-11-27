@@ -89,11 +89,11 @@ def record_timer(app, interval):
             in_time = time.time()
             target_time = int(int((time.time()) / 60 + 1) * 60)
             time.sleep(60 - in_time % 60)
-            record_flask_state_host(interval)
+            record_flask_state_host(interval, target_time)
             while True:
                 target_time += interval
                 now_time = time.time()
-                s.enter(target_time - now_time, 1, record_flask_state_host, (interval,))
+                s.enter(target_time - now_time, 1, record_flask_state_host, (interval, target_time))
                 s.run()
         except BlockingIOError:
             pass

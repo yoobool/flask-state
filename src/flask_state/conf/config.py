@@ -9,3 +9,4 @@ class Config:
     DEFAULT_DELTA_HITS_RATIO = 100  # Default 24h hits ratio value
     DEFAULT_WINDOWS_LOAD_AVG = "0, 0, 0"  # Windows system cannot calculate load AVG
     MAX_RETURN_RECORDS = 480  # Return the maximum number of records
+    ABANDON_THRESHOLD = 60  # Maximum timeout time of scheduled tasks

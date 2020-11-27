@@ -27,3 +27,15 @@ def get_query_ms(days):
     """
     days_scope = TimeConstants.DAYS_SCOPE
     return DaysMilliseconds[days_scope.get(days)].value if days in days_scope else 0
+
+
+def get_formatted_timestamp(timestamp):
+    """
+    Get formatted timestamp
+    :param timestamp:
+    :return: formatted timestamp
+    :rtype: str
+    """
+    time_local = time.localtime(timestamp)
+    format_date = time.strftime("%Y_%m_%d %H:%M:%S", time_local)
+    return format_date
