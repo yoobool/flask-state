@@ -14,17 +14,23 @@ from ..dao.host_status import (
 )
 from ..exceptions import FlaskStateError, FlaskStateResponse, SuccessResponse
 from ..exceptions.error_code import MsgCode
+from ..exceptions.log_msg import ErrorMsg
 from ..utils.constants import HTTPStatus, NumericConstants, TimeConstants
-from ..utils.date import get_current_ms, get_current_s
+from ..utils.date import get_current_ms, get_current_s, get_formatted_timestamp
 from ..utils.logger import logger
 from . import redis_conn
 
 
-def record_flask_state_host(interval):
+def record_flask_state_host(interval, target_time):
     """
     Record local status and monitor redis status
 
     """
+    if get_current_s() - target_time > Config.ABANDON_THRESHOLD:
+        format_date = get_formatted_timestamp(target_time)
+        logger.error(ErrorMsg.RUN_TIME_ERROR.get_msg(". Target time is {}".format(format_date)))
+        return
+
     try:
         cpu = psutil.cpu_percent(interval=Config.CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
