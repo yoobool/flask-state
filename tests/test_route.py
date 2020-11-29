@@ -19,4 +19,4 @@ def test_init_app(app):
         data=json.dumps({"timeQuantum": 1}),
         content_type="application/json",
     )
-    assert 200 == response.status_code
+    assert response.status_code == 200
