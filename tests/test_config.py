@@ -8,13 +8,13 @@ def test_constant():
     """
     constant = config.Config
     operating_system = constants.OperatingSystem
-    assert 1 == constant.REDIS_CONNECT_TIMEOUT
-    assert 5 == constant.REDIS_TIMEOUT
-    assert 0 == constant.CPU_PERCENT_INTERVAL
-    assert "flask_state_sqlite" == constant.DEFAULT_BIND_SQLITE
-    assert "Windows" == operating_system.WINDOWS_SYSTEM
-    assert "Unix" == operating_system.UNIX_SYSTEM
-    assert 480 == constant.MAX_RETURN_RECORDS
+    assert constant.REDIS_CONNECT_TIMEOUT == 1
+    assert constant.REDIS_TIMEOUT == 5
+    assert constant.CPU_PERCENT_INTERVAL == 0
+    assert constant.DEFAULT_BIND_SQLITE == "flask_state_sqlite"
+    assert operating_system.WINDOWS_SYSTEM == "Windows"
+    assert operating_system.UNIX_SYSTEM == "Unix"
+    assert constant.MAX_RETURN_RECORDS == 480
 
 
 def test_days_scope():
@@ -24,9 +24,9 @@ def test_days_scope():
     days_scope = constants.TimeConstants.DAYS_SCOPE
     for day in days_scope:
         try:
-            value = constants.DaysMilliseconds[days_scope.get(day)].value
+            _value = constants.DaysMilliseconds[days_scope.get(day)].value
         except Exception as e:
-            assert type(e) == KeyError
+            assert isinstance(TypeError, e)
 
 
 def test_http_method():
