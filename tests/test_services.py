@@ -11,7 +11,7 @@ from src.flask_state.services import host_status, redis_conn
 def raises(custom_exception):
     try:
         yield
-    except custom_exception as e:
+    except custom_exception as _e:
         assert True
     else:
         assert False
@@ -58,7 +58,7 @@ def test_query_flask_state_host(app):
     with app.app_context():
         for day in test_right_day:
             response_content = host_status.query_flask_state_host(day)
-            assert 200 == response_content.get_code()
+            assert response_content.get_code() == 200
             assert "Search success" == response_content.get_msg()
             assert isinstance(response_content.data.get("currentStatistic"), dict)
             assert isinstance(response_content.data.get("items"), list)
