@@ -15,21 +15,31 @@ const BIT_TO_MB = 1048576;
 const SECONDS_TO_MILLISECONDS = 1000;
 
 class MachineStatus {
-    constructor(language) {
+    language: { [key: string]: string };
+    mobile: boolean;
+    index: number;
+    ajax: any;
+    consoleCpuChart: any;
+    consoleMemoryChart: any;
+    consoleLoadavgChart: any;
+    consoleDiskUsageChart: any;
+    clearId: number;
+
+    constructor(language: { [key: string]: string }) {
         this.language = language;
         this.mobile = MachineStatus.isMobile();
         this.index = 0;
         this.ajax = new Ajax();
-        this.initFlaskStateContainer(this.mobile);
+        this.initFlaskStateContainer();
         this.setEventListener();
-        this.initFlaskStateLanguage(this.language);
+        this.initFlaskStateLanguage();
         this.setInitParams();
         if (this.mobile) {
-            this.setTagChangeEventListener(this.consoleCpuChart, this.consoleMemoryChart, this.consoleLoadavgChart, this.consoleDiskusageChart);
+            this.setTagChangeEventListener(this.consoleCpuChart, this.consoleMemoryChart, this.consoleLoadavgChart, this.consoleDiskUsageChart);
         }
         // Bind window resizing redraw event
         window.addEventListener('resize', () => {
-            MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskusageChart]);
+            MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskUsageChart]);
         })
     };
 
@@ -38,7 +48,8 @@ class MachineStatus {
         document.getElementById('fs-info-container').style.display = 'block';
         document.getElementsByTagName('body')[0].style.overflowX = 'hidden';
         document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
-        document.getElementById('fs-select-days').value = '1';
+        const selectDays = (document.getElementById('fs-select-days') as HTMLSelectElement);
+        selectDays.value = '1';
         this.setCharts('1');
     }
 
@@ -141,7 +152,7 @@ class MachineStatus {
         this.consoleCpuChart = echarts.init(document.getElementById('fs-info-cpu-chart'), null, {renderer: 'svg'});
         this.consoleMemoryChart = echarts.init(document.getElementById('fs-info-memory-chart'), null, {renderer: 'svg'});
         this.consoleLoadavgChart = echarts.init(document.getElementById('fs-info-loadavg-chart'), null, {renderer: 'svg'});
-        this.consoleDiskusageChart = echarts.init(document.getElementById('fs-info-diskusage-chart'), null, {renderer: 'svg'});
+        this.consoleDiskUsageChart = echarts.init(document.getElementById('fs-info-diskusage-chart'), null, {renderer: 'svg'});
         this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today || 'Today');
         this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today || 'Today');
         this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'Disk Usage', '', this.language.today || 'Today');
@@ -153,7 +164,7 @@ class MachineStatus {
         this.consoleCpuChart.showLoading();
         this.consoleMemoryChart.showLoading();
         this.consoleLoadavgChart.showLoading();
-        this.consoleDiskusageChart.showLoading();
+        this.consoleDiskUsageChart.showLoading();
         this.ajax.send({
             type: 'POST',
             url: '/v0/state/hoststatus',
@@ -271,14 +282,14 @@ class MachineStatus {
                 this.consoleMemoryChart.setOption(this.memoryOption);
                 this.consoleCpuChart.setOption(this.cpuOption);
                 this.consoleLoadavgChart.setOption(this.loadavgOption);
-                this.consoleDiskusageChart.setOption(this.diskUsageOption);
-                MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskusageChart]);
+                this.consoleDiskUsageChart.setOption(this.diskUsageOption);
+                MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskUsageChart]);
             },
             complete: () => {
                 this.consoleMemoryChart.hideLoading();
                 this.consoleCpuChart.hideLoading();
                 this.consoleLoadavgChart.hideLoading();
-                this.consoleDiskusageChart.hideLoading();
+                this.consoleDiskUsageChart.hideLoading();
             },
         }).then();
     };
@@ -308,20 +319,20 @@ class MachineStatus {
     };
 
     /* Redraw chart events timer */
-    static resizeChartTimer(myChart, timeout) {
+    static resizeChartTimer(myChart: any) {
         clearTimeout(this.clearId);
         this.clearId = setTimeout(function () {
             MachineStatus.resizeChart(myChart);
-        }, timeout || 200)
+        }, 200)
     }
 
     /* Redraw chart events */
-    static resizeChart(chartList) {
+    static resizeChart(chartList: Array<any>) {
         chartList.forEach(chart => chart.resize());
     }
 
     /* Initialize echart */
-    static generateChatOption(isMobile, titleText, tableName = '', lineName = '') {
+    static generateChatOption(isMobile: boolean, titleText: string, tableName: string = '', lineName: string = '') {
         let baseData = {
             color: tableName === 'loadavg' ? ['#ffa726', '#42a5f5', '#66bb6a'] : ['#42a5f5'],
             title: {
@@ -330,7 +341,7 @@ class MachineStatus {
             },
             tooltip: {
                 trigger: 'axis',
-                formatter: (params) => {
+                formatter: (params: any) => {
                     let value = echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', new Date(parseInt(params[0].axisValue)), false) + '<br />';
                     for (let i = 0; i < params.length; i++) {
                         value += (params[i].marker + params[i].seriesName + ': ' + params[i].value +
@@ -362,7 +373,7 @@ class MachineStatus {
                 type: 'category',
                 boundaryGap: false,
                 axisLabel: {
-                    formatter: function (value) {
+                    formatter: function (value: string) {
                         return echarts.format.formatTime('hh:mm', new Date(parseInt(value)), false);
                     }
                 }
@@ -395,7 +406,7 @@ class MachineStatus {
     }
 
     /* Get Echarts data */
-    static getChartsData(rawData) {
+    static getChartsData(rawData: Array<any>) {
         let cpuList = [];
         let diskUsageList = [];
         let loadAvgList = [];
@@ -421,7 +432,7 @@ class MachineStatus {
     };
 
     /* Get format time */
-    static getFormatSeconds(value, days = 'days', hours = 'hours', minutes = 'min', seconds = 'seconds') {
+    static getFormatSeconds(value: string, days: string = 'days', hours: string = 'hours', minutes: string = 'min', seconds: string = 'seconds') {
         let secondTime = parseInt(value);
         let minuteTime = 0;
         let hourTime = 0;
@@ -455,12 +466,13 @@ class MachineStatus {
 
 /* Native Ajax classes */
 class Ajax {
-    constructor(xhr) {
-        xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-        this.xhr = xhr;
+    xhr: any;
+
+    constructor() {
+        this.xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
     }
 
-    send(options) {
+    send(options: { [key: string]: string | any }) {
 
         let xhr = this.xhr;
 
@@ -513,15 +525,15 @@ class Ajax {
 
 /* singleton */
 const FlaskStateInstance = (function () {
-    let instance = null;
-    return function (language) {
+    let instance: any = null;
+    return function (language: { [key: string]: string }) {
         return instance || (instance = new MachineStatus(language))
     }
 })();
 
 /* Trigger window event */
-function Init(initMap) {
-    let targetDom = null;
+function Init(initMap: { [key: string]: string }) {
+    let targetDom:any = null;
     let language = {};
     if (initMap !== null && typeof initMap === 'object') {
         targetDom = initMap.hasOwnProperty('dom') ? initMap.dom : null;
@@ -538,14 +550,14 @@ function Init(initMap) {
         let domBody = document.getElementsByTagName('body')[0];
         domBody.insertAdjacentHTML('beforeend', str);
         let triggerCircular = document.getElementById('fs-state-circular');
-        triggerCircular.onclick = function () {
+        triggerCircular.onclick = () => {
             this.classList.add('fs-circular-out');
             FlaskStateInstance(language).setFlaskStateData();
         };
 
-        let mousePosition;
+        let mousePosition:number;
 
-        function circularMove(moveEvent) {
+        function circularMove(moveEvent:any, mousePosition: number) {
             triggerCircular.style.top = moveEvent.clientY - mousePosition + 300 + 'px';
         }
 
