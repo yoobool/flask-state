@@ -10,13 +10,6 @@ class FlaskStateHost(db.Model):
     __bind_key__ = Config.DEFAULT_BIND_SQLITE
     __tablename__ = "flask_state_host"
 
-    __table_args__ = (
-        db.PrimaryKeyConstraint("id"),
-        db.Index("idx_ts", "ts"),
-        {
-            "extend_existing": True,
-        },
-    )
     id = db.Column(db.Integer, autoincrement=True)
     create_time = db.Column(db.DateTime, server_default=func.now())
     update_time = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
@@ -39,6 +32,14 @@ class FlaskStateHost(db.Model):
     keyspace_misses = db.Column(db.Integer, server_default=text("0"))
     hits_ratio = db.Column(db.Float, server_default=text("0"))
     delta_hits_ratio = db.Column(db.Float, server_default=text("0"))
+
+    __table_args__ = (
+        db.PrimaryKeyConstraint("id"),
+        db.Index("idx_ts", ts.desc()),
+        {
+            "extend_existing": True,
+        },
+    )
 
     def __repr__(self):
         return "<FlaskStateHost cpu: {}, memory:{}, load_avg:{}, disk_usage:{}, boot_seconds:{}, ts:{}>".format(
