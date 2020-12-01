@@ -46,6 +46,7 @@
   },
   "homepage": "https://github.com/yoobool/flask-state",
   "dependencies": {
-    "echarts": "^4.9.0"
+    "echarts": "^4.9.0",
+    "ts-loader": "^8.0.11"
   }
 }

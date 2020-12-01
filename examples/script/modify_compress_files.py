@@ -8,7 +8,7 @@ if __name__ == "__main__":
         license_text = l.read()
     l.close()
 
-    with open("./examples/static/initial.js", mode="r", encoding="utf-8") as i:
+    with open("./examples/static/initial.tsx", mode="r", encoding="utf-8") as i:
         content_text = i.readlines()
     i.close()
     content = ""

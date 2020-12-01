@@ -5,7 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = [{
     // cjs
-    entry: './examples/static/initial.js',
+    entry: './examples/static/initial.tsx',
     output: {
         filename: 'flask-state.min.js',
         libraryTarget: "commonjs2",
@@ -13,9 +13,9 @@ module.exports = [{
     },
     module: {
         rules: [{
-            test: /\.js$/,
+            test: /\.tsx$/,
             exclude: /node_modules/,
-            loader: 'babel-loader'
+            loader: 'ts-loader'
         }
         ],
     },
@@ -34,7 +34,7 @@ module.exports = [{
     },
 }, {
     // umd
-    entry: './examples/static/initial.js',
+    entry: './examples/static/initial.tsx',
     output: {
         filename: 'flask-state.min.js',
         library: 'flaskState',
@@ -43,9 +43,9 @@ module.exports = [{
     },
     module: {
         rules: [{
-            test: /\.js$/,
+            test: /\.tsx$/,
             exclude: /node_modules/,
-            loader: 'babel-loader'
+            loader: 'ts-loader'
         }
         ],
     },

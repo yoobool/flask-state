@@ -1,5 +1,7 @@
 'use strict';
 
+declare let echarts: any;
+
 const ONE_MIN_SECONDS = 60;
 const ONE_DAY_HOURS = 24;
 const MACHINE_VALUE = {
@@ -14,6 +16,8 @@ const LOADAVG_VALUE = {
 const BIT_TO_MB = 1048576;
 const SECONDS_TO_MILLISECONDS = 1000;
 
+let MOUSE_POSITION: number = null;
+
 class MachineStatus {
     language: { [key: string]: string };
     mobile: boolean;
@@ -23,7 +27,11 @@ class MachineStatus {
     consoleMemoryChart: any;
     consoleLoadavgChart: any;
     consoleDiskUsageChart: any;
-    clearId: number;
+    cpuOption: { [key: string]: any };
+    memoryOption: { [key: string]: any };
+    diskUsageOption: { [key: string]: any };
+    loadavgOption: { [key: string]: any };
+    clearId: null | ReturnType<typeof setTimeout> = null;
 
     constructor(language: { [key: string]: string }) {
         this.language = language;
@@ -39,7 +47,7 @@ class MachineStatus {
         }
         // Bind window resizing redraw event
         window.addEventListener('resize', () => {
-            MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskUsageChart]);
+            this.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskUsageChart]);
         })
     };
 
@@ -50,15 +58,102 @@ class MachineStatus {
         document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
         const selectDays = (document.getElementById('fs-select-days') as HTMLSelectElement);
         selectDays.value = '1';
-        this.setCharts('1');
+        this.setCharts(1);
     }
 
     /* Insert window element */
     initFlaskStateContainer() {
-        let _chart = this.mobile ? `<hr id="console-info-line" class="console-info-line-style"><ul id="fs-info-tab" class="fs-ul-tabs"><li class="active"><a data-toggle="tab"> <strong>Memory</strong></a></li> <li><a data-toggle="tab"><strong>CPU</strong></a></li><li><a data-toggle="tab"><strong>Disk Usage</strong></a></li><li><a data-toggle="tab"><strong>Load Avg</strong></a></li></ul><div id="fs-info-tab-memory" class="fs-mChart-box fs-show"><div id="fs-info-memory-chart" class="fs-chart-style"></div></div><div id="fs-info-tab-cpu" class="fs-mChart-box"><div id="fs-info-cpu-chart" class="fs-chart-style"></div></div><div id="fs-info-tab-disk-usage" class="fs-mChart-box"><div id="fs-info-diskusage-chart" class="fs-chart-style"></div></div><div id="fs-info-tab-loadavg" class="fs-mChart-box"><div id="fs-info-loadavg-chart" class="fs-chart-style"></div></div>`
-            : `<div class='fs-chart-content'><div class='fs-charts-width fs-charts-box fs-border'><div id='fs-info-memory-chart' class='fs-chart-style'></div></div><div class='fs-charts-width fs-charts-box'><div id='fs-info-cpu-chart' class='fs-chart-style'></div></div><div class='fs-charts-width fs-charts-box fs-border'><div id='fs-info-diskusage-chart' class='fs-chart-style'></div></div><div class='fs-charts-width fs-charts-box'><div id='fs-info-loadavg-chart' class='fs-chart-style'></div></div></div>`;
-        let _content = `<div class="flask-state-elem fs-background" id="fs-background"><div class="fs-container-width fs-container" id="fs-info-container"><div class="fs-select-container"><svg class="fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" width="29" height="17"><path d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z" fill="#161e2e"></path></svg><select id="fs-select-days" class="fs-select-days"><option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><p id="fs-days" class="fs-days"> days</p></div><button type="button" class="fs-close" id="fs-info-close"><svg viewBox="0 0 1024 1024" version="1.1" width="24" height="24"><path d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z" fill="#161e2e"></path></svg></button><h4 id="fs-host-status-title" class="fs-h4-style">Host Status</h4><div id="fs-host-status"><div><span id="fs-memory" class="b-0079cc fs-badge-intro">Memory</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-cpu" class="b-0079cc fs-badge-intro">CPU</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-disk-usage" class="b-0079cc fs-badge-intro">Disk Usage</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-load-avg" class="b-007dc8 fs-badge-intro">Load Avg</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-boot-seconds" class="b-0051b9 fs-badge-intro">Uptime</span><span class="fs-badge-content background-green"></span></div></div><h4 id="fs-redis-status-title" class="fs-h4-style">Redis Status</h4><div id="fs-redis-status"><div><span id="fs-used-memory" class="b-99cb3d fs-badge-intro">Used Mem</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-used-memory-rss" class="b-99cb3d fs-badge-intro">Used Mem Rss</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-mem-fragmentation-ratio" class="b-534c6d fs-badge-intro">Mem Fragmentation Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-hits-ratio" class="b-0079cc fs-badge-intro">Cache Hits Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-delta-hits-ratio" class="b-0079cc fs-badge-intro">24h Hits Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-uptime-in-seconds" class="b-0051b9 fs-badge-intro">Uptime</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-connected-clients" class="b-534c6d fs-badge-intro">Connections</span><span class="fs-badge-content background-green"></span></div></div>` + _chart + `</div></div>`;
-        document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', _content);
+        let _chart = this.mobile ?
+            <><hr id="console-info-line" className="console-info-line-style"/>
+                <ul id="fs-info-tab" className="fs-ul-tabs">
+                    <li className="active"><a data-toggle="tab"> <strong>Memory</strong></a></li>
+                    <li><a data-toggle="tab"><strong>CPU</strong></a></li>
+                    <li><a data-toggle="tab"><strong>Disk Usage</strong></a></li>
+                    <li><a data-toggle="tab"><strong>Load Avg</strong></a></li>
+                </ul>
+                <div id="fs-info-tab-memory" className="fs-mChart-box fs-show">
+                    <div id="fs-info-memory-chart" className="fs-chart-style"/>
+                </div>
+                <div id="fs-info-tab-cpu" className="fs-mChart-box">
+                    <div id="fs-info-cpu-chart" className="fs-chart-style"/>
+                </div>
+                <div id="fs-info-tab-disk-usage" className="fs-mChart-box">
+                    <div id="fs-info-diskusage-chart" className="fs-chart-style"/>
+                </div>
+                <div id="fs-info-tab-loadavg" className="fs-mChart-box">
+                    <div id="fs-info-loadavg-chart" className="fs-chart-style"/>
+                </div>
+            </>
+            : <div className='fs-chart-content'>
+                <div className='fs-charts-width fs-charts-box fs-border'>
+                    <div id='fs-info-memory-chart' className='fs-chart-style'/>
+                </div>
+                <div className='fs-charts-width fs-charts-box'>
+                    <div id='fs-info-cpu-chart' className='fs-chart-style'/>
+                </div>
+                <div className='fs-charts-width fs-charts-box fs-border'>
+                    <div id='fs-info-diskusage-chart' className='fs-chart-style'/>
+                </div>
+                <div className='fs-charts-width fs-charts-box'>
+                    <div id='fs-info-loadavg-chart' className='fs-chart-style'/>
+                </div>
+            </div>;
+        let _content = <div className="flask-state-elem fs-background" id="fs-background">
+            <div className="fs-container-width fs-container" id="fs-info-container">
+                <div className="fs-select-container">
+                    <svg className="fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" width="29" height="17">
+                        <path
+                            d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z"
+                            fill="#161e2e"/>
+                    </svg>
+                    <select id="fs-select-days" className="fs-select-days">
+                        <option value="1">1</option>
+                        <option value="3">3</option>
+                        <option value="7">7</option>
+                        <option value="30">30</option>
+                    </select><p id="fs-days" className="fs-days"> days</p></div>
+                <button type="button" className="fs-close" id="fs-info-close">
+                    <svg viewBox="0 0 1024 1024" version="1.1" width="24" height="24">
+                        <path
+                            d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z"
+                            fill="#161e2e"/>
+                    </svg>
+                </button>
+                <h4 id="fs-host-status-title" className="fs-h4-style">Host Status</h4>
+                <div id="fs-host-status">
+                    <div><span id="fs-memory" className="b-0079cc fs-badge-intro">Memory</span><span
+                        className="fs-badge-content background-green"/></div>
+                    <div><span id="fs-cpu" className="b-0079cc fs-badge-intro">CPU</span><span
+                        className="fs-badge-content background-green"/></div>
+                    <div><span id="fs-disk-usage" className="b-0079cc fs-badge-intro">Disk Usage</span><span
+                        className="fs-badge-content background-green"/></div>
+                    <div><span id="fs-load-avg" className="b-007dc8 fs-badge-intro">Load Avg</span><span
+                        className="fs-badge-content background-green"/></div>
+                    <div><span id="fs-boot-seconds" className="b-0051b9 fs-badge-intro">Uptime</span><span
+                        className="fs-badge-content background-green"/></div>
+                </div>
+                <h4 id="fs-redis-status-title" className="fs-h4-style">Redis Status</h4>
+                <div id="fs-redis-status">
+                    <div><span id="fs-used-memory" className="b-99cb3d fs-badge-intro">Used Mem</span><span
+                        className="fs-badge-content background-green"/></div>
+                    <div><span id="fs-used-memory-rss" className="b-99cb3d fs-badge-intro">Used Mem Rss</span><span
+                        className="fs-badge-content background-green"/></div>
+                    <div><span id="fs-mem-fragmentation-ratio"
+                               className="b-534c6d fs-badge-intro">Mem Fragmentation Ratio</span><span
+                        className="fs-badge-content background-green"/></div>
+                    <div><span id="fs-hits-ratio" className="b-0079cc fs-badge-intro">Cache Hits Ratio</span><span
+                        className="fs-badge-content background-green">/</span></div>
+                    <div><span id="fs-delta-hits-ratio" className="b-0079cc fs-badge-intro">24h Hits Ratio</span><span
+                        className="fs-badge-content background-green"/></div>
+                    <div><span id="fs-uptime-in-seconds" className="b-0051b9 fs-badge-intro">Uptime</span><span
+                        className="fs-badge-content background-green"/></div>
+                    <div><span id="fs-connected-clients" className="b-534c6d fs-badge-intro">Connections</span><span
+                        className="fs-badge-content background-green"/></div>
+                </div>
+                {_chart}</div>
+        </div>;
+        document.body.appendChild(_content);
+        // document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', _content);
     }
 
     // add EventListener
@@ -75,7 +170,8 @@ class MachineStatus {
             });
 
             document.getElementById('fs-background').addEventListener('click', function clickBack(e) {
-                if (String(e.target.id) === 'fs-background') {
+                const clickTarget = (e.target as HTMLElement);
+                if (String(clickTarget.id) === 'fs-background') {
                     document.getElementById('fs-background').style.display = 'none';
                     document.getElementById('fs-info-container').style.display = 'none';
                     document.getElementsByTagName('body')[0].style.overflowX = 'auto';
@@ -87,30 +183,30 @@ class MachineStatus {
             });
 
             // Pull the local state again when switching days
-            let selectContainer = document.getElementById('fs-select-days');
-            selectContainer.addEventListener('change', () => {
-                this.setCharts(selectContainer.value);
+            document.getElementById('fs-select-days').addEventListener('change', () => {
+                const selectContainer: HTMLSelectElement = (document.getElementById('fs-select-days') as HTMLSelectElement);
+                this.setCharts(parseInt(selectContainer.value));
             })
 
         }
     }
 
     /* add mobile changeTag EventListener */
-    setTagChangeEventListener(...chartList) {
+    setTagChangeEventListener(...chartList: any[]) {
         // Bind mobile phone to switch to display charts event
         if (document.getElementById('fs-info-tab')) {
-            let liArr = document.getElementById('fs-info-tab').getElementsByTagName('li');
+            let liArr: HTMLCollectionOf<HTMLLIElement> = document.getElementById('fs-info-tab').getElementsByTagName('li');
             let preNode = document.getElementById('fs-info-tab-memory');
             let node_li = liArr[0];
             let index = 0;
-            const elemDict = {
+            const elemDict: { [key: number]: string } = {
                 0: 'fs-info-tab-memory',
                 1: 'fs-info-tab-cpu',
                 2: 'fs-info-tab-disk-usage',
                 3: 'fs-info-tab-loadavg'
             };
-            for (let item of liArr) {
-                let nowNode = document.getElementById(elemDict[index]);
+            for (const item of liArr) {
+                let nowNode = (document.getElementById(elemDict[index]) as HTMLLIElement);
                 item.children[0].addEventListener('click', () => {
                     item.classList.add('active');
                     node_li.classList.remove('active');
@@ -160,7 +256,7 @@ class MachineStatus {
     }
 
     /* Define functions that access native state and plot */
-    setCharts(days) {
+    setCharts(days: number) {
         this.consoleCpuChart.showLoading();
         this.consoleMemoryChart.showLoading();
         this.consoleLoadavgChart.showLoading();
@@ -169,7 +265,7 @@ class MachineStatus {
             type: 'POST',
             url: '/v0/state/hoststatus',
             data: {'timeQuantum': days},
-            success: response => {
+            success: (response: { code: number; data: any; msg: string }) => {
                 if (response.code !== 200) {
                     return;
                 }
@@ -177,11 +273,14 @@ class MachineStatus {
                 const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
                 const data = response.data;
 
-                data.items = data.items.map(item => {
-                    let element = {};
-                    fields.forEach((field, index) => {
-                        if (field === "ts") return element[field] = SECONDS_TO_MILLISECONDS * item[index];
-                        element[field] = item[index];
+                data.items = data.items.map((item: Array<number | [string, string, string]>) => {
+                    let element: { [key: string]: number | [string, string, string] } = {};
+                    fields.forEach((field: string, index: number) => {
+                        if (field === "ts") {
+                            element[field] = SECONDS_TO_MILLISECONDS * (item[index] as number)
+                        } else {
+                            element[field] = item[index];
+                        }
                     });
                     return element;
                 });
@@ -197,7 +296,7 @@ class MachineStatus {
 
                     const machineIndex = ['memory', 'cpu', 'disk_usage', 'load_avg'];
                     machineIndex.forEach(function (item, index) {
-                        let paramClass = '';
+                        let paramClass;
                         if (item === 'load_avg') {
                             let loadavgAvg = (currentStatistic.load_avg[0] + currentStatistic.load_avg[1] + currentStatistic.load_avg[2]) / 3;
                             paramClass = loadavgAvg >= LOADAVG_VALUE.WARNING ? loadavgAvg >= LOADAVG_VALUE.DANGER ? 'background-red' : 'background-orange' : 'background-green';
@@ -223,7 +322,7 @@ class MachineStatus {
                         document.getElementById('fs-redis-status-title').style.marginTop = '0';
                         document.getElementById('fs-redis-status').style.display = 'none';
                     } else {
-                        hostInfoKeysList.forEach((item, index) => {
+                        hostInfoKeysList.forEach((item: string, index: number) => {
                             switch (item) {
                                 case 'used_memory':
                                     hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
@@ -294,6 +393,14 @@ class MachineStatus {
         }).then();
     };
 
+    /* Redraw chart events timer */
+    resizeChartTimer(myChart: any) {
+        clearTimeout(this.clearId);
+        this.clearId = setTimeout(function () {
+            MachineStatus.resizeChart(myChart);
+        }, 200)
+    }
+
     /* Check if the device is a mobile phone */
     static isMobile() {
         let u = navigator.userAgent;
@@ -318,20 +425,12 @@ class MachineStatus {
 
     };
 
-    /* Redraw chart events timer */
-    static resizeChartTimer(myChart: any) {
-        clearTimeout(this.clearId);
-        this.clearId = setTimeout(function () {
-            MachineStatus.resizeChart(myChart);
-        }, 200)
-    }
-
     /* Redraw chart events */
-    static resizeChart(chartList: Array<any>) {
+    static resizeChart(chartList: any[]) {
         chartList.forEach(chart => chart.resize());
     }
 
-    /* Initialize echart */
+    /* Initialize chart */
     static generateChatOption(isMobile: boolean, titleText: string, tableName: string = '', lineName: string = '') {
         let baseData = {
             color: tableName === 'loadavg' ? ['#ffa726', '#42a5f5', '#66bb6a'] : ['#42a5f5'],
@@ -393,7 +492,7 @@ class MachineStatus {
         if (tableName === 'loadavg') {
             baseData.legend.data = ['1 ' + lineName, '5 ' + lineName, '15 ' + lineName];
             baseData.series = [];
-            baseData.legend.data.forEach((name) => {
+            baseData.legend.data.forEach((name: string) => {
                 baseData.series.push({
                     name: name,
                     type: 'line',
@@ -406,7 +505,7 @@ class MachineStatus {
     }
 
     /* Get Echarts data */
-    static getChartsData(rawData: Array<any>) {
+    static getChartsData(rawData: Array<{ cpu: number, disk_usage: number, load_avg: string[], memory: number, ts: number }>) {
         let cpuList = [];
         let diskUsageList = [];
         let loadAvgList = [];
@@ -469,10 +568,10 @@ class Ajax {
     xhr: any;
 
     constructor() {
-        this.xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+        this.xhr = new XMLHttpRequest();
     }
 
-    send(options: { [key: string]: string | any }) {
+    send(options: { [key: string]: any }) {
 
         let xhr = this.xhr;
 
@@ -523,18 +622,23 @@ class Ajax {
     }
 }
 
+function circularMove(moveEvent: any) {
+    let triggerCircular = document.getElementById('fs-state-circular');
+    triggerCircular.style.top = moveEvent.clientY - MOUSE_POSITION + 300 + 'px';
+}
+
 /* singleton */
 const FlaskStateInstance = (function () {
-    let instance: any = null;
+    let instance: MachineStatus = null;
     return function (language: { [key: string]: string }) {
         return instance || (instance = new MachineStatus(language))
     }
 })();
 
 /* Trigger window event */
-function Init(initMap: { [key: string]: string }) {
-    let targetDom:any = null;
-    let language = {};
+function Init(initMap: { lang: { [key: string]: string } | null, dom: HTMLElement | null }) {
+    let targetDom: HTMLElement;
+    let language: { [key: string]: string } = {};
     if (initMap !== null && typeof initMap === 'object') {
         targetDom = initMap.hasOwnProperty('dom') ? initMap.dom : null;
         language = initMap.hasOwnProperty('lang') ? initMap['lang'].hasOwnProperty('language') ? initMap['lang'] : {} : {};
@@ -551,18 +655,12 @@ function Init(initMap: { [key: string]: string }) {
         domBody.insertAdjacentHTML('beforeend', str);
         let triggerCircular = document.getElementById('fs-state-circular');
         triggerCircular.onclick = () => {
-            this.classList.add('fs-circular-out');
+            triggerCircular.classList.add('fs-circular-out');
             FlaskStateInstance(language).setFlaskStateData();
         };
 
-        let mousePosition:number;
-
-        function circularMove(moveEvent:any, mousePosition: number) {
-            triggerCircular.style.top = moveEvent.clientY - mousePosition + 300 + 'px';
-        }
-
         triggerCircular.onmousedown = function (downEvent) {
-            mousePosition = mousePosition || downEvent.clientY;
+            MOUSE_POSITION = MOUSE_POSITION || downEvent.clientY;
             document.addEventListener("mousemove", circularMove);
         };
 
@@ -574,6 +672,38 @@ function Init(initMap: { [key: string]: string }) {
             setTimeout(() => triggerCircular.classList.remove("fs-circular-animation"), 500);
         };
     }
+}
+
+function DOMparseChildren(children) {
+  return children.map(child => {
+    if(typeof child === 'string') {
+      return document.createTextNode(child);
+    }
+    return child;
+  })
+}
+
+function nonNull(val, fallback) { return Boolean(val) ? val : fallback }
+
+function DOMParseNode(element, properties, children) {
+  const el = document.createElement(element);
+  Object.keys(nonNull(properties, {})).forEach(key => {
+      el[key] = properties[key];
+  })
+  DOMparseChildren(children).forEach(child => {
+    el.appendChild(child);
+  });
+  return el;
+}
+
+function DOMcreateElement(element, properties, ...children) {
+  if(typeof element === 'function') {
+    return element({
+      ...nonNull(properties, {}),
+      children
+    });
+  }
+  return DOMParseNode(element, properties, children);
 }
 
 exports.init = Init;
