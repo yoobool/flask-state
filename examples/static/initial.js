@@ -457,9 +457,8 @@ class MachineStatus {
 
 /* Native Ajax classes */
 class Ajax {
-    constructor(xhr) {
-        xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-        this.xhr = xhr;
+    constructor() {
+        this.xhr = new XMLHttpRequest();
     }
 
     send(options) {
