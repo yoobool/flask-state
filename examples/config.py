@@ -25,7 +25,6 @@ def setting_app():
     }
     path_ = os.getcwd() + "/flask_state_host.db"
     app.config["SQLALCHEMY_BINDS"] = {DEFAULT_BIND_SQLITE: prefix + path_}
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # log_instance = logging.getLogger(__name__)
     # use init_app initial configuration
