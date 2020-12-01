@@ -12,6 +12,7 @@ class FlaskStateHost(db.Model):
 
     __table_args__ = (
         db.PrimaryKeyConstraint("id"),
+        db.Index("idx_ts", "ts"),
         {
             "extend_existing": True,
         },
