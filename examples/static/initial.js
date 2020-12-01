@@ -355,8 +355,10 @@ class MachineStatus {
             toolbox: {
                 show: !isMobile,
                 feature: {
-                    saveAsImage: {}
-                }
+                    saveAsImage: {
+                        title: ' ',
+                    }
+                },
             },
             xAxis: {
                 type: 'category',
