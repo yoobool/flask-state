@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
-        "sourceMap": false,
-        "module": "commonjs",
+        "module": "amd",
         "target": "es5",
         "jsx": "react",
         "jsxFactory": "DOMcreateElement",
         "jsxFragmentFactory": "DOMcreateElement",
+        "removeComments": true,
+        "outDir": "./dist/",
         "downlevelIteration": true,
         "importHelpers": true,
         "noImplicitAny": false,
@@ -16,6 +17,6 @@
         ]
     },
     "include": [
-        "./examples/static/*"
+        "./examples/static/initial.tsx"
     ]
 }

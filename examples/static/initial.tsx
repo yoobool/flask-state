@@ -64,7 +64,8 @@ class MachineStatus {
     /* Insert window element */
     initFlaskStateContainer() {
         let _chart = this.mobile ?
-            <><hr id="console-info-line" className="console-info-line-style"/>
+            <>
+                <hr id="console-info-line" className="console-info-line-style"/>
                 <ul id="fs-info-tab" className="fs-ul-tabs">
                     <li className="active"><a data-toggle="tab"> <strong>Memory</strong></a></li>
                     <li><a data-toggle="tab"><strong>CPU</strong></a></li>
@@ -102,8 +103,7 @@ class MachineStatus {
             <div className="fs-container-width fs-container" id="fs-info-container">
                 <div className="fs-select-container">
                     <svg className="fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" width="29" height="17">
-                        <path
-                            d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z"
+                        <path d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z"
                             fill="#161e2e"/>
                     </svg>
                     <select id="fs-select-days" className="fs-select-days">
@@ -114,8 +114,7 @@ class MachineStatus {
                     </select><p id="fs-days" className="fs-days"> days</p></div>
                 <button type="button" className="fs-close" id="fs-info-close">
                     <svg viewBox="0 0 1024 1024" version="1.1" width="24" height="24">
-                        <path
-                            d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z"
+                        <path d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z"
                             fill="#161e2e"/>
                     </svg>
                 </button>
@@ -153,7 +152,6 @@ class MachineStatus {
                 {_chart}</div>
         </div>;
         document.body.appendChild(_content);
-        // document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', _content);
     }
 
     // add EventListener
@@ -675,35 +673,23 @@ function Init(initMap: { lang: { [key: string]: string } | null, dom: HTMLElemen
 }
 
 function DOMparseChildren(children) {
-  return children.map(child => {
-    if(typeof child === 'string') {
-      return document.createTextNode(child);
-    }
-    return child;
-  })
-}
-
-function nonNull(val, fallback) { return Boolean(val) ? val : fallback }
-
-function DOMParseNode(element, properties, children) {
-  const el = document.createElement(element);
-  Object.keys(nonNull(properties, {})).forEach(key => {
-      el[key] = properties[key];
-  })
-  DOMparseChildren(children).forEach(child => {
-    el.appendChild(child);
-  });
-  return el;
+    return children.map(child => {
+        if (typeof child === 'string') {
+            return document.createTextNode(child);
+        }
+        return child;
+    })
 }
 
 function DOMcreateElement(element, properties, ...children) {
-  if(typeof element === 'function') {
-    return element({
-      ...nonNull(properties, {}),
-      children
+    const el = document.createElement(element);
+    Object.keys((properties || {})).forEach(key => {
+        el[key] = properties[key];
+    })
+    DOMparseChildren(children).forEach(child => {
+        el.appendChild(child);
     });
-  }
-  return DOMParseNode(element, properties, children);
+    return el;
 }
 
 exports.init = Init;
