@@ -16,6 +16,23 @@ const LOADAVG_VALUE = {
 const BIT_TO_MB = 1048576;
 const SECONDS_TO_MILLISECONDS = 1000;
 
+const XML_ELEMENT = {
+    svg: "http://www.w3.org/2000/svg",
+    path: "http://www.w3.org/2000/svg"
+}
+
+const XML_PROPS = {
+    t: null,
+    version: null,
+    viewBox: null,
+    xmlns: "http://www.w3.org/2000/xmlns/",
+    d: null,
+    width: null,
+    height: null,
+    fill: null,
+    className: null,
+}
+
 let MOUSE_POSITION: number = null;
 
 class MachineStatus {
@@ -37,7 +54,6 @@ class MachineStatus {
         this.language = language;
         this.mobile = MachineStatus.isMobile();
         this.index = 0;
-        this.ajax = new Ajax();
         this.initFlaskStateContainer();
         this.setEventListener();
         this.initFlaskStateLanguage();
@@ -64,7 +80,7 @@ class MachineStatus {
     /* Insert window element */
     initFlaskStateContainer() {
         let _chart = this.mobile ?
-            <>
+            <div>
                 <hr id="console-info-line" className="console-info-line-style"/>
                 <ul id="fs-info-tab" className="fs-ul-tabs">
                     <li className="active"><a data-toggle="tab"> <strong>Memory</strong></a></li>
@@ -84,7 +100,7 @@ class MachineStatus {
                 <div id="fs-info-tab-loadavg" className="fs-mChart-box">
                     <div id="fs-info-loadavg-chart" className="fs-chart-style"/>
                 </div>
-            </>
+            </div>
             : <div className='fs-chart-content'>
                 <div className='fs-charts-width fs-charts-box fs-border'>
                     <div id='fs-info-memory-chart' className='fs-chart-style'/>
@@ -102,8 +118,10 @@ class MachineStatus {
         let _content = <div className="flask-state-elem fs-background" id="fs-background">
             <div className="fs-container-width fs-container" id="fs-info-container">
                 <div className="fs-select-container">
-                    <svg className="fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" width="29" height="17">
-                        <path d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z"
+                    <svg className="fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" width="29"
+                         height="17" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z"
                             fill="#161e2e"/>
                     </svg>
                     <select id="fs-select-days" className="fs-select-days">
@@ -113,8 +131,10 @@ class MachineStatus {
                         <option value="30">30</option>
                     </select><p id="fs-days" className="fs-days"> days</p></div>
                 <button type="button" className="fs-close" id="fs-info-close">
-                    <svg viewBox="0 0 1024 1024" version="1.1" width="24" height="24">
-                        <path d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z"
+                    <svg viewBox="0 0 1024 1024" version="1.1" width="24" height="24"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z"
                             fill="#161e2e"/>
                     </svg>
                 </button>
@@ -259,136 +279,146 @@ class MachineStatus {
         this.consoleMemoryChart.showLoading();
         this.consoleLoadavgChart.showLoading();
         this.consoleDiskUsageChart.showLoading();
-        this.ajax.send({
-            type: 'POST',
-            url: '/v0/state/hoststatus',
-            data: {'timeQuantum': days},
-            success: (response: { code: number; data: any; msg: string }) => {
-                if (response.code !== 200) {
-                    return;
-                }
-
-                const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
-                const data = response.data;
-
-                data.items = data.items.map((item: Array<number | [string, string, string]>) => {
-                    let element: { [key: string]: number | [string, string, string] } = {};
-                    fields.forEach((field: string, index: number) => {
-                        if (field === "ts") {
-                            element[field] = SECONDS_TO_MILLISECONDS * (item[index] as number)
-                        } else {
-                            element[field] = item[index];
-                        }
-                    });
-                    return element;
-                });
-                let currentStatistic = data.currentStatistic;
-                if (Object.keys(currentStatistic).length) {
-                    let hostInfoSpan = document.getElementById('fs-host-status').getElementsByClassName('fs-badge-content');
-                    hostInfoSpan[0].innerHTML = currentStatistic.memory + '%';
-                    hostInfoSpan[1].innerHTML = currentStatistic.cpu + '%';
-                    hostInfoSpan[2].innerHTML = currentStatistic.disk_usage + '%';
-                    hostInfoSpan[3].innerHTML = currentStatistic.load_avg[0] + "，" + currentStatistic.load_avg[1] + "，" + currentStatistic.load_avg[2];
-
-                    hostInfoSpan[4].innerHTML = MachineStatus.getFormatSeconds(currentStatistic.boot_seconds || 0, this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
-
-                    const machineIndex = ['memory', 'cpu', 'disk_usage', 'load_avg'];
-                    machineIndex.forEach(function (item, index) {
-                        let paramClass;
-                        if (item === 'load_avg') {
-                            let loadavgAvg = (currentStatistic.load_avg[0] + currentStatistic.load_avg[1] + currentStatistic.load_avg[2]) / 3;
-                            paramClass = loadavgAvg >= LOADAVG_VALUE.WARNING ? loadavgAvg >= LOADAVG_VALUE.DANGER ? 'background-red' : 'background-orange' : 'background-green';
-                        } else {
-                            paramClass = currentStatistic[item] >= MACHINE_VALUE.WARNING ? currentStatistic.memory >= MACHINE_VALUE.DANGER ? 'background-red' : 'background-orange' : 'background-green';
-                        }
-                        let param = hostInfoSpan[index].classList;
-                        param.remove('background-green', 'background-orange', 'background-red');
-                        param.add(paramClass);
-                    });
-
-                    let hostInfoExtendSpan = document.getElementById('fs-redis-status').getElementsByClassName('fs-badge-content');
-                    let hostInfoKeysList = ['used_memory', 'used_memory_rss', 'mem_fragmentation_ratio', 'hits_ratio', 'delta_hits_ratio', 'uptime_in_seconds', 'connected_clients'];
-                    let hideRedis = true
-                    for (let item of hostInfoKeysList) {
-                        if (currentStatistic[item]) {
-                            hideRedis = false
-                            break
-                        }
+        fetch(
+            "/v0/state/hoststatus",
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json;charset=UTF-8",
+                },
+                body: JSON.stringify({"timeQuantum": days}),
+            }
+        ).then((res) => {
+            if (res.ok) {
+                res.json().then((response) => {
+                    if (response.code !== 200) {
+                        return;
                     }
-                    if (hideRedis) {
-                        document.getElementById('fs-redis-status-title').innerHTML = '';
-                        document.getElementById('fs-redis-status-title').style.marginTop = '0';
-                        document.getElementById('fs-redis-status').style.display = 'none';
-                    } else {
-                        hostInfoKeysList.forEach((item: string, index: number) => {
-                            switch (item) {
-                                case 'used_memory':
-                                    hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
-                                    break;
-                                case 'used_memory_rss':
-                                    hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
-                                    break;
-                                case 'mem_fragmentation_ratio':
-                                    let ratio = currentStatistic[item];
-                                    hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
-                                    if (ratio !== null && ratio !== undefined && ratio > 1) {
-                                        let hostInfoExtendSpanClass = hostInfoExtendSpan[index].classList;
-                                        hostInfoExtendSpanClass.remove('background-green');
-                                        hostInfoExtendSpanClass.add('background-red');
-                                    }
-                                    break;
-                                case 'hits_ratio':
-                                    hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
-                                    break;
-                                case 'delta_hits_ratio':
-                                    hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
-                                    break;
-                                case 'uptime_in_seconds':
-                                    hostInfoExtendSpan[index].innerHTML = MachineStatus.getFormatSeconds(currentStatistic[item], this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
-                                    break;
-                                case 'connected_clients':
-                                    hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
+
+                    const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
+                    const data = response.data;
+
+                    data.items = data.items.map((item: Array<number | [string, string, string]>) => {
+                        let element: { [key: string]: number | [string, string, string] } = {};
+                        fields.forEach((field: string, index: number) => {
+                            if (field === "ts") {
+                                element[field] = SECONDS_TO_MILLISECONDS * (item[index] as number)
+                            } else {
+                                element[field] = item[index];
                             }
                         });
+                        return element;
+                    });
+                    let currentStatistic = data.currentStatistic;
+                    if (Object.keys(currentStatistic).length) {
+                        let hostInfoSpan = document.getElementById('fs-host-status').getElementsByClassName('fs-badge-content');
+                        hostInfoSpan[0].innerHTML = currentStatistic.memory + '%';
+                        hostInfoSpan[1].innerHTML = currentStatistic.cpu + '%';
+                        hostInfoSpan[2].innerHTML = currentStatistic.disk_usage + '%';
+                        hostInfoSpan[3].innerHTML = currentStatistic.load_avg[0] + "，" + currentStatistic.load_avg[1] + "，" + currentStatistic.load_avg[2];
+
+                        hostInfoSpan[4].innerHTML = MachineStatus.getFormatSeconds(currentStatistic.boot_seconds || 0, this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
+
+                        const machineIndex = ['memory', 'cpu', 'disk_usage', 'load_avg'];
+                        machineIndex.forEach(function (item, index) {
+                            let paramClass;
+                            if (item === 'load_avg') {
+                                let loadavgAvg = (currentStatistic.load_avg[0] + currentStatistic.load_avg[1] + currentStatistic.load_avg[2]) / 3;
+                                paramClass = loadavgAvg >= LOADAVG_VALUE.WARNING ? loadavgAvg >= LOADAVG_VALUE.DANGER ? 'background-red' : 'background-orange' : 'background-green';
+                            } else {
+                                paramClass = currentStatistic[item] >= MACHINE_VALUE.WARNING ? currentStatistic.memory >= MACHINE_VALUE.DANGER ? 'background-red' : 'background-orange' : 'background-green';
+                            }
+                            let param = hostInfoSpan[index].classList;
+                            param.remove('background-green', 'background-orange', 'background-red');
+                            param.add(paramClass);
+                        });
+
+                        let hostInfoExtendSpan = document.getElementById('fs-redis-status').getElementsByClassName('fs-badge-content');
+                        let hostInfoKeysList = ['used_memory', 'used_memory_rss', 'mem_fragmentation_ratio', 'hits_ratio', 'delta_hits_ratio', 'uptime_in_seconds', 'connected_clients'];
+                        let hideRedis = true
+                        for (let item of hostInfoKeysList) {
+                            if (currentStatistic[item]) {
+                                hideRedis = false
+                                break
+                            }
+                        }
+                        if (hideRedis) {
+                            document.getElementById('fs-redis-status-title').innerHTML = '';
+                            document.getElementById('fs-redis-status-title').style.marginTop = '0';
+                            document.getElementById('fs-redis-status').style.display = 'none';
+                        } else {
+                            hostInfoKeysList.forEach((item: string, index: number) => {
+                                switch (item) {
+                                    case 'used_memory':
+                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
+                                        break;
+                                    case 'used_memory_rss':
+                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
+                                        break;
+                                    case 'mem_fragmentation_ratio':
+                                        let ratio = currentStatistic[item];
+                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
+                                        if (ratio !== null && ratio !== undefined && ratio > 1) {
+                                            let hostInfoExtendSpanClass = hostInfoExtendSpan[index].classList;
+                                            hostInfoExtendSpanClass.remove('background-green');
+                                            hostInfoExtendSpanClass.add('background-red');
+                                        }
+                                        break;
+                                    case 'hits_ratio':
+                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
+                                        break;
+                                    case 'delta_hits_ratio':
+                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
+                                        break;
+                                    case 'uptime_in_seconds':
+                                        hostInfoExtendSpan[index].innerHTML = MachineStatus.getFormatSeconds(currentStatistic[item], this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
+                                        break;
+                                    case 'connected_clients':
+                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
+                                }
+                            });
+                        }
                     }
-                }
 
-                data.items.reverse();
-                let dataMap = MachineStatus.getChartsData(data.items);
+                    data.items.reverse();
+                    let dataMap = MachineStatus.getChartsData(data.items);
 
-                let tsList = dataMap.ts_list;
-                let cpuList = dataMap.cpu_list;
-                let memoryList = dataMap.memory_list;
-                let loadavgList = dataMap.load_avg_list[0];
-                let loadavg5MinList = dataMap.load_avg_list[1];
-                let loadavg15MinList = dataMap.load_avg_list[2];
-                let diskUsageList = dataMap.disk_usage_list;
+                    let tsList = dataMap.ts_list;
+                    let cpuList = dataMap.cpu_list;
+                    let memoryList = dataMap.memory_list;
+                    let loadavgList = dataMap.load_avg_list[0];
+                    let loadavg5MinList = dataMap.load_avg_list[1];
+                    let loadavg15MinList = dataMap.load_avg_list[2];
+                    let diskUsageList = dataMap.disk_usage_list;
 
-                this.memoryOption.xAxis.data = tsList;
-                this.cpuOption.xAxis.data = tsList;
-                this.loadavgOption.xAxis.data = tsList;
-                this.diskUsageOption.xAxis.data = tsList;
+                    this.memoryOption.xAxis.data = tsList;
+                    this.cpuOption.xAxis.data = tsList;
+                    this.loadavgOption.xAxis.data = tsList;
+                    this.diskUsageOption.xAxis.data = tsList;
 
-                this.memoryOption.series[0].data = memoryList;
-                this.cpuOption.series[0].data = cpuList;
-                this.diskUsageOption.series[0].data = diskUsageList;
-                this.loadavgOption.series[0].data = loadavgList;
-                this.loadavgOption.series[1].data = loadavg5MinList;
-                this.loadavgOption.series[2].data = loadavg15MinList;
+                    this.memoryOption.series[0].data = memoryList;
+                    this.cpuOption.series[0].data = cpuList;
+                    this.diskUsageOption.series[0].data = diskUsageList;
+                    this.loadavgOption.series[0].data = loadavgList;
+                    this.loadavgOption.series[1].data = loadavg5MinList;
+                    this.loadavgOption.series[2].data = loadavg15MinList;
 
-                this.consoleMemoryChart.setOption(this.memoryOption);
-                this.consoleCpuChart.setOption(this.cpuOption);
-                this.consoleLoadavgChart.setOption(this.loadavgOption);
-                this.consoleDiskUsageChart.setOption(this.diskUsageOption);
-                MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskUsageChart]);
-            },
-            complete: () => {
-                this.consoleMemoryChart.hideLoading();
-                this.consoleCpuChart.hideLoading();
-                this.consoleLoadavgChart.hideLoading();
-                this.consoleDiskUsageChart.hideLoading();
-            },
-        }).then();
+                    this.consoleMemoryChart.setOption(this.memoryOption);
+                    this.consoleCpuChart.setOption(this.cpuOption);
+                    this.consoleLoadavgChart.setOption(this.loadavgOption);
+                    this.consoleDiskUsageChart.setOption(this.diskUsageOption);
+                    MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskUsageChart]);
+                }).then(() => {
+                    this.consoleMemoryChart.hideLoading();
+                    this.consoleCpuChart.hideLoading();
+                    this.consoleLoadavgChart.hideLoading();
+                    this.consoleDiskUsageChart.hideLoading();
+                })
+            }
+        }).catch(function (err) {
+            console.log(err);
+        })
     };
 
     /* Redraw chart events timer */
@@ -463,7 +493,9 @@ class MachineStatus {
             toolbox: {
                 show: !isMobile,
                 feature: {
-                    saveAsImage: {}
+                    saveAsImage: {
+                        title: ' ',
+                    }
                 }
             },
             xAxis: {
@@ -561,65 +593,6 @@ class MachineStatus {
     };
 }
 
-/* Native Ajax classes */
-class Ajax {
-    xhr: any;
-
-    constructor() {
-        this.xhr = new XMLHttpRequest();
-    }
-
-    send(options: { [key: string]: any }) {
-
-        let xhr = this.xhr;
-
-        let opt = {
-            type: options.type || 'get',
-            url: options.url || '',
-            async: options.async || true,
-            data: JSON.stringify(options.data),
-            dataType: options.dataType || 'json',
-            contentType: 'application/json',
-            success: options.success || null,
-            complete: options.complete || null
-        };
-
-
-        return new Promise((resolve, reject) => {
-            xhr.open(opt.type, opt.url, opt.async);
-            xhr.onreadystatechange = () => {
-                // readyState: 0: init, 1: connect has set up, 2: receive request, 3: request.. , 4: request end, send response
-                if (xhr.readyState === 4) {
-                    // status: 200: OK,  401: Verification Failed, 404: Not Found Page
-                    if (opt.dataType === 'json') {
-                        const data = JSON.parse(xhr.responseText);
-                        resolve(data);
-                        if (opt.success !== null) {
-                            opt.success(data);
-                        } else {
-                            reject(new Error(String(xhr.status) || 'No callback function.'));
-                        }
-                    } else {
-                        reject(new Error(String(xhr.status) || 'Error data type.'));
-                    }
-                }
-            };
-
-            xhr.onerror = () => {
-                reject(new Error(String(xhr.status) || 'Server is fail.'));
-            };
-
-            xhr.setRequestHeader("Content-type", opt.contentType);
-            xhr.send(opt.data);
-            xhr.onloadend = () => {
-                if (opt.complete != null) {
-                    opt.complete();
-                }
-            };
-        });
-    }
-}
-
 function circularMove(moveEvent: any) {
     let triggerCircular = document.getElementById('fs-state-circular');
     triggerCircular.style.top = moveEvent.clientY - MOUSE_POSITION + 300 + 'px';
@@ -672,7 +645,7 @@ function Init(initMap: { lang: { [key: string]: string } | null, dom: HTMLElemen
     }
 }
 
-function DOMparseChildren(children) {
+function DOMParseChildren(children) {
     return children.map(child => {
         if (typeof child === 'string') {
             return document.createTextNode(child);
@@ -682,11 +655,21 @@ function DOMparseChildren(children) {
 }
 
 function DOMcreateElement(element, properties, ...children) {
-    const el = document.createElement(element);
-    Object.keys((properties || {})).forEach(key => {
-        el[key] = properties[key];
-    })
-    DOMparseChildren(children).forEach(child => {
+    const isSVG = Object.prototype.hasOwnProperty.call(XML_ELEMENT, element)
+    let el;
+    if (isSVG) {
+        el = document.createElementNS(XML_ELEMENT[element], element);
+        for (const propName in properties) {
+            el.setAttributeNS(XML_PROPS[propName], propName === "className" ? "class" : propName, properties[propName]);
+        }
+    } else {
+        el = document.createElement(element);
+        for (const propName in properties) {
+            el[propName] = properties[propName];
+        }
+
+    }
+    DOMParseChildren(children).forEach(child => {
         el.appendChild(child);
     });
     return el;
