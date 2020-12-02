@@ -1,12 +1,11 @@
 {
     "compilerOptions": {
-        "module": "amd",
+        "module": "commonjs",
         "target": "es5",
         "jsx": "react",
         "jsxFactory": "DOMcreateElement",
-        "jsxFragmentFactory": "DOMcreateElement",
         "removeComments": true,
-        "outDir": "./dist/",
+        "outDir": "./packages/",
         "downlevelIteration": true,
         "importHelpers": true,
         "noImplicitAny": false,

@@ -1,1 +1,1 @@
-module.exports = require('./initial.tsx');
+module.exports = require('../../packages/cjs/flask-state.js');

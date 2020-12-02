@@ -28,7 +28,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "python examples/app.py",
     "build:dev": "NODE_ENV=development node examples/build/build.js",
-    "compress": "webpack --config examples/build/compress.js && python examples/script/modify_compress_files.py"
+    "compress": "webpack --config examples/build/compress.js && tsc && python examples/script/modify_compress_files.py"
   },
   "repository": {
     "type": "git",

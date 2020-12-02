@@ -12,59 +12,167 @@
 
 (function () {
     'use strict';
-
-    const ONE_MIN_SECONDS = 60;
-    const ONE_DAY_HOURS = 24;
-    const MACHINE_VALUE = {
+    var __values = (this && this.__values) || function(o) {
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+        if (m) return m.call(o);
+        if (o && typeof o.length === "number") return {
+            next: function () {
+                if (o && i >= o.length) o = void 0;
+                return { value: o && o[i++], done: !o };
+            }
+        };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    };
+    var ONE_MIN_SECONDS = 60;
+    var ONE_DAY_HOURS = 24;
+    var MACHINE_VALUE = {
         DANGER: 85,
         WARNING: 75,
     };
-    const LOADAVG_VALUE = {
+    var LOADAVG_VALUE = {
         DANGER: 10,
         WARNING: 5,
     };
-
-    const BIT_TO_MB = 1048576;
-    const SECONDS_TO_MILLISECONDS = 1000;
-
-    class MachineStatus {
-        constructor(language) {
+    var BIT_TO_MB = 1048576;
+    var SECONDS_TO_MILLISECONDS = 1000;
+    var XML_ELEMENT = {
+        svg: "http://www.w3.org/2000/svg",
+        path: "http://www.w3.org/2000/svg"
+    };
+    var XML_PROPS = {
+        t: null,
+        version: null,
+        viewBox: null,
+        xmlns: "http://www.w3.org/2000/xmlns/",
+        d: null,
+        width: null,
+        height: null,
+        fill: null,
+        className: null,
+    };
+    var MOUSE_POSITION = null;
+    var MachineStatus = (function () {
+        function MachineStatus(language) {
+            var _this = this;
+            this.clearId = null;
             this.language = language;
             this.mobile = MachineStatus.isMobile();
             this.index = 0;
-            this.ajax = new Ajax();
-            this.initFlaskStateContainer(this.mobile);
+            this.initFlaskStateContainer();
             this.setEventListener();
-            this.initFlaskStateLanguage(this.language);
+            this.initFlaskStateLanguage();
             this.setInitParams();
             if (this.mobile) {
-                this.setTagChangeEventListener(this.consoleCpuChart, this.consoleMemoryChart, this.consoleLoadavgChart, this.consoleDiskusageChart);
+                this.setTagChangeEventListener(this.consoleCpuChart, this.consoleMemoryChart, this.consoleLoadavgChart, this.consoleDiskUsageChart);
             }
-            // Bind window resizing redraw event
-            window.addEventListener('resize', () => {
-                MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskusageChart]);
-            })
-        };
-
-        setFlaskStateData() {
+            window.addEventListener('resize', function () {
+                _this.resizeChartTimer([_this.consoleMemoryChart, _this.consoleCpuChart, _this.consoleLoadavgChart, _this.consoleDiskUsageChart]);
+            });
+        }
+        ;
+        MachineStatus.prototype.setFlaskStateData = function () {
             document.getElementById('fs-background').style.display = 'block';
             document.getElementById('fs-info-container').style.display = 'block';
             document.getElementsByTagName('body')[0].style.overflowX = 'hidden';
             document.getElementsByTagName('body')[0].style.overflowY = 'hidden';
-            document.getElementById('fs-select-days').value = '1';
-            this.setCharts('1');
-        }
-
-        /* Insert window element */
-        initFlaskStateContainer() {
-            let _chart = this.mobile ? `<hr id="console-info-line" class="console-info-line-style"><ul id="fs-info-tab" class="fs-ul-tabs"><li class="active"><a data-toggle="tab"> <strong>Memory</strong></a></li> <li><a data-toggle="tab"><strong>CPU</strong></a></li><li><a data-toggle="tab"><strong>Disk Usage</strong></a></li><li><a data-toggle="tab"><strong>Load Avg</strong></a></li></ul><div id="fs-info-tab-memory" class="fs-mChart-box fs-show"><div id="fs-info-memory-chart" class="fs-chart-style"></div></div><div id="fs-info-tab-cpu" class="fs-mChart-box"><div id="fs-info-cpu-chart" class="fs-chart-style"></div></div><div id="fs-info-tab-disk-usage" class="fs-mChart-box"><div id="fs-info-diskusage-chart" class="fs-chart-style"></div></div><div id="fs-info-tab-loadavg" class="fs-mChart-box"><div id="fs-info-loadavg-chart" class="fs-chart-style"></div></div>`
-                : `<div class='fs-chart-content'><div class='fs-charts-width fs-charts-box fs-border'><div id='fs-info-memory-chart' class='fs-chart-style'></div></div><div class='fs-charts-width fs-charts-box'><div id='fs-info-cpu-chart' class='fs-chart-style'></div></div><div class='fs-charts-width fs-charts-box fs-border'><div id='fs-info-diskusage-chart' class='fs-chart-style'></div></div><div class='fs-charts-width fs-charts-box'><div id='fs-info-loadavg-chart' class='fs-chart-style'></div></div></div>`;
-            let _content = `<div class="flask-state-elem fs-background" id="fs-background"><div class="fs-container-width fs-container" id="fs-info-container"><div class="fs-select-container"><svg class="fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" width="29" height="17"><path d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z" fill="#161e2e"></path></svg><select id="fs-select-days" class="fs-select-days"><option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><p id="fs-days" class="fs-days"> days</p></div><button type="button" class="fs-close" id="fs-info-close"><svg viewBox="0 0 1024 1024" version="1.1" width="24" height="24"><path d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z" fill="#161e2e"></path></svg></button><h4 id="fs-host-status-title" class="fs-h4-style">Host Status</h4><div id="fs-host-status"><div><span id="fs-memory" class="b-0079cc fs-badge-intro">Memory</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-cpu" class="b-0079cc fs-badge-intro">CPU</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-disk-usage" class="b-0079cc fs-badge-intro">Disk Usage</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-load-avg" class="b-007dc8 fs-badge-intro">Load Avg</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-boot-seconds" class="b-0051b9 fs-badge-intro">Uptime</span><span class="fs-badge-content background-green"></span></div></div><h4 id="fs-redis-status-title" class="fs-h4-style">Redis Status</h4><div id="fs-redis-status"><div><span id="fs-used-memory" class="b-99cb3d fs-badge-intro">Used Mem</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-used-memory-rss" class="b-99cb3d fs-badge-intro">Used Mem Rss</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-mem-fragmentation-ratio" class="b-534c6d fs-badge-intro">Mem Fragmentation Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-hits-ratio" class="b-0079cc fs-badge-intro">Cache Hits Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-delta-hits-ratio" class="b-0079cc fs-badge-intro">24h Hits Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-uptime-in-seconds" class="b-0051b9 fs-badge-intro">Uptime</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-connected-clients" class="b-534c6d fs-badge-intro">Connections</span><span class="fs-badge-content background-green"></span></div></div>` + _chart + `</div></div>`;
-            document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', _content);
-        }
-
-        // add EventListener
-        setEventListener() {
+            var selectDays = document.getElementById('fs-select-days');
+            selectDays.value = '1';
+            this.setCharts(1);
+        };
+        MachineStatus.prototype.initFlaskStateContainer = function () {
+            var _chart = this.mobile ?
+                DOMcreateElement("div", null,
+                    DOMcreateElement("hr", { id: "console-info-line", className: "console-info-line-style" }),
+                    DOMcreateElement("ul", { id: "fs-info-tab", className: "fs-ul-tabs" },
+                        DOMcreateElement("li", { className: "active" },
+                            DOMcreateElement("a", { "data-toggle": "tab" },
+                                " ",
+                                DOMcreateElement("strong", null, "Memory"))),
+                        DOMcreateElement("li", null,
+                            DOMcreateElement("a", { "data-toggle": "tab" },
+                                DOMcreateElement("strong", null, "CPU"))),
+                        DOMcreateElement("li", null,
+                            DOMcreateElement("a", { "data-toggle": "tab" },
+                                DOMcreateElement("strong", null, "Disk Usage"))),
+                        DOMcreateElement("li", null,
+                            DOMcreateElement("a", { "data-toggle": "tab" },
+                                DOMcreateElement("strong", null, "Load Avg")))),
+                    DOMcreateElement("div", { id: "fs-info-tab-memory", className: "fs-mChart-box fs-show" },
+                        DOMcreateElement("div", { id: "fs-info-memory-chart", className: "fs-chart-style" })),
+                    DOMcreateElement("div", { id: "fs-info-tab-cpu", className: "fs-mChart-box" },
+                        DOMcreateElement("div", { id: "fs-info-cpu-chart", className: "fs-chart-style" })),
+                    DOMcreateElement("div", { id: "fs-info-tab-disk-usage", className: "fs-mChart-box" },
+                        DOMcreateElement("div", { id: "fs-info-diskusage-chart", className: "fs-chart-style" })),
+                    DOMcreateElement("div", { id: "fs-info-tab-loadavg", className: "fs-mChart-box" },
+                        DOMcreateElement("div", { id: "fs-info-loadavg-chart", className: "fs-chart-style" })))
+                : DOMcreateElement("div", { className: 'fs-chart-content' },
+                    DOMcreateElement("div", { className: 'fs-charts-width fs-charts-box fs-border' },
+                        DOMcreateElement("div", { id: 'fs-info-memory-chart', className: 'fs-chart-style' })),
+                    DOMcreateElement("div", { className: 'fs-charts-width fs-charts-box' },
+                        DOMcreateElement("div", { id: 'fs-info-cpu-chart', className: 'fs-chart-style' })),
+                    DOMcreateElement("div", { className: 'fs-charts-width fs-charts-box fs-border' },
+                        DOMcreateElement("div", { id: 'fs-info-diskusage-chart', className: 'fs-chart-style' })),
+                    DOMcreateElement("div", { className: 'fs-charts-width fs-charts-box' },
+                        DOMcreateElement("div", { id: 'fs-info-loadavg-chart', className: 'fs-chart-style' })));
+            var _content = DOMcreateElement("div", { className: "flask-state-elem fs-background", id: "fs-background" },
+                DOMcreateElement("div", { className: "fs-container-width fs-container", id: "fs-info-container" },
+                    DOMcreateElement("div", { className: "fs-select-container" },
+                        DOMcreateElement("svg", { className: "fs-select-arrow", viewBox: "0 0 1024 1024", version: "1.1", width: "29", height: "17", xmlns: "http://www.w3.org/2000/svg" },
+                            DOMcreateElement("path", { d: "M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z", fill: "#161e2e" })),
+                        DOMcreateElement("select", { id: "fs-select-days", className: "fs-select-days" },
+                            DOMcreateElement("option", { value: "1" }, "1"),
+                            DOMcreateElement("option", { value: "3" }, "3"),
+                            DOMcreateElement("option", { value: "7" }, "7"),
+                            DOMcreateElement("option", { value: "30" }, "30")),
+                        DOMcreateElement("p", { id: "fs-days", className: "fs-days" }, " days")),
+                    DOMcreateElement("button", { type: "button", className: "fs-close", id: "fs-info-close" },
+                        DOMcreateElement("svg", { viewBox: "0 0 1024 1024", version: "1.1", width: "24", height: "24", xmlns: "http://www.w3.org/2000/svg" },
+                            DOMcreateElement("path", { d: "M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z", fill: "#161e2e" }))),
+                    DOMcreateElement("h4", { id: "fs-host-status-title", className: "fs-h4-style" }, "Host Status"),
+                    DOMcreateElement("div", { id: "fs-host-status" },
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-memory", className: "b-0079cc fs-badge-intro" }, "Memory"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" })),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-cpu", className: "b-0079cc fs-badge-intro" }, "CPU"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" })),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-disk-usage", className: "b-0079cc fs-badge-intro" }, "Disk Usage"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" })),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-load-avg", className: "b-007dc8 fs-badge-intro" }, "Load Avg"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" })),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-boot-seconds", className: "b-0051b9 fs-badge-intro" }, "Uptime"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" }))),
+                    DOMcreateElement("h4", { id: "fs-redis-status-title", className: "fs-h4-style" }, "Redis Status"),
+                    DOMcreateElement("div", { id: "fs-redis-status" },
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-used-memory", className: "b-99cb3d fs-badge-intro" }, "Used Mem"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" })),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-used-memory-rss", className: "b-99cb3d fs-badge-intro" }, "Used Mem Rss"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" })),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-mem-fragmentation-ratio", className: "b-534c6d fs-badge-intro" }, "Mem Fragmentation Ratio"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" })),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-hits-ratio", className: "b-0079cc fs-badge-intro" }, "Cache Hits Ratio"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" }, "/")),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-delta-hits-ratio", className: "b-0079cc fs-badge-intro" }, "24h Hits Ratio"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" })),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-uptime-in-seconds", className: "b-0051b9 fs-badge-intro" }, "Uptime"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" })),
+                        DOMcreateElement("div", null,
+                            DOMcreateElement("span", { id: "fs-connected-clients", className: "b-534c6d fs-badge-intro" }, "Connections"),
+                            DOMcreateElement("span", { className: "fs-badge-content background-green" }))),
+                    _chart));
+            document.body.appendChild(_content);
+        };
+        MachineStatus.prototype.setEventListener = function () {
+            var _this = this;
             if (window.addEventListener) {
                 document.getElementById('fs-info-close').addEventListener('click', function clickClose() {
                     document.getElementById('fs-background').style.display = 'none';
@@ -75,9 +183,9 @@
                         document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
                     }
                 });
-
                 document.getElementById('fs-background').addEventListener('click', function clickBack(e) {
-                    if (String(e.target.id) === 'fs-background') {
+                    var clickTarget = e.target;
+                    if (String(clickTarget.id) === 'fs-background') {
                         document.getElementById('fs-background').style.display = 'none';
                         document.getElementById('fs-info-container').style.display = 'none';
                         document.getElementsByTagName('body')[0].style.overflowX = 'auto';
@@ -87,49 +195,58 @@
                         }
                     }
                 });
-
-                // Pull the local state again when switching days
-                let selectContainer = document.getElementById('fs-select-days');
-                selectContainer.addEventListener('change', () => {
-                    this.setCharts(selectContainer.value);
-                })
-
+                document.getElementById('fs-select-days').addEventListener('change', function () {
+                    var selectContainer = document.getElementById('fs-select-days');
+                    _this.setCharts(parseInt(selectContainer.value));
+                });
             }
-        }
-
-        /* add mobile changeTag EventListener */
-        setTagChangeEventListener(...chartList) {
-            // Bind mobile phone to switch to display charts event
+        };
+        MachineStatus.prototype.setTagChangeEventListener = function () {
+            var e_1, _a;
+            var chartList = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                chartList[_i] = arguments[_i];
+            }
             if (document.getElementById('fs-info-tab')) {
-                let liArr = document.getElementById('fs-info-tab').getElementsByTagName('li');
-                let preNode = document.getElementById('fs-info-tab-memory');
-                let node_li = liArr[0];
-                let index = 0;
-                const elemDict = {
+                var liArr = document.getElementById('fs-info-tab').getElementsByTagName('li');
+                var preNode_1 = document.getElementById('fs-info-tab-memory');
+                var node_li_1 = liArr[0];
+                var index = 0;
+                var elemDict = {
                     0: 'fs-info-tab-memory',
                     1: 'fs-info-tab-cpu',
                     2: 'fs-info-tab-disk-usage',
                     3: 'fs-info-tab-loadavg'
                 };
-                for (let item of liArr) {
-                    let nowNode = document.getElementById(elemDict[index]);
-                    item.children[0].addEventListener('click', () => {
+                var _loop_1 = function (item) {
+                    var nowNode = document.getElementById(elemDict[index]);
+                    item.children[0].addEventListener('click', function () {
                         item.classList.add('active');
-                        node_li.classList.remove('active');
-                        preNode.classList.remove('fs-show');
+                        node_li_1.classList.remove('active');
+                        preNode_1.classList.remove('fs-show');
                         nowNode.classList.add('fs-show');
                         MachineStatus.resizeChart(chartList);
-                        preNode = nowNode;
-                        node_li = item;
+                        preNode_1 = nowNode;
+                        node_li_1 = item;
                     });
                     index++;
+                };
+                try {
+                    for (var liArr_1 = __values(liArr), liArr_1_1 = liArr_1.next(); !liArr_1_1.done; liArr_1_1 = liArr_1.next()) {
+                        var item = liArr_1_1.value;
+                        _loop_1(item);
+                    }
+                }
+                catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                finally {
+                    try {
+                        if (liArr_1_1 && !liArr_1_1.done && (_a = liArr_1.return)) _a.call(liArr_1);
+                    }
+                    finally { if (e_1) throw e_1.error; }
                 }
             }
-        }
-
-        /* set flask-state show language */
-        initFlaskStateLanguage() {
-            // Modify parameter display language
+        };
+        MachineStatus.prototype.initFlaskStateLanguage = function () {
             if (Object.keys(this.language).length !== 0) {
                 document.getElementById('fs-host-status-title').innerHTML = this.language.host_status;
                 document.getElementById('fs-redis-status-title').innerHTML = this.language.redis_status;
@@ -147,159 +264,175 @@
                 document.getElementById('fs-connected-clients').innerHTML = this.language.connected_clients;
                 document.getElementById('fs-days').innerHTML = this.language.days;
             }
-        }
-
-        /* set flask-state init params */
-        setInitParams() {
-            this.consoleCpuChart = echarts.init(document.getElementById('fs-info-cpu-chart'), null, {renderer: 'svg'});
-            this.consoleMemoryChart = echarts.init(document.getElementById('fs-info-memory-chart'), null, {renderer: 'svg'});
-            this.consoleLoadavgChart = echarts.init(document.getElementById('fs-info-loadavg-chart'), null, {renderer: 'svg'});
-            this.consoleDiskusageChart = echarts.init(document.getElementById('fs-info-diskusage-chart'), null, {renderer: 'svg'});
+        };
+        MachineStatus.prototype.setInitParams = function () {
+            this.consoleCpuChart = echarts.init(document.getElementById('fs-info-cpu-chart'), null, { renderer: 'svg' });
+            this.consoleMemoryChart = echarts.init(document.getElementById('fs-info-memory-chart'), null, { renderer: 'svg' });
+            this.consoleLoadavgChart = echarts.init(document.getElementById('fs-info-loadavg-chart'), null, { renderer: 'svg' });
+            this.consoleDiskUsageChart = echarts.init(document.getElementById('fs-info-diskusage-chart'), null, { renderer: 'svg' });
             this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today || 'Today');
             this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today || 'Today');
             this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'Disk Usage', '', this.language.today || 'Today');
             this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes || 'min');
-        }
-
-        /* Define functions that access native state and plot */
-        setCharts(days) {
+        };
+        MachineStatus.prototype.setCharts = function (days) {
+            var _this = this;
             this.consoleCpuChart.showLoading();
             this.consoleMemoryChart.showLoading();
             this.consoleLoadavgChart.showLoading();
-            this.consoleDiskusageChart.showLoading();
-            this.ajax.send({
-                type: 'POST',
-                url: '/v0/state/hoststatus',
-                data: {'timeQuantum': days},
-                success: response => {
-                    if (response.code !== 200) {
-                        return;
-                    }
-
-                    const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
-                    const data = response.data;
-
-                    data.items = data.items.map(item => {
-                        let element = {};
-                        fields.forEach((field, index) => {
-                            if (field === "ts") return element[field] = SECONDS_TO_MILLISECONDS * item[index];
-                            element[field] = item[index];
-                        });
-                        return element;
-                    });
-                    let currentStatistic = data.currentStatistic;
-                    if (Object.keys(currentStatistic).length) {
-                        let hostInfoSpan = document.getElementById('fs-host-status').getElementsByClassName('fs-badge-content');
-                        hostInfoSpan[0].innerHTML = currentStatistic.memory + '%';
-                        hostInfoSpan[1].innerHTML = currentStatistic.cpu + '%';
-                        hostInfoSpan[2].innerHTML = currentStatistic.disk_usage + '%';
-                        hostInfoSpan[3].innerHTML = currentStatistic.load_avg[0] + "，" + currentStatistic.load_avg[1] + "，" + currentStatistic.load_avg[2];
-
-                        hostInfoSpan[4].innerHTML = MachineStatus.getFormatSeconds(currentStatistic.boot_seconds || 0, this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
-
-                        const machineIndex = ['memory', 'cpu', 'disk_usage', 'load_avg'];
-                        machineIndex.forEach(function (item, index) {
-                            let paramClass = '';
-                            if (item === 'load_avg') {
-                                let loadavgAvg = (currentStatistic.load_avg[0] + currentStatistic.load_avg[1] + currentStatistic.load_avg[2]) / 3;
-                                paramClass = loadavgAvg >= LOADAVG_VALUE.WARNING ? loadavgAvg >= LOADAVG_VALUE.DANGER ? 'background-red' : 'background-orange' : 'background-green';
-                            } else {
-                                paramClass = currentStatistic[item] >= MACHINE_VALUE.WARNING ? currentStatistic.memory >= MACHINE_VALUE.DANGER ? 'background-red' : 'background-orange' : 'background-green';
-                            }
-                            let param = hostInfoSpan[index].classList;
-                            param.remove('background-green', 'background-orange', 'background-red');
-                            param.add(paramClass);
-                        });
-
-                        let hostInfoExtendSpan = document.getElementById('fs-redis-status').getElementsByClassName('fs-badge-content');
-                        let hostInfoKeysList = ['used_memory', 'used_memory_rss', 'mem_fragmentation_ratio', 'hits_ratio', 'delta_hits_ratio', 'uptime_in_seconds', 'connected_clients'];
-                        let hideRedis = true
-                        for (let item of hostInfoKeysList) {
-                            if (currentStatistic[item]) {
-                                hideRedis = false
-                                break
-                            }
+            this.consoleDiskUsageChart.showLoading();
+            fetch("/v0/state/hoststatus", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json;charset=UTF-8",
+                },
+                body: JSON.stringify({ "timeQuantum": days }),
+            }).then(function (res) {
+                if (res.ok) {
+                    res.json().then(function (response) {
+                        var e_2, _a;
+                        if (response.code !== 200) {
+                            return;
                         }
-                        if (hideRedis) {
-                            document.getElementById('fs-redis-status-title').innerHTML = '';
-                            document.getElementById('fs-redis-status-title').style.marginTop = '0';
-                            document.getElementById('fs-redis-status').style.display = 'none';
-                        } else {
-                            hostInfoKeysList.forEach((item, index) => {
-                                switch (item) {
-                                    case 'used_memory':
-                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
-                                        break;
-                                    case 'used_memory_rss':
-                                        hostInfoExtendSpan[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
-                                        break;
-                                    case 'mem_fragmentation_ratio':
-                                        let ratio = currentStatistic[item];
-                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
-                                        if (ratio !== null && ratio !== undefined && ratio > 1) {
-                                            let hostInfoExtendSpanClass = hostInfoExtendSpan[index].classList;
-                                            hostInfoExtendSpanClass.remove('background-green');
-                                            hostInfoExtendSpanClass.add('background-red');
-                                        }
-                                        break;
-                                    case 'hits_ratio':
-                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
-                                        break;
-                                    case 'delta_hits_ratio':
-                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item] + '%';
-                                        break;
-                                    case 'uptime_in_seconds':
-                                        hostInfoExtendSpan[index].innerHTML = MachineStatus.getFormatSeconds(currentStatistic[item], this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
-                                        break;
-                                    case 'connected_clients':
-                                        hostInfoExtendSpan[index].innerHTML = currentStatistic[item];
+                        var fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
+                        var data = response.data;
+                        data.items = data.items.map(function (item) {
+                            var element = {};
+                            fields.forEach(function (field, index) {
+                                if (field === "ts") {
+                                    element[field] = SECONDS_TO_MILLISECONDS * item[index];
+                                }
+                                else {
+                                    element[field] = item[index];
                                 }
                             });
+                            return element;
+                        });
+                        var currentStatistic = data.currentStatistic;
+                        if (Object.keys(currentStatistic).length) {
+                            var hostInfoSpan_1 = document.getElementById('fs-host-status').getElementsByClassName('fs-badge-content');
+                            hostInfoSpan_1[0].innerHTML = currentStatistic.memory + '%';
+                            hostInfoSpan_1[1].innerHTML = currentStatistic.cpu + '%';
+                            hostInfoSpan_1[2].innerHTML = currentStatistic.disk_usage + '%';
+                            hostInfoSpan_1[3].innerHTML = currentStatistic.load_avg[0] + "，" + currentStatistic.load_avg[1] + "，" + currentStatistic.load_avg[2];
+                            hostInfoSpan_1[4].innerHTML = MachineStatus.getFormatSeconds(currentStatistic.boot_seconds || 0, _this.language.days, _this.language.hours, _this.language.minutes, _this.language.seconds);
+                            var machineIndex = ['memory', 'cpu', 'disk_usage', 'load_avg'];
+                            machineIndex.forEach(function (item, index) {
+                                var paramClass;
+                                if (item === 'load_avg') {
+                                    var loadavgAvg = (currentStatistic.load_avg[0] + currentStatistic.load_avg[1] + currentStatistic.load_avg[2]) / 3;
+                                    paramClass = loadavgAvg >= LOADAVG_VALUE.WARNING ? loadavgAvg >= LOADAVG_VALUE.DANGER ? 'background-red' : 'background-orange' : 'background-green';
+                                }
+                                else {
+                                    paramClass = currentStatistic[item] >= MACHINE_VALUE.WARNING ? currentStatistic.memory >= MACHINE_VALUE.DANGER ? 'background-red' : 'background-orange' : 'background-green';
+                                }
+                                var param = hostInfoSpan_1[index].classList;
+                                param.remove('background-green', 'background-orange', 'background-red');
+                                param.add(paramClass);
+                            });
+                            var hostInfoExtendSpan_1 = document.getElementById('fs-redis-status').getElementsByClassName('fs-badge-content');
+                            var hostInfoKeysList = ['used_memory', 'used_memory_rss', 'mem_fragmentation_ratio', 'hits_ratio', 'delta_hits_ratio', 'uptime_in_seconds', 'connected_clients'];
+                            var hideRedis = true;
+                            try {
+                                for (var hostInfoKeysList_1 = __values(hostInfoKeysList), hostInfoKeysList_1_1 = hostInfoKeysList_1.next(); !hostInfoKeysList_1_1.done; hostInfoKeysList_1_1 = hostInfoKeysList_1.next()) {
+                                    var item = hostInfoKeysList_1_1.value;
+                                    if (currentStatistic[item]) {
+                                        hideRedis = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                            finally {
+                                try {
+                                    if (hostInfoKeysList_1_1 && !hostInfoKeysList_1_1.done && (_a = hostInfoKeysList_1.return)) _a.call(hostInfoKeysList_1);
+                                }
+                                finally { if (e_2) throw e_2.error; }
+                            }
+                            if (hideRedis) {
+                                document.getElementById('fs-redis-status-title').innerHTML = '';
+                                document.getElementById('fs-redis-status-title').style.marginTop = '0';
+                                document.getElementById('fs-redis-status').style.display = 'none';
+                            }
+                            else {
+                                hostInfoKeysList.forEach(function (item, index) {
+                                    switch (item) {
+                                        case 'used_memory':
+                                            hostInfoExtendSpan_1[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
+                                            break;
+                                        case 'used_memory_rss':
+                                            hostInfoExtendSpan_1[index].innerHTML = Math.ceil(currentStatistic[item] / BIT_TO_MB) + ' M';
+                                            break;
+                                        case 'mem_fragmentation_ratio':
+                                            var ratio = currentStatistic[item];
+                                            hostInfoExtendSpan_1[index].innerHTML = currentStatistic[item];
+                                            if (ratio !== null && ratio !== undefined && ratio > 1) {
+                                                var hostInfoExtendSpanClass = hostInfoExtendSpan_1[index].classList;
+                                                hostInfoExtendSpanClass.remove('background-green');
+                                                hostInfoExtendSpanClass.add('background-red');
+                                            }
+                                            break;
+                                        case 'hits_ratio':
+                                            hostInfoExtendSpan_1[index].innerHTML = currentStatistic[item] + '%';
+                                            break;
+                                        case 'delta_hits_ratio':
+                                            hostInfoExtendSpan_1[index].innerHTML = currentStatistic[item] + '%';
+                                            break;
+                                        case 'uptime_in_seconds':
+                                            hostInfoExtendSpan_1[index].innerHTML = MachineStatus.getFormatSeconds(currentStatistic[item], _this.language.days, _this.language.hours, _this.language.minutes, _this.language.seconds);
+                                            break;
+                                        case 'connected_clients':
+                                            hostInfoExtendSpan_1[index].innerHTML = currentStatistic[item];
+                                    }
+                                });
+                            }
                         }
-                    }
-
-                    data.items.reverse();
-                    let dataMap = MachineStatus.getChartsData(data.items);
-
-                    let tsList = dataMap.ts_list;
-                    let cpuList = dataMap.cpu_list;
-                    let memoryList = dataMap.memory_list;
-                    let loadavgList = dataMap.load_avg_list[0];
-                    let loadavg5MinList = dataMap.load_avg_list[1];
-                    let loadavg15MinList = dataMap.load_avg_list[2];
-                    let diskUsageList = dataMap.disk_usage_list;
-
-                    this.memoryOption.xAxis.data = tsList;
-                    this.cpuOption.xAxis.data = tsList;
-                    this.loadavgOption.xAxis.data = tsList;
-                    this.diskUsageOption.xAxis.data = tsList;
-
-                    this.memoryOption.series[0].data = memoryList;
-                    this.cpuOption.series[0].data = cpuList;
-                    this.diskUsageOption.series[0].data = diskUsageList;
-                    this.loadavgOption.series[0].data = loadavgList;
-                    this.loadavgOption.series[1].data = loadavg5MinList;
-                    this.loadavgOption.series[2].data = loadavg15MinList;
-
-                    this.consoleMemoryChart.setOption(this.memoryOption);
-                    this.consoleCpuChart.setOption(this.cpuOption);
-                    this.consoleLoadavgChart.setOption(this.loadavgOption);
-                    this.consoleDiskusageChart.setOption(this.diskUsageOption);
-                    MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskusageChart]);
-                },
-                complete: () => {
-                    this.consoleMemoryChart.hideLoading();
-                    this.consoleCpuChart.hideLoading();
-                    this.consoleLoadavgChart.hideLoading();
-                    this.consoleDiskusageChart.hideLoading();
-                },
-            }).then();
+                        data.items.reverse();
+                        var dataMap = MachineStatus.getChartsData(data.items);
+                        var tsList = dataMap.ts_list;
+                        var cpuList = dataMap.cpu_list;
+                        var memoryList = dataMap.memory_list;
+                        var loadavgList = dataMap.load_avg_list[0];
+                        var loadavg5MinList = dataMap.load_avg_list[1];
+                        var loadavg15MinList = dataMap.load_avg_list[2];
+                        var diskUsageList = dataMap.disk_usage_list;
+                        _this.memoryOption.xAxis.data = tsList;
+                        _this.cpuOption.xAxis.data = tsList;
+                        _this.loadavgOption.xAxis.data = tsList;
+                        _this.diskUsageOption.xAxis.data = tsList;
+                        _this.memoryOption.series[0].data = memoryList;
+                        _this.cpuOption.series[0].data = cpuList;
+                        _this.diskUsageOption.series[0].data = diskUsageList;
+                        _this.loadavgOption.series[0].data = loadavgList;
+                        _this.loadavgOption.series[1].data = loadavg5MinList;
+                        _this.loadavgOption.series[2].data = loadavg15MinList;
+                        _this.consoleMemoryChart.setOption(_this.memoryOption);
+                        _this.consoleCpuChart.setOption(_this.cpuOption);
+                        _this.consoleLoadavgChart.setOption(_this.loadavgOption);
+                        _this.consoleDiskUsageChart.setOption(_this.diskUsageOption);
+                        MachineStatus.resizeChart([_this.consoleMemoryChart, _this.consoleCpuChart, _this.consoleLoadavgChart, _this.consoleDiskUsageChart]);
+                    }).then(function () {
+                        _this.consoleMemoryChart.hideLoading();
+                        _this.consoleCpuChart.hideLoading();
+                        _this.consoleLoadavgChart.hideLoading();
+                        _this.consoleDiskUsageChart.hideLoading();
+                    });
+                }
+            }).catch(function (err) {
+                console.log(err);
+            });
         };
-
-        /* Check if the device is a mobile phone */
-        static isMobile() {
-            let u = navigator.userAgent;
-            let deviceBrowser = function () {
+        ;
+        MachineStatus.prototype.resizeChartTimer = function (myChart) {
+            clearTimeout(this.clearId);
+            this.clearId = setTimeout(function () {
+                MachineStatus.resizeChart(myChart);
+            }, 200);
+        };
+        MachineStatus.isMobile = function () {
+            var u = navigator.userAgent;
+            var deviceBrowser = function () {
                 return {
                     trident: u.indexOf('Trident') > -1,
                     presto: u.indexOf('Presto') > -1,
@@ -313,29 +446,19 @@
                     webApp: u.indexOf('Safari') === -1,
                     wechat: u.indexOf('MicroMessenger') > -1,
                     qq: u.match(/\sQQ/i) && u.match(/\sQQ/i)[0] === " qq",
-                }
+                };
             }();
             return deviceBrowser.iPhone || deviceBrowser.iPad || deviceBrowser.webApp || deviceBrowser.wechat
                 || deviceBrowser.qq || deviceBrowser.ios || deviceBrowser.mobile || false;
-
         };
-
-        /* Redraw chart events timer */
-        static resizeChartTimer(myChart, timeout) {
-            clearTimeout(this.clearId);
-            this.clearId = setTimeout(function () {
-                MachineStatus.resizeChart(myChart);
-            }, timeout || 200)
-        }
-
-        /* Redraw chart events */
-        static resizeChart(chartList) {
-            chartList.forEach(chart => chart.resize());
-        }
-
-        /* Initialize echart */
-        static generateChatOption(isMobile, titleText, tableName = '', lineName = '') {
-            let baseData = {
+        ;
+        MachineStatus.resizeChart = function (chartList) {
+            chartList.forEach(function (chart) { return chart.resize(); });
+        };
+        MachineStatus.generateChatOption = function (isMobile, titleText, tableName, lineName) {
+            if (tableName === void 0) { tableName = ''; }
+            if (lineName === void 0) { lineName = ''; }
+            var baseData = {
                 color: tableName === 'loadavg' ? ['#ffa726', '#42a5f5', '#66bb6a'] : ['#42a5f5'],
                 title: {
                     show: !isMobile,
@@ -343,11 +466,11 @@
                 },
                 tooltip: {
                     trigger: 'axis',
-                    formatter: (params) => {
-                        let value = echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', new Date(parseInt(params[0].axisValue)), false) + '<br />';
-                        for (let i = 0; i < params.length; i++) {
+                    formatter: function (params) {
+                        var value = echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', new Date(parseInt(params[0].axisValue)), false) + '<br />';
+                        for (var i = 0; i < params.length; i++) {
                             value += (params[i].marker + params[i].seriesName + ': ' + params[i].value +
-                                (tableName === 'loadavg' ? '' : '%') + '<br />')
+                                (tableName === 'loadavg' ? '' : '%') + '<br />');
                         }
                         return value;
                     }
@@ -368,7 +491,9 @@
                 toolbox: {
                     show: !isMobile,
                     feature: {
-                        saveAsImage: {}
+                        saveAsImage: {
+                            title: ' ',
+                        }
                     }
                 },
                 xAxis: {
@@ -395,7 +520,7 @@
             if (tableName === 'loadavg') {
                 baseData.legend.data = ['1 ' + lineName, '5 ' + lineName, '15 ' + lineName];
                 baseData.series = [];
-                baseData.legend.data.forEach((name) => {
+                baseData.legend.data.forEach(function (name) {
                     baseData.series.push({
                         name: name,
                         type: 'line',
@@ -405,19 +530,17 @@
                 });
             }
             return baseData;
-        }
-
-        /* Get Echarts data */
-        static getChartsData(rawData) {
-            let cpuList = [];
-            let diskUsageList = [];
-            let loadAvgList = [];
-            let loadAvg5minList = [];
-            let loadAvg15minList = [];
-            let memoryList = [];
-            let tsList = [];
-            for (let i = 0; i < rawData.length; i++) {
-                let item = rawData[i];
+        };
+        MachineStatus.getChartsData = function (rawData) {
+            var cpuList = [];
+            var diskUsageList = [];
+            var loadAvgList = [];
+            var loadAvg5minList = [];
+            var loadAvg15minList = [];
+            var memoryList = [];
+            var tsList = [];
+            for (var i = 0; i < rawData.length; i++) {
+                var item = rawData[i];
                 cpuList.push(item.cpu);
                 diskUsageList.push(item.disk_usage);
                 loadAvgList.push(item.load_avg[0]);
@@ -432,14 +555,17 @@
                 'memory_list': memoryList, 'ts_list': tsList
             };
         };
-
-        /* Get format time */
-        static getFormatSeconds(value, days = 'days', hours = 'hours', minutes = 'min', seconds = 'seconds') {
-            let secondTime = parseInt(value);
-            let minuteTime = 0;
-            let hourTime = 0;
-            let dayTime = 0;
-            let result = "";
+        ;
+        MachineStatus.getFormatSeconds = function (value, days, hours, minutes, seconds) {
+            if (days === void 0) { days = 'days'; }
+            if (hours === void 0) { hours = 'hours'; }
+            if (minutes === void 0) { minutes = 'min'; }
+            if (seconds === void 0) { seconds = 'seconds'; }
+            var secondTime = parseInt(value);
+            var minuteTime = 0;
+            var hourTime = 0;
+            var dayTime = 0;
+            var result = "";
             if (secondTime >= ONE_MIN_SECONDS) {
                 minuteTime = secondTime / ONE_MIN_SECONDS;
                 if (minuteTime >= ONE_MIN_SECONDS) {
@@ -450,7 +576,8 @@
                     dayTime = hourTime / ONE_DAY_HOURS;
                     hourTime = hourTime % ONE_DAY_HOURS;
                 }
-            } else {
+            }
+            else {
                 result = secondTime + seconds;
             }
             if (minuteTime > 0) {
@@ -464,118 +591,88 @@
             }
             return result;
         };
+        ;
+        return MachineStatus;
+    }());
+    function circularMove(moveEvent) {
+        var triggerCircular = document.getElementById('fs-state-circular');
+        triggerCircular.style.top = moveEvent.clientY - MOUSE_POSITION + 300 + 'px';
     }
-
-    /* Native Ajax classes */
-    class Ajax {
-        constructor(xhr) {
-            xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-            this.xhr = xhr;
-        }
-
-        send(options) {
-
-            let xhr = this.xhr;
-
-            let opt = {
-                type: options.type || 'get',
-                url: options.url || '',
-                async: options.async || true,
-                data: JSON.stringify(options.data),
-                dataType: options.dataType || 'json',
-                contentType: 'application/json',
-                success: options.success || null,
-                complete: options.complete || null
-            };
-
-
-            return new Promise((resolve, reject) => {
-                xhr.open(opt.type, opt.url, opt.async);
-                xhr.onreadystatechange = () => {
-                    // readyState: 0: init, 1: connect has set up, 2: receive request, 3: request.. , 4: request end, send response
-                    if (xhr.readyState === 4) {
-                        // status: 200: OK,  401: Verification Failed, 404: Not Found Page
-                        if (opt.dataType === 'json') {
-                            const data = JSON.parse(xhr.responseText);
-                            resolve(data);
-                            if (opt.success !== null) {
-                                opt.success(data);
-                            } else {
-                                reject(new Error(String(xhr.status) || 'No callback function.'));
-                            }
-                        } else {
-                            reject(new Error(String(xhr.status) || 'Error data type.'));
-                        }
-                    }
-                };
-
-                xhr.onerror = () => {
-                    reject(new Error(String(xhr.status) || 'Server is fail.'));
-                };
-
-                xhr.setRequestHeader("Content-type", opt.contentType);
-                xhr.send(opt.data);
-                xhr.onloadend = () => {
-                    if (opt.complete != null) {
-                        opt.complete();
-                    }
-                };
-            });
-        }
-    }
-
-    /* singleton */
-    const FlaskStateInstance = (function () {
-        let instance = null;
+    var FlaskStateInstance = (function () {
+        var instance = null;
         return function (language) {
-            return instance || (instance = new MachineStatus(language))
-        }
+            return instance || (instance = new MachineStatus(language));
+        };
     })();
-
-    /* Trigger window event */
     function Init(initMap) {
-        let targetDom = null;
-        let language = {};
+        var targetDom;
+        var language = {};
         if (initMap !== null && typeof initMap === 'object') {
             targetDom = initMap.hasOwnProperty('dom') ? initMap.dom : null;
             language = initMap.hasOwnProperty('lang') ? initMap['lang'].hasOwnProperty('language') ? initMap['lang'] : {} : {};
         }
-
         if (targetDom instanceof HTMLElement) {
-            if (targetDom.getAttribute('flaskState')) return;
+            if (targetDom.getAttribute('flaskState'))
+                return;
             targetDom.setAttribute('flaskState', "true");
-            targetDom.addEventListener('click', () => FlaskStateInstance(language).setFlaskStateData());
-        } else {
-            if (document.getElementById('fs-state-circular')) return;
-            let str = "<div id='fs-state-circular' class='fs-circular' style='top:300px;border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
-            let domBody = document.getElementsByTagName('body')[0];
+            targetDom.addEventListener('click', function () { return FlaskStateInstance(language).setFlaskStateData(); });
+        }
+        else {
+            if (document.getElementById('fs-state-circular'))
+                return;
+            var str = "<div id='fs-state-circular' class='fs-circular' style='top:300px;border-radius:100px;opacity:0.3;border:2px solid purple;'></div>";
+            var domBody = document.getElementsByTagName('body')[0];
             domBody.insertAdjacentHTML('beforeend', str);
-            let triggerCircular = document.getElementById('fs-state-circular');
-            triggerCircular.onclick = function () {
-                this.classList.add('fs-circular-out');
+            var triggerCircular_1 = document.getElementById('fs-state-circular');
+            triggerCircular_1.onclick = function () {
+                triggerCircular_1.classList.add('fs-circular-out');
                 FlaskStateInstance(language).setFlaskStateData();
             };
-
-            let mousePosition;
-
-            function circularMove(moveEvent) {
-                triggerCircular.style.top = moveEvent.clientY - mousePosition + 300 + 'px';
-            }
-
-            triggerCircular.onmousedown = function (downEvent) {
-                mousePosition = mousePosition || downEvent.clientY;
+            triggerCircular_1.onmousedown = function (downEvent) {
+                MOUSE_POSITION = MOUSE_POSITION || downEvent.clientY;
                 document.addEventListener("mousemove", circularMove);
             };
-
             document.onmouseup = function () {
                 document.removeEventListener("mousemove", circularMove);
-                const circularHeight = parseInt(triggerCircular.style.top);
-                triggerCircular.classList.add("fs-circular-animation");
-                triggerCircular.style.top = Math.min(Math.max(circularHeight, 50), window.screen.height - 200) + 'px';
-                setTimeout(() => triggerCircular.classList.remove("fs-circular-animation"), 500);
+                var circularHeight = parseInt(triggerCircular_1.style.top);
+                triggerCircular_1.classList.add("fs-circular-animation");
+                triggerCircular_1.style.top = Math.min(Math.max(circularHeight, 50), window.screen.height - 200) + 'px';
+                setTimeout(function () { return triggerCircular_1.classList.remove("fs-circular-animation"); }, 500);
             };
         }
     }
-
+    function DOMParseChildren(children) {
+        return children.map(function (child) {
+            if (typeof child === 'string') {
+                return document.createTextNode(child);
+            }
+            return child;
+        });
+    }
+    function DOMcreateElement(element, properties) {
+        var children = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            children[_i - 2] = arguments[_i];
+        }
+        var isSVG = Object.prototype.hasOwnProperty.call(XML_ELEMENT, element);
+        var el;
+        if (isSVG) {
+            el = document.createElementNS(XML_ELEMENT[element], element);
+            for (var propName in properties) {
+                el.setAttributeNS(XML_PROPS[propName], propName === "className" ? "class" : propName, properties[propName]);
+            }
+        }
+        else {
+            el = document.createElement(element);
+            for (var propName in properties) {
+                el[propName] = properties[propName];
+            }
+        }
+        DOMParseChildren(children).forEach(function (child) {
+            el.appendChild(child);
+        });
+        return el;
+    }
     exports.init = Init;
+
 })();

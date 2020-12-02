@@ -1,14 +1,11 @@
 import os
 
 if __name__ == "__main__":
-    if os.path.isfile("./packages/main.js"):
-        os.remove("./packages/main.js")
-
     with open("./examples/static/LICENSE", mode="r") as l:
         license_text = l.read()
     l.close()
 
-    with open("./examples/static/initial.tsx", mode="r", encoding="utf-8") as i:
+    with open("./packages/initial.js", mode="r", encoding="utf-8") as i:
         content_text = i.readlines()
     i.close()
     content = ""
@@ -48,3 +45,9 @@ if __name__ == "__main__":
         f.seek(0)
         f.write(new_text)
     f.close()
+
+    if os.path.isfile("./packages/main.js"):
+        os.remove("./packages/main.js")
+
+    if os.path.isfile("./packages/initial.js"):
+        os.remove("./packages/initial.js")
