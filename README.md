@@ -21,11 +21,6 @@ Flask-State is an active project, well-tested and complete update roadmap.
 
 ![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.5/examples/static/flask_state.png)
 
-
-## Documentation
-To check out [live example](https://flask-state.herokuapp.com/), and visit [tutorials doc](https://github.com/yoobool/flask-state/wiki/Tutorials).
-
-
 ## Installation
 Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):
 ```
@@ -43,6 +38,9 @@ npm install flask-state --save
 
 ## Usage
 
+After the Flask-State is installed, you also need to import JavaScript file and CSS file to bind a convention ID value for your element. In some configurations, you can also choose to modify them.
+
+
 ### Firstly：Bind database address.
 ```python
 from flask_state import DEFAULT_BIND_SQLITE
@@ -58,7 +56,6 @@ flask_state.init_app(app)
 ### Thirdly：Import the view file.
 ```javascript
 // npm
-// Need to introduce Echarts module
 import 'echarts';
 import 'flask-state/flask-state.min.css';
 import {init} from 'flask-state';
@@ -66,12 +63,21 @@ import {init} from 'flask-state';
 init({dom:document.getElementById('test')});
 ```
 
-**Learn more about advanced configurations by reading** [documentation](https://github.com/yoobool/flask-state/wiki/Configuration).
+Learn more about some configurations by reading its [documentation](https://github.com/yoobool/flask-state/wiki/Configuration).
 
 ## Contributing
-Welcome to [open an issue](https://github.com/yoobool/flask-state/issues/new)!
+[See the planning document](https://github.com/yoobool/flask-state/wiki/Tutorials#roadmap) for a roadmap and existing feature requests.
+
+* Need **help** or have a **general question**? [Post on Reddit Flask State](https://www.reddit.com/r/FlaskState/)
+* Found a **bug** or have a **feature request**? [Open an issue](https://github.com/yoobool/flask-state/issues/new).
+* Want to **contribute**? [Submit a pull request](https://github.com/yoobool/flask-state/pulls).
 
 Flask-State follows the [Contributor Covenant](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) Code of Conduct.
+
+## Alternatives
+Looking for something else? Try another monitor project:
+
+* [Flask-MonitoringDashboard](https://github.com/flask-dashboard/Flask-MonitoringDashboard)
 
 ## Community Channel
 We're on [Gitter](https://gitter.im/flaskstate/community) ! Please join us.
