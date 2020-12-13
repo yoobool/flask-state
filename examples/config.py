@@ -3,14 +3,14 @@ import sys
 
 from flask import Flask
 
-from src.flask_state import DEFAULT_BIND_SQLITE, init_app
+from flask_state import DEFAULT_BIND_SQLITE, init_app
 
 # SQLite URI compatible
-WIN = sys.platform.startswith('win')
+WIN = sys.platform.startswith("win")
 if WIN:
-    prefix = 'sqlite:///'
+    prefix = "sqlite:///"
 else:
-    prefix = 'sqlite:////'
+    prefix = "sqlite:////"
 
 
 def setting_app():
@@ -19,9 +19,9 @@ def setting_app():
     # Redis conf
     app.config["REDIS_CONF"] = {
         "REDIS_STATUS": True,
-        "REDIS_HOST": "192.168.0.2",
+        "REDIS_HOST": "127.0.0.1",
         "REDIS_PORT": 16379,
-        "REDIS_PASSWORD": "fish09",
+        "REDIS_PASSWORD": "password",
     }
     path_ = os.getcwd() + "/flask_state_host.db"
     app.config["SQLALCHEMY_BINDS"] = {DEFAULT_BIND_SQLITE: prefix + path_}
