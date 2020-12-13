@@ -8,4 +8,9 @@ setup(
     name=about["__title__"],
     version=about["__version__"],
     install_requires=["Flask>=1.0", "Flask-SQLAlchemy>=1.0", "psutil>=5.7.0"],
+    extras_require={
+        "test": ["pytest", "redis"],
+        "dev": ["black", "codespell", "flake8", "isort", "pip-tools", "pre-commit", "setuptools", "twine", "wheel"],
+        "example": ["redis"],
+    },
 )
