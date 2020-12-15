@@ -10,7 +10,7 @@
 
 Flask-State is a lightweight chart plugin for displaying machine state data in your web application.
 
-* **Monitored Data:** CPU, memory, disk usage, LoadAVG and boot time.
+* **Monitored Metric:** CPU, memory, disk usage, LoadAVG and boot time.
 * **Extensible:** Offers rich customization options, including redis monitoring, user authentication,
 custom logging, i18n and etc.
 * **Stable:** Solves multiprocessing concurrency problems (if you use [gunicorn](https://gunicorn.org/))
@@ -54,7 +54,7 @@ from flask_state import DEFAULT_BIND_SQLITE
 app.config['SQLALCHEMY_BINDS'] = {DEFAULT_BIND_SQLITE: 'sqlite:///path'}
 ```
 
-### 2. Call `init_app` to configure Flask-State
+### 2. Configure Flask-State
 
 ```python
 import flask_state
@@ -85,7 +85,7 @@ Code of Conduct.
 ## Community Channel
 
 We're on [Gitter](https://gitter.im/flaskstate/community)! Join the conversation
-fore more questions and inquiries about this project.
+for more questions and inquiries about this project.
 
 ## License
 
