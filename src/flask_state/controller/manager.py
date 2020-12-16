@@ -41,7 +41,7 @@ def init_app(app, interval=180, log_instance=None):
     model_init_app(app)
 
     step = int(interval / 60) if int(interval) > 60 else 1
-    minutes_array = [i for i in range(0, 60, step)]
+    minutes_array = list(range(0, 60, step))
     minutes = ""
     for i in minutes_array:
         minutes += str(i) + ","
