@@ -55,7 +55,7 @@ def format_cron(scope_tuple) -> list:
             )
         )
     get_separation = scope.split(",")
-    get_range = list()
+    get_range = []
     for separation in get_separation:
         range_tmp = separation.split("-")
         range_tmp_len = len(range_tmp)

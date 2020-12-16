@@ -79,7 +79,7 @@ class FlaskStateError(Exception):
         self.status_code = int(kwargs.get("status_code"))
         self.msg = str(kwargs.get("msg"))
         self.reply_code = kwargs.get("code", self.status_code)
-        self.data = list()
+        self.data = []
 
     def get_msg(self):
         return self.msg
