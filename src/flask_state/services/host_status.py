@@ -144,7 +144,7 @@ def control_result_counts(result) -> list:
     """
     result_length = len(result)
     if result_length > Config.MAX_RETURN_RECORDS:
-        refine_result = list()
+        refine_result = []
         interval = round(result_length / Config.MAX_RETURN_RECORDS, 2)
         index = 0
         while index <= result_length - 1 and len(refine_result) < Config.MAX_RETURN_RECORDS:

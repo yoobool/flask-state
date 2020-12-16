@@ -100,9 +100,9 @@ def test_format_address():
     db_url_header = DBAddressConstants.DB_URL_HEADER
     test_type_list = {
         "str": "test",
-        "tuple": tuple(),
-        "dict": dict(),
-        "list": list(),
+        "tuple": (),
+        "dict": {},
+        "list": [],
         "int": 60,
         "float": 60.5,
         "bool": True,
