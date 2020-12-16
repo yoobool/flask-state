@@ -23,7 +23,7 @@ def auth_user(f):
             return f(*args, **kwargs)
 
         cr = current_app.login_manager
-        current_user = LocalProxy(lambda: get_user())
+        current_user = LocalProxy(get_user)
 
         def get_user():
             if _request_ctx_stack.top is not None and not hasattr(_request_ctx_stack.top, "user"):
