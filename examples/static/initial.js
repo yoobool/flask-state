@@ -352,7 +352,8 @@ class MachineStatus {
                 data: [lineName],
                 textStyle: {
                     fontSize: 14
-                }
+                },
+                show: titleText === 'Load Avg',
             },
             grid: {
                 left: '3%',
