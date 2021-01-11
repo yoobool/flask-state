@@ -1,16 +1,16 @@
 [English](https://github.com/yoobool/flask-state/blog/master/master/README.md) | 简体中文
 
-![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.5/src/flask_state/static/flask_state.png)
+![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.6/src/flask_state/static/flask_state.png)
 
-[![](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
-[![](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
-[![](https://img.shields.io/npm/v/flask-state)](https://www.npmjs.com/package/flask-state)
-[![](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
-[![](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)](https://pypi.org/project/Flask-State/)
+[![Contributor Badge](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
+[![Gitter Badge](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
+[![NPM Badge](https://img.shields.io/npm/v/flask-state)](https://www.npmjs.com/package/flask-state)
+[![License Badge](https://img.shields.io/badge/license-BSD-green)](https://github.com/yoobool/flask-state/blob/master/LICENSE)
+[![Python Badge](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)](https://pypi.org/project/Flask-State/)
 
 # Flask-State
 
-Flask-State是一款轻便的、图表化插件。
+Flask-State是一款在您浏览器上使用的轻便、图表化插件。
 
 * **监控状态**：CPU，内存，磁盘，LoadAvg，启动时长。
 * **可扩展**：除记录本机状态外，还包括丰富的扩展功能选择。其中有Redis监控、用户验证、自定义logging和i18n等。
@@ -20,113 +20,66 @@ Flask-State是一个活跃的项目，经过了充分的测试以及有一系列
 
 ###
 
-![](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.5/examples/static/flask_state.png)
+![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.6/examples/static/flask_state.png)
 
+## Documentation
+
+在这里 [live demo](https://flask-state.herokuapp.com/) 可以了解到使用样例, 或者你可以移动到
+[tutorial](https://github.com/yoobool/flask-state/wiki/Tutorials) 获取更多信息.
 
 ## Installation
-安装和更新通过使用 [pip](https://pip.pypa.io/en/stable/quickstart/)
-```
-$ pip install Flask-State
-```
 
-载入显示组件方式可通过标签引入或npm安装
-```html
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.5/packages/umd/flask-state.min.js"></script>
-```
-```
-npm install flask-state --save
-```
-
+从这里 [PyPI](https://pip.pypa.io/en/stable/quickstart/) 下载:
 
 ## Usage
 
 Flask-State插件安装后，还需要引入JavaScript文件和CSS文件，然后初始化组件运行方式。在某些配置上，你也可以选择修改。
 
-#### 第一步：定义一个Flask app
-```python
-from flask import Flask
-app = Flask(__name__)
-```
+#### 1. 绑定数据库地址
 
-#### 第二步：绑定数据库地址
 ```python
 from flask_state import DEFAULT_BIND_SQLITE
 app.config['SQLALCHEMY_BINDS'] = {DEFAULT_BIND_SQLITE: 'sqlite:///path'}
 ```
 
-#### 第三步：调用Flask-State插件的init_app方法初始化相关配置，它将为你添加路由用于访问数据库获取本机状态
+#### 2. 配置 Flask-State
+
 ```python
 import flask_state
 flask_state.init_app(app)
 ```
 
-#### 第四步：选择合适的导入方式导入视图文件
-```html
-<!--cdn方式导入-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.5/packages/umd/flask-state.min.css">
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.5/packages/umd/flask-state.min.js"></script>
-<script type="text/javascript">
-    // 创建一个id为'test'的dom节点，init()绑定节点后点击即可打开监听窗口
-    flaskState.init({dom:document.getElementById('test')});
-</script>
-```
+#### 3. 引入相关模块用于展示
+
 ```javascript
-// npm方式导入
-import 'flask-state/flask-state.css';
+// requires echarts module
+import 'echarts';
+import 'flask-state/flask-state.min.css';
 import {init} from 'flask-state';
-// 创建一个id为'test'的dom节点，init()绑定节点后点击即可打开监听窗口
+// Create a DOM node with ID 'test'. After init() binds the node,
+// click to open the listening window
 init({dom:document.getElementById('test')});
 ```
 
-#### 额外：你也可以自定义某些配置文件（可选择）
-如果你还需要监控REDIS状态，你可以在Flask app上配置你的redis地址参数
-```python
-app.config['REDIS_CONF'] = {'REDIS_STATE': True, 'REDIS_HOST': '192.168.1.3', 'REDIS_PORT':16380, 'REDIS_PASSWORD': 'psw'}
-```
+**了解更多可配置选项**
+[教程](https://github.com/yoobool/flask-state/wiki/Configuration).
 
-修改保存监控记录的时间间隔
-```python
-# 最少间隔为60秒, 当不设置时间时默认间隔为60秒
-import flask_state
-SECS = 60
-flask_state.init_app(app, SECS)
-```
+## Contributing
+[RoadMap](https://github.com/yoobool/flask-state/wiki/Tutorials#roadmap) 中有我们下一步的开发计划.
 
-自定义logger对象
-```python
-import flask_state
-import logging
-custom_logger = logging.getLogger(__name__)
-flask_state.init_app(app, interval=60, log_instance=custom_logger)
-```
+* [需要其它帮助?](https://www.reddit.com/r/FlaskState/)
+* [提出新的问题.](https://github.com/yoobool/flask-state/issues/new)
+* [查看其他PR](https://github.com/yoobool/flask-state/pulls).
 
-自定义绑定触发窗口的对象
-```javascript
-/* 初始化插件不传入对象时，插件会自动创建一个右侧悬浮球 */
-/* 注意：所有页面共享一个插件实例，多次调用init()方法只会为新的对象绑定触发插件事件 */
-flaskState.init();
-```
+Flask-State遵循[《贡献者公约》](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) 行为准则。
 
-选择插件显示的语言
-```html
-<!--注意：通过标签导入语言文件必须在导入插件之后-->
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.5/packages/umd/flask-state.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.5/packages/umd/zh.js"></script>
-<script type="text/javascript">
-    flaskState.init({lang:flaskState.zh});
-</script>
-```
-```javascript
-import {init} from 'flask-state';
-import {zh} from 'flask-state/i18n.js';
-init({lang:zh});
-```
+## Alternatives
+其他类似的监控开源项目:
 
+* [Flask-MonitoringDashboard](https://github.com/flask-dashboard/Flask-MonitoringDashboard)
 
 ## Contributing
 我们非常欢迎[提出问题](https://github.com/yoobool/flask-state/issues/new)!
-
-Flask-State遵循[《贡献者公约》](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) 行为准则。
 
 ## Community Channel
 我们在 [Gitter](https://gitter.im/flaskstate/community) 等你! 请加入我们。
