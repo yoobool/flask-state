@@ -380,7 +380,10 @@ class MachineStatus {
                 }
             },
             yAxis: {
-                type: 'value'
+                type: 'value',
+                axisLabel: {
+                    formatter: (value) => value + (titleText === 'Load Avg' ? '' : '%'),
+                },
             },
             series: [
                 {
