@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import psutil
 
@@ -38,7 +39,7 @@ def test_model(app):
     # query data
     with app.app_context():
         result = host_status.retrieve_host_status(1)[0]
-        assert isinstance(result, tuple)
+        assert result is not None
 
     # clear data
     with app.app_context():
