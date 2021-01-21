@@ -1,4 +1,4 @@
-[English](https://github.com/yoobool/flask-state/blog/master/master/README.md) | 简体中文
+[English](https://github.com/yoobool/flask-state/blob/master/README.md) | 简体中文
 
 ![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.6/src/flask_state/static/flask_state.png)
 

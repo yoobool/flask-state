@@ -7,6 +7,7 @@
 [![Python Badge](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue)](https://pypi.org/project/Flask-State/)
 
 # Flask-State
+English | [简体中文](https://github.com/yoobool/flask-state/blob/master/README.zh-CN.md)<br>
 
 Flask-State is a lightweight chart plugin for displaying machine state data in your web application.
 
