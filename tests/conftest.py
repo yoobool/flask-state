@@ -9,7 +9,7 @@ def app():
     app = flask.Flask("test_app")
     app.testing = True
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
-    app.config["SQLALCHEMY_BINDS"] = {DEFAULT_BIND_SQLITE: "sqlite:///test.db"}
+    app.config["SQLALCHEMY_BINDS"] = {DEFAULT_BIND_SQLITE: "sqlite:///:memory:"}
     app.config["REDIS_CONF"] = {
         "REDIS_STATE": True,
         "REDIS_HOST": "192.168.0.2",
