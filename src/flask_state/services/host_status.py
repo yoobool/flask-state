@@ -32,23 +32,12 @@ def record_flask_state_host(interval, target_time):
         return
 
     try:
-        cpu = psutil.cpu_percent(interval=Config.CPU_PERCENT_INTERVAL)
-        memory = psutil.virtual_memory().percent
-        if platform.system() == "Windows":
-            load_avg = Config.DEFAULT_WINDOWS_LOAD_AVG
-        else:
-            load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
-        disk_usage = psutil.disk_usage("/").percent
-        boot_ts = psutil.boot_time()
-        result_conf = {
-            "ts": get_current_ms(),
-            "cpu": cpu,
-            "memory": memory,
-            "load_avg": load_avg,
-            "disk_usage": disk_usage,
-            "boot_seconds": int(get_current_s() - boot_ts),
-        }
-        result_conf.update(query_redis_info())
+        result_conf = {}
+        host_status = query_host_info()
+        result_conf.update(host_status)
+        redis_status = query_redis_info()
+        result_conf.update(redis_status)
+
         create_host_status(result_conf)
         now_time = get_current_s()
         new_day_utc = (
@@ -61,13 +50,38 @@ def record_flask_state_host(interval, target_time):
         logger.exception(e)
 
 
+def query_host_info():
+    """
+    Collect host status
+    :return host status dict
+    :rtype: dict
+    """
+    cpu = psutil.cpu_percent(interval=Config.CPU_PERCENT_INTERVAL)
+    memory = psutil.virtual_memory().percent
+    if platform.system() == "Windows":
+        load_avg = Config.DEFAULT_WINDOWS_LOAD_AVG
+    else:
+        load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
+    disk_usage = psutil.disk_usage("/").percent
+    boot_ts = psutil.boot_time()
+    result = {
+        "ts": get_current_ms(),
+        "cpu": cpu,
+        "memory": memory,
+        "load_avg": load_avg,
+        "disk_usage": disk_usage,
+        "boot_seconds": int(get_current_s() - boot_ts),
+    }
+    return result
+
+
 def query_redis_info():
     """
     Collect redis status
     :return: redis status dict
     :rtype: dict
     """
-    result = dict()
+    result = {}
     redis_handler = redis_conn.get_redis()
     if redis_handler:
         try:
@@ -91,7 +105,7 @@ def query_redis_info():
                 yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
                 if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
                     be_divided_num = (
-                        keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
+                            keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
                     )
                     delta_hits_ratio = (
                         float(
