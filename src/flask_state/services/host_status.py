@@ -144,8 +144,13 @@ def query_flask_state_host(days) -> FlaskStateResponse:
 
     if days not in TimeConstants.DAYS_SCOPE:
         raise FlaskStateError(**MsgCode.OVERSTEP_DAYS_SCOPE.value, status_code=HTTPStatus.BAD_REQUEST)
-    current_status = retrieve_latest_host_status()
-    current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
+    try:
+        current_status = query_host_info()
+        current_status.update(query_redis_info())
+        current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
+    except:
+        current_status = retrieve_latest_host_status()
+        current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
     result = retrieve_host_status(days)
     result = control_result_counts(result)
     arr = []
