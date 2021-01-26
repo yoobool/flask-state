@@ -10,6 +10,6 @@ setup(
     extras_require={
         "test": ["pytest", "redis"],
         "dev": ["black", "codespell", "flake8", "isort", "pip-tools", "pre-commit", "setuptools", "twine", "wheel"],
-        "example": ["redis"],
+        "full": ["redis"],
     },
 )
