@@ -8,13 +8,10 @@ def test_constant():
     """
     constant = config.Config
     operating_system = constants.OperatingSystem
-    assert constant.REDIS_CONNECT_TIMEOUT == 1
-    assert constant.REDIS_TIMEOUT == 5
     assert constant.CPU_PERCENT_INTERVAL == 0
     assert constant.DEFAULT_BIND_SQLITE == "flask_state_sqlite"
     assert operating_system.WINDOWS_SYSTEM == "Windows"
     assert operating_system.UNIX_SYSTEM == "Unix"
-    assert constant.MAX_RETURN_RECORDS == 480
 
 
 def test_days_scope():
