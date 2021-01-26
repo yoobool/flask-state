@@ -1,5 +1,6 @@
 from sqlalchemy import func
 from sqlalchemy.sql import text
+from sqlalchemy.dialects.mysql import INTEGER
 
 from ..conf.config import Config
 from . import db
@@ -20,6 +21,8 @@ class FlaskStateHost(db.Model):
     load_avg = db.Column(db.String(32), server_default="")
     disk_usage = db.Column(db.Float, server_default=text("0"))
     boot_seconds = db.Column(db.Integer, server_default=text("0"))
+    net_sent = db.Column(INTEGER(unsigned=True), server_default=text("0"))
+    net_recv = db.Column(INTEGER(unsigned=True), server_default=text("0"))
     ts = db.Column(db.Integer, server_default=text("0"))
 
     # redis

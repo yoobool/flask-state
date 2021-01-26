@@ -58,6 +58,8 @@ def query_host_info():
     """
     cpu = psutil.cpu_percent(interval=Config.CPU_PERCENT_INTERVAL)
     memory = psutil.virtual_memory().percent
+    net_sent = psutil.net_io_counters().bytes_sent
+    net_recv = psutil.net_io_counters().bytes_recv
     if platform.system() == "Windows":
         load_avg = Config.DEFAULT_WINDOWS_LOAD_AVG
     else:
@@ -71,6 +73,8 @@ def query_host_info():
         "load_avg": load_avg,
         "disk_usage": disk_usage,
         "boot_seconds": int(get_current_s() - boot_ts),
+        "net_sent": net_sent,
+        "net_recv": net_recv,
     }
     return result
 
