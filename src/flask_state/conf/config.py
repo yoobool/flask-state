@@ -1,7 +1,7 @@
 class Config:
     """ Config """
 
-    REDIS_CONNECT_TIMEOUT = 1  # Redis socket connection timeout
+    REDIS_CONNECT_TIMEOUT = 3  # Redis socket connection timeout
     REDIS_TIMEOUT = 5  # Redis socket timeout
     CPU_PERCENT_INTERVAL = 0  # Time interval to calculate CPU utilization using psutil
     DEFAULT_BIND_SQLITE = "flask_state_sqlite"  # Default binding database URL key
