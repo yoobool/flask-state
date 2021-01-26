@@ -165,16 +165,3 @@ def control_result_counts(result) -> list:
             index += interval
         result = refine_result
     return result
-
-
-def row2dict(field):
-    """
-    Model class to dictionary class
-    :param field: database query results
-    :return: database query results dictionary
-    """
-    d = {}
-    for column in field.__table__.columns:
-        if column.name not in ("create_time", "update_time"):
-            d[column.name] = getattr(field, column.name)
-    return d
