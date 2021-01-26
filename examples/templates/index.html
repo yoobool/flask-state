@@ -5,11 +5,16 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>index</title>
-<link href="../static/dist/css/flask-state.css" rel="stylesheet"></head>
+    <script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.6/packages/umd/flask-state.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.6/packages/flask-state.min.css" rel="stylesheet">
+</head>
 <body style="height: 100%;background-color: purple">
 <script src="https://cdn.staticfile.org/echarts/4.2.1/echarts.min.js"></script>
-<div id="test_id" style="margin: 0 auto;background-color: #fff;border-radius: 100px;width: 100px;height: 100px;cursor: pointer;opacity: 0.5;border: 1px solid #777;text-align: center;line-height: 100px">
+<div id="test_id"
+     style="margin: 0 auto;background-color: #fff;border-radius: 100px;width: 100px;height: 100px;cursor: pointer;opacity: 0.5;border: 1px solid #777;text-align: center;line-height: 100px">
     click me
 </div>
-<script src="../static/dist/flask-state.js"></script></body>
+<script type="text/javascript">
+    flaskState.init({dom: document.getElementById("test_id")});
+</script>
 </html>
