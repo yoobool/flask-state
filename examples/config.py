@@ -3,7 +3,7 @@ import sys
 
 from flask import Flask
 
-from src.flask_state import DEFAULT_BIND_SQLITE, init_app
+from flask_state import DEFAULT_BIND_SQLITE, init_app
 
 # SQLite URI compatible
 WIN = sys.platform.startswith("win")
