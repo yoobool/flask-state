@@ -40,6 +40,7 @@ section of your HTML document:
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.6/packages/umd/flask-state.min.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.6/packages/flask-state.min.css" rel="stylesheet">
 ```
 
 ```bash
@@ -69,7 +70,7 @@ flask_state.init_app(app)
 import 'echarts';
 import 'flask-state/flask-state.min.css';
 import {init} from 'flask-state';
-// Create a DOM node with ID 'test'. After init() binds the node, 
+// Create a DOM node with ID 'test'. After init() binds the node,
 // click to open the listening window
 init({dom:document.getElementById('test')});
 ```
