@@ -1,6 +1,7 @@
 from ..exceptions.log_msg import InfoMsg
 from ..models import db
 from ..models.flask_state_host import FlaskStateHost
+from ..models.flask_state_io import FlaskStateIO
 from ..utils.date import get_current_ms, get_query_ms
 from ..utils.logger import logger
 
@@ -43,13 +44,25 @@ def retrieve_latest_host_status() -> dict:
 def create_host_status(kwargs):
     """
     Create a new record
-
     """
     try:
         flask_state_host = FlaskStateHost(**kwargs)
         db.session.add(flask_state_host)
         db.session.commit()
         logger.info(InfoMsg.INSERT_SUCCESS.get_msg())
+    except Exception as e:
+        db.session.rollback()
+        raise e
+
+
+def create_host_io(kwargs):
+    """
+    Create a new io record
+    """
+    try:
+        flask_state_io = FlaskStateIO(**kwargs)
+        db.session.add(flask_state_io)
+        db.session.commit()
     except Exception as e:
         db.session.rollback()
         raise e

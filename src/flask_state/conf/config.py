@@ -10,3 +10,4 @@ class Config:
     DEFAULT_WINDOWS_LOAD_AVG = "0, 0, 0"  # Windows system cannot calculate load AVG
     MAX_RETURN_RECORDS = 480  # Return the maximum number of records
     ABANDON_THRESHOLD = 60  # Maximum timeout time of scheduled tasks
+    ABANDON_IO_THRESHOLD = 10  # Maximum timeout time of scheduled tasks

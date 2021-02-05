@@ -58,8 +58,6 @@ def query_host_info():
     """
     cpu = psutil.cpu_percent(interval=Config.CPU_PERCENT_INTERVAL)
     memory = psutil.virtual_memory().percent
-    net_sent = psutil.net_io_counters().bytes_sent
-    net_recv = psutil.net_io_counters().bytes_recv
     if platform.system() == "Windows":
         load_avg = Config.DEFAULT_WINDOWS_LOAD_AVG
     else:
@@ -73,8 +71,6 @@ def query_host_info():
         "load_avg": load_avg,
         "disk_usage": disk_usage,
         "boot_seconds": int(get_current_s() - boot_ts),
-        "net_sent": net_sent,
-        "net_recv": net_recv,
     }
     return result
 
@@ -109,7 +105,7 @@ def query_redis_info():
                 yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
                 if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
                     be_divided_num = (
-                            keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
+                        keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
                     )
                     delta_hits_ratio = (
                         float(
@@ -132,6 +128,52 @@ def query_redis_info():
             )
         except Exception as t:
             logger.exception(t)
+    return result
+
+
+def record_flask_state_io_host(interval, target_time):
+    """
+    Record local status and monitor redis status
+
+    """
+    if get_current_s() - target_time > Config.ABANDON_IO_THRESHOLD:
+        format_date = get_formatted_timestamp(target_time)
+        logger.error(ErrorMsg.RUN_TIME_ERROR.get_msg(". Target time is {}".format(format_date)))
+        return
+
+    try:
+        result_conf = {}
+        host_io_status = query_host_io_info()
+        result_conf.update(host_io_status)
+
+        create_host_status(result_conf)
+        now_time = get_current_s()
+        new_day_utc = (
+            datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc).timestamp()
+        )
+        if now_time <= new_day_utc + interval:
+            delete_thirty_days_status()
+
+    except Exception as e:
+        logger.exception(e)
+
+
+def query_host_io_info():
+    """
+    Collect host io status
+    :return host status dict
+    :rtype: dict
+    """
+    net_sent = psutil.net_io_counters().bytes_sent
+    net_recv = psutil.net_io_counters().bytes_recv
+    disk_read = psutil.disk_io_counters().read_bytes
+    disk_write = psutil.disk_io_counters().write_bytes
+    result = {
+        "net_sent": net_sent,
+        "net_recv": net_recv,
+        "disk_read": disk_read,
+        "disk_write": disk_write,
+    }
     return result
 
 
