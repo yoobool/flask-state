@@ -12,7 +12,7 @@ from ..exceptions.error_code import MsgCode
 from ..exceptions.log_msg import ErrorMsg, InfoMsg
 from ..models import model_init_app
 from ..services import redis_conn
-from ..services.host_status import query_flask_state_host, record_flask_state_host
+from ..services.host_status import query_flask_state_host, record_flask_state_host, record_flask_state_io_host
 from ..utils.auth import auth_method, auth_user
 from ..utils.constants import HttpMethod, HTTPStatus
 from ..utils.file_lock import Lock
@@ -47,15 +47,19 @@ def init_app(app, interval=60, log_instance=None):
         )
 
     # Timing recorder
-    t = threading.Thread(
+    t_host = threading.Thread(
         target=record_timer,
         args=(
             app,
             interval,
         ),
     )
-    t.setDaemon(True)
-    t.start()
+    t_host.setDaemon(True)
+    t_host.start()
+
+    t_io = threading.Thread(target=record_io_timer, args=(app, 10), )
+    t_io.setDaemon(True)
+    t_io.start()
 
 
 def init_redis(app):
@@ -79,7 +83,7 @@ def init_db(app):
 
 
 def record_timer(app, interval):
-    app.lock_flask_state = Lock.get_file_lock()
+    app.lock_flask_state = Lock.get_file_lock("host")
     with app.app_context():
         try:
             current_app.lock_flask_state.acquire()
@@ -94,6 +98,29 @@ def record_timer(app, interval):
                 target_time += interval
                 now_time = time.time()
                 s.enter(target_time - now_time, 1, record_flask_state_host, (interval, target_time))
+                s.run()
+        except BlockingIOError:
+            pass
+        except Exception as e:
+            current_app.lock_flask_state.release()
+            raise e
+
+
+def record_io_timer(app, interval):
+    app.lock_flask_state = Lock.get_file_lock("io")
+    with app.app_context():
+        try:
+            current_app.lock_flask_state.acquire()
+
+            s = sched.scheduler(time.time, time.sleep)
+            in_time = time.time()
+            target_time = int(int((time.time()) / 60 + 1) * 60)
+            time.sleep(60 - in_time % 60)
+            record_flask_state_io_host(interval, target_time)
+            while True:
+                target_time += interval
+                now_time = time.time()
+                s.enter(target_time - now_time, 1, record_flask_state_io_host, (interval, target_time))
                 s.run()
         except BlockingIOError:
             pass

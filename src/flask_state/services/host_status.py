@@ -11,7 +11,7 @@ from ..dao.host_status import (
     retrieve_host_status,
     retrieve_host_status_yesterday,
     retrieve_latest_host_status,
-)
+    create_host_io, delete_thirty_days_io_status, retrieve_latest_io_status)
 from ..exceptions import FlaskStateError, FlaskStateResponse, SuccessResponse
 from ..exceptions.error_code import MsgCode
 from ..exceptions.log_msg import ErrorMsg
@@ -19,6 +19,7 @@ from ..utils.constants import HTTPStatus, NumericConstants, TimeConstants
 from ..utils.date import get_current_ms, get_current_s, get_formatted_timestamp
 from ..utils.logger import logger
 from . import redis_conn
+import math
 
 
 def record_flask_state_host(interval, target_time):
@@ -105,7 +106,7 @@ def query_redis_info():
                 yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
                 if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
                     be_divided_num = (
-                        keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
+                            keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
                     )
                     delta_hits_ratio = (
                         float(
@@ -146,13 +147,13 @@ def record_flask_state_io_host(interval, target_time):
         host_io_status = query_host_io_info()
         result_conf.update(host_io_status)
 
-        create_host_status(result_conf)
+        create_host_io(result_conf)
         now_time = get_current_s()
         new_day_utc = (
             datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc).timestamp()
         )
         if now_time <= new_day_utc + interval:
-            delete_thirty_days_status()
+            delete_thirty_days_io_status()
 
     except Exception as e:
         logger.exception(e)
@@ -173,6 +174,7 @@ def query_host_io_info():
         "net_recv": net_recv,
         "disk_read": disk_read,
         "disk_write": disk_write,
+        "ts": get_current_ms(),
     }
     return result
 
@@ -191,8 +193,21 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     if days not in TimeConstants.DAYS_SCOPE:
         raise FlaskStateError(**MsgCode.OVERSTEP_DAYS_SCOPE.value, status_code=HTTPStatus.BAD_REQUEST)
     try:
+        io_info = {}
+        now_ts = get_current_ms()
+        now_io = query_host_io_info()
+        latest_io = retrieve_latest_io_status()
+        interval = math.ceil((now_ts - latest_io.get("ts")) / 1000)
+        if latest_io:
+            io_info.update({
+                "net_sent": (now_io.get("net_sent") - latest_io.get("net_sent")) / interval,
+                "net_recv": (now_io.get("net_recv") - latest_io.get("net_recv")) / interval,
+                "disk_read": (now_io.get("disk_read") - latest_io.get("disk_read")) / interval,
+                "disk_write": (now_io.get("disk_write") - latest_io.get("disk_write")) / interval,
+            })
         current_status = query_host_info()
         current_status.update(query_redis_info())
+        current_status.update(io_info)
         current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
     except:
         current_status = retrieve_latest_host_status()

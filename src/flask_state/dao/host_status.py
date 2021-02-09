@@ -40,6 +40,14 @@ def retrieve_latest_host_status() -> dict:
     result = result._asdict() if result else {}
     return result
 
+def retrieve_latest_io_status() -> dict:
+    """
+    Query the latest io status
+
+    """
+    result = FlaskStateIO.query.with_entities(FlaskStateIO.__table__).order_by(FlaskStateIO.ts.desc()).first()
+    result = result._asdict() if result else {}
+    return result
 
 def create_host_status(kwargs):
     """
@@ -83,6 +91,20 @@ def delete_thirty_days_status():
         db.session.rollback()
         raise e
 
+def delete_thirty_days_io_status():
+    """
+    Delete thirty days io records ago
+
+    """
+    try:
+        target_time = get_current_ms() - get_query_ms(THIRTY_DAT)
+        result = FlaskStateIO.query.filter(FlaskStateIO.ts < target_time).delete(synchronize_session=False)
+        if result:
+            db.session.commit()
+            logger.info(InfoMsg.DELETE_SUCCESS.get_msg())
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
 def retrieve_host_status_yesterday() -> FlaskStateHost:
     """
