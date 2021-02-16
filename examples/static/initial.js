@@ -45,7 +45,7 @@ class MachineStatus {
     initFlaskStateContainer() {
         let _chart = this.mobile ? `<hr id="console-info-line" class="console-info-line-style"><ul id="fs-info-tab" class="fs-ul-tabs"><li class="active"><a data-toggle="tab"> <strong>Memory</strong></a></li> <li><a data-toggle="tab"><strong>CPU</strong></a></li><li><a data-toggle="tab"><strong>Disk Usage</strong></a></li><li><a data-toggle="tab"><strong>Load Avg</strong></a></li></ul><div id="fs-info-tab-memory" class="fs-mChart-box fs-show"><div id="fs-info-memory-chart" class="fs-chart-style"></div></div><div id="fs-info-tab-cpu" class="fs-mChart-box"><div id="fs-info-cpu-chart" class="fs-chart-style"></div></div><div id="fs-info-tab-disk-usage" class="fs-mChart-box"><div id="fs-info-diskusage-chart" class="fs-chart-style"></div></div><div id="fs-info-tab-loadavg" class="fs-mChart-box"><div id="fs-info-loadavg-chart" class="fs-chart-style"></div></div>`
             : `<div class='fs-chart-content'><div class='fs-charts-width fs-charts-box fs-border'><div id='fs-info-memory-chart' class='fs-chart-style'></div></div><div class='fs-charts-width fs-charts-box'><div id='fs-info-cpu-chart' class='fs-chart-style'></div></div><div class='fs-charts-width fs-charts-box fs-border'><div id='fs-info-diskusage-chart' class='fs-chart-style'></div></div><div class='fs-charts-width fs-charts-box'><div id='fs-info-loadavg-chart' class='fs-chart-style'></div></div></div>`;
-        let _content = `<div class="flask-state-elem fs-background" id="fs-background"><div class="fs-container-width fs-container" id="fs-info-container"><div class="fs-select-container"><svg class="fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" width="29" height="17"><path d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z" fill="#161e2e"></path></svg><select id="fs-select-days" class="fs-select-days"><option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><p id="fs-days" class="fs-days"> days</p></div><button type="button" class="fs-close" id="fs-info-close"><svg viewBox="0 0 1024 1024" version="1.1" width="24" height="24"><path d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z" fill="#161e2e"></path></svg></button><h4 id="fs-host-status-title" class="fs-h4-style">Host Status</h4><div id="fs-host-status"><div><span id="fs-memory" class="b-0079cc fs-badge-intro">Memory</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-cpu" class="b-0079cc fs-badge-intro">CPU</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-disk-usage" class="b-0079cc fs-badge-intro">Disk Usage</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-load-avg" class="b-007dc8 fs-badge-intro">Load Avg</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-boot-seconds" class="b-0051b9 fs-badge-intro">Uptime</span><span class="fs-badge-content background-green"></span></div></div><h4 id="fs-redis-status-title" class="fs-h4-style">Redis Status</h4><div id="fs-redis-status"><div><span id="fs-used-memory" class="b-99cb3d fs-badge-intro">Used Mem</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-used-memory-rss" class="b-99cb3d fs-badge-intro">Used Mem Rss</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-mem-fragmentation-ratio" class="b-534c6d fs-badge-intro">Mem Fragmentation Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-hits-ratio" class="b-0079cc fs-badge-intro">Cache Hits Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-delta-hits-ratio" class="b-0079cc fs-badge-intro">24h Hits Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-uptime-in-seconds" class="b-0051b9 fs-badge-intro">Uptime</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-connected-clients" class="b-534c6d fs-badge-intro">Connections</span><span class="fs-badge-content background-green"></span></div></div>` + _chart + `</div></div>`;
+        let _content = `<div class="flask-state-elem fs-background" id="fs-background"><div class="fs-container-width fs-container" id="fs-info-container"><div class="fs-select-container"><svg class="fs-select-arrow" viewBox="0 0 1024 1024" version="1.1" width="29" height="17"><path d="M524.736 548.256l181.248-181.248a51.264 51.264 0 1 1 72.48 72.512l-217.472 217.472a51.264 51.264 0 0 1-72.512 0L271.04 439.52a51.264 51.264 0 1 1 72.512-72.512l181.216 181.248z" fill="#161e2e"></path></svg><select id="fs-select-days" class="fs-select-days"><option value="1">1</option><option value="3">3</option><option value="7">7</option><option value="30">30</option></select><p id="fs-days" class="fs-days"> days</p></div><button type="button" class="fs-close" id="fs-info-close"><svg viewBox="0 0 1024 1024" version="1.1" width="24" height="24"><path d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z" fill="#161e2e"></path></svg></button><h4 id="fs-host-status-title" class="fs-h4-style">Host Status</h4><div id="fs-host-status"><div><span id="fs-memory" class="b-0079cc fs-badge-intro">Memory</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-cpu" class="b-0079cc fs-badge-intro">CPU</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-disk-usage" class="b-0079cc fs-badge-intro">Disk Usage</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-load-avg" class="b-007dc8 fs-badge-intro">Load Avg</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-disk-io" class="b-007dc8 fs-badge-intro">Disk IO</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-network-io" class="b-007dc8 fs-badge-intro">Network IO</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-boot-seconds" class="b-0051b9 fs-badge-intro">Uptime</span><span class="fs-badge-content background-green"></span></div></div><h4 id="fs-redis-status-title" class="fs-h4-style">Redis Status</h4><div id="fs-redis-status"><div><span id="fs-used-memory" class="b-99cb3d fs-badge-intro">Used Mem</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-used-memory-rss" class="b-99cb3d fs-badge-intro">Used Mem Rss</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-mem-fragmentation-ratio" class="b-534c6d fs-badge-intro">Mem Fragmentation Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-hits-ratio" class="b-0079cc fs-badge-intro">Cache Hits Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-delta-hits-ratio" class="b-0079cc fs-badge-intro">24h Hits Ratio</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-uptime-in-seconds" class="b-0051b9 fs-badge-intro">Uptime</span><span class="fs-badge-content background-green"></span></div><div><span id="fs-connected-clients" class="b-534c6d fs-badge-intro">Connections</span><span class="fs-badge-content background-green"></span></div></div>` + _chart + `</div></div>`;
         document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', _content);
     }
 
@@ -123,6 +123,8 @@ class MachineStatus {
             document.getElementById('fs-memory').innerHTML = this.language.memory;
             document.getElementById('fs-disk-usage').innerHTML = this.language.disk_usage;
             document.getElementById('fs-load-avg').innerHTML = this.language.load_avg;
+            document.getElementById('fs-disk-io').innerHTML = this.language.disk_io;
+            document.getElementById('fs-network-io').innerHTML = this.language.network_io;
             document.getElementById('fs-boot-seconds').innerHTML = this.language.boot_seconds;
             document.getElementById('fs-used-memory').innerHTML = this.language.used_memory;
             document.getElementById('fs-used-memory-rss').innerHTML = this.language.used_memory_rss;
@@ -143,7 +145,7 @@ class MachineStatus {
         this.consoleDiskUsageChart = echarts.init(document.getElementById('fs-info-diskusage-chart'), null, {renderer: 'svg'});
         this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today || 'Today');
         this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today || 'Today');
-        this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_usage || 'Disk Usage', '', this.language.today || 'Today');
+        this.diskUsageOption = MachineStatus.generateChatOption(this.mobile, this.language.network_io || 'Network IO', 'networkIO', this.language.today || 'Today');
         this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes || 'min');
     }
 
@@ -173,14 +175,6 @@ class MachineStatus {
                     const fields = ["ts", "cpu", "memory", "load_avg", "disk_usage"];
                     const data = response.data;
 
-                    data.items = data.items.map(item => {
-                        let element = {};
-                        fields.forEach((field, index) => {
-                            if (field === "ts") return element[field] = SECONDS_TO_MILLISECONDS * item[index];
-                            element[field] = item[index];
-                        });
-                        return element;
-                    });
                     let currentStatistic = data.currentStatistic;
                     if (Object.keys(currentStatistic).length) {
                         let hostInfoSpan = document.getElementById('fs-host-status').getElementsByClassName('fs-badge-content');
@@ -188,8 +182,10 @@ class MachineStatus {
                         hostInfoSpan[1].innerHTML = currentStatistic.cpu + '%';
                         hostInfoSpan[2].innerHTML = currentStatistic.disk_usage + '%';
                         hostInfoSpan[3].innerHTML = currentStatistic.load_avg[0] + "，" + currentStatistic.load_avg[1] + "，" + currentStatistic.load_avg[2];
+                        hostInfoSpan[4].innerHTML = "R" + MachineStatus.getFormatBit(currentStatistic.disk_read) + " | " + "W" + MachineStatus.getFormatBit(currentStatistic.disk_write);
+                        hostInfoSpan[5].innerHTML = "⬇ " + MachineStatus.getFormatBit(currentStatistic.net_recv) + " | " + "⬆ " + MachineStatus.getFormatBit(currentStatistic.net_sent);
 
-                        hostInfoSpan[4].innerHTML = MachineStatus.getFormatSeconds(currentStatistic.boot_seconds || 0, this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
+                        hostInfoSpan[6].innerHTML = MachineStatus.getFormatSeconds(currentStatistic.boot_seconds || 0, this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
 
                         const machineIndex = ['memory', 'cpu', 'disk_usage', 'load_avg'];
                         machineIndex.forEach(function (item, index) {
@@ -252,8 +248,18 @@ class MachineStatus {
                         }
                     }
 
+                    data.items = data.items.map(item => {
+                        let element = {};
+                        fields.forEach((field, index) => {
+                            if (field === "ts") return element[field] = SECONDS_TO_MILLISECONDS * item[index];
+                            element[field] = item[index];
+                        });
+                        return element;
+                    });
                     data.items.reverse();
+                    data.io.reverse();
                     let dataMap = MachineStatus.getChartsData(data.items);
+                    let ioMap = MachineStatus.getIOChartsData(data.io);
 
                     let tsList = dataMap.ts_list;
                     let cpuList = dataMap.cpu_list;
@@ -263,14 +269,19 @@ class MachineStatus {
                     let loadavg15MinList = dataMap.load_avg_list[2];
                     let diskUsageList = dataMap.disk_usage_list;
 
+                    this.diskUsageOption.xAxis.data = ioMap.ts_list;
+                    this.diskUsageOption.series[0].data = ioMap.net_recv;
+                    this.diskUsageOption.series[1].data = ioMap.net_sent;
+                    this.consoleDiskUsageChart.setOption(this.diskUsageOption);
+
                     this.memoryOption.xAxis.data = tsList;
                     this.cpuOption.xAxis.data = tsList;
                     this.loadavgOption.xAxis.data = tsList;
-                    this.diskUsageOption.xAxis.data = tsList;
+                    // this.diskUsageOption.xAxis.data = tsList;
 
                     this.memoryOption.series[0].data = memoryList;
                     this.cpuOption.series[0].data = cpuList;
-                    this.diskUsageOption.series[0].data = diskUsageList;
+                    // this.diskUsageOption.series[0].data = diskUsageList;
                     this.loadavgOption.series[0].data = loadavgList;
                     this.loadavgOption.series[1].data = loadavg5MinList;
                     this.loadavgOption.series[2].data = loadavg15MinList;
@@ -278,7 +289,6 @@ class MachineStatus {
                     this.consoleMemoryChart.setOption(this.memoryOption);
                     this.consoleCpuChart.setOption(this.cpuOption);
                     this.consoleLoadavgChart.setOption(this.loadavgOption);
-                    this.consoleDiskUsageChart.setOption(this.diskUsageOption);
                     MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskUsageChart]);
                 }).then(() => {
                     this.consoleMemoryChart.hideLoading();
@@ -332,7 +342,7 @@ class MachineStatus {
     /* Initialize echart */
     static generateChatOption(isMobile, titleText, tableName = '', lineName = '') {
         let baseData = {
-            color: tableName === 'loadavg' ? ['#ffa726', '#42a5f5', '#66bb6a'] : ['#42a5f5'],
+            color: tableName === 'loadavg' ? ['#ffa726', '#42a5f5', '#66bb6a'] : tableName === 'networkIO' ? ['#ffa726', '#42a5f5'] : ['#42a5f5'],
             title: {
                 show: !isMobile,
                 text: titleText
@@ -341,6 +351,12 @@ class MachineStatus {
                 trigger: 'axis',
                 formatter: (params) => {
                     let value = echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', new Date(parseInt(params[0].axisValue)), false) + '<br />';
+                    if (tableName === 'networkIO') {
+                        for (let i = 0; i < params.length; i++) {
+                            value += (params[i].marker + params[i].seriesName + ': ' + MachineStatus.getFormatBit(params[i].value) + '<br />')
+                        }
+                        return value;
+                    }
                     for (let i = 0; i < params.length; i++) {
                         value += (params[i].marker + params[i].seriesName + ': ' + params[i].value +
                             (tableName === 'loadavg' ? '' : '%') + '<br />')
@@ -353,7 +369,7 @@ class MachineStatus {
                 textStyle: {
                     fontSize: 14
                 },
-                show: titleText === 'Load Avg',
+                show: titleText === 'Load Avg' || tableName === "networkIO",
             },
             grid: {
                 left: '3%',
@@ -382,7 +398,12 @@ class MachineStatus {
             yAxis: {
                 type: 'value',
                 axisLabel: {
-                    formatter: (value) => value + (titleText === 'Load Avg' ? '' : '%'),
+                    formatter: (value) => {
+                        if (tableName === 'networkIO') {
+                            return MachineStatus.getFormatBit(value);
+                        }
+                        return value + (titleText === 'Load Avg' ? '' : '%')
+                    },
                 },
             },
             series: [
@@ -396,6 +417,18 @@ class MachineStatus {
         };
         if (tableName === 'loadavg') {
             baseData.legend.data = ['1 ' + lineName, '5 ' + lineName, '15 ' + lineName];
+            baseData.series = [];
+            baseData.legend.data.forEach((name) => {
+                baseData.series.push({
+                    name: name,
+                    type: 'line',
+                    symbol: 'none',
+                    hoverAnimation: false
+                });
+            });
+        }
+        if (tableName === 'networkIO') {
+            baseData.legend.data = ['net_recv', 'net_sent'];
             baseData.series = [];
             baseData.legend.data.forEach((name) => {
                 baseData.series.push({
@@ -433,6 +466,45 @@ class MachineStatus {
             'load_avg_list': [loadAvgList, loadAvg5minList, loadAvg15minList],
             'memory_list': memoryList, 'ts_list': tsList
         };
+    };
+
+    /* Get Echarts data */
+    static getIOChartsData(rawData) {
+        let netRecvList = [];
+        let netSentList = [];
+        let tsList = [];
+        for (let i = 0; i < rawData.length; i++) {
+            let item = rawData[i];
+            tsList.push(item[0] * SECONDS_TO_MILLISECONDS);
+            netRecvList.push(item[1]);
+            netSentList.push(item[2]);
+        }
+        return {
+            'net_recv': netRecvList, 'net_sent': netSentList, 'ts_list': tsList
+        };
+    };
+
+    /* Get format Bit */
+    static getFormatBit(value) {
+        let suffix;
+        let b_value = value;
+        if (b_value >= 10e11) {
+            b_value = (b_value / 10e11).toFixed(2);
+            suffix = "tb/s";
+        } else if (b_value >= 10e8) {
+            b_value = (b_value / 10e8).toFixed(2);
+            suffix = "gb/s";
+        } else if (b_value >= 10e5) {
+            b_value = (b_value / 10e5).toFixed(2);
+            suffix = "mb/s";
+        } else if (b_value >= 10e2) {
+            b_value = (b_value / 10e2).toFixed(2);
+            suffix = "kb/s";
+        } else {
+            suffix = "b/s";
+            b_value = b_value.toFixed(2);
+        }
+        return b_value + suffix;
     };
 
     /* Get format time */
