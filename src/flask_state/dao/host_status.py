@@ -21,7 +21,6 @@ def retrieve_host_status(days) -> list:
             FlaskStateHost.cpu,
             FlaskStateHost.memory,
             FlaskStateHost.load_avg,
-            FlaskStateHost.disk_usage,
             FlaskStateHost.ts,
         )
         .filter(FlaskStateHost.ts > target_time)

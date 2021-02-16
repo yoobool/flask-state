@@ -241,7 +241,6 @@ def query_flask_state_host(days) -> FlaskStateResponse:
                 status.cpu,
                 status.memory,
                 status.load_avg.split(","),
-                status.disk_usage,
             ]
         )
     for io_state in io_result:
