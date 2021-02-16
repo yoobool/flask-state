@@ -31,6 +31,27 @@ def retrieve_host_status(days) -> list:
     return result
 
 
+def retrieve_io_status(days) -> list:
+    """
+    Query the status within the time period and flashback
+
+    """
+    target_time = get_current_ms() - get_query_ms(days)
+    result = (
+        FlaskStateHost.query.with_entities(
+            FlaskStateIO.disk_read,
+            FlaskStateIO.disk_write,
+            FlaskStateIO.net_recv,
+            FlaskStateIO.net_sent,
+            FlaskStateIO.ts,
+        )
+        .filter(FlaskStateIO.ts > target_time)
+        .order_by(FlaskStateIO.ts.desc())
+        .all()
+    )
+    return result
+
+
 def retrieve_latest_host_status() -> dict:
     """
     Query the latest status
@@ -40,6 +61,7 @@ def retrieve_latest_host_status() -> dict:
     result = result._asdict() if result else {}
     return result
 
+
 def retrieve_latest_io_status() -> dict:
     """
     Query the latest io status
@@ -48,6 +70,7 @@ def retrieve_latest_io_status() -> dict:
     result = FlaskStateIO.query.with_entities(FlaskStateIO.__table__).order_by(FlaskStateIO.ts.desc()).first()
     result = result._asdict() if result else {}
     return result
+
 
 def create_host_status(kwargs):
     """
@@ -91,6 +114,7 @@ def delete_thirty_days_status():
         db.session.rollback()
         raise e
 
+
 def delete_thirty_days_io_status():
     """
     Delete thirty days io records ago
@@ -105,6 +129,7 @@ def delete_thirty_days_io_status():
     except Exception as e:
         db.session.rollback()
         raise e
+
 
 def retrieve_host_status_yesterday() -> FlaskStateHost:
     """

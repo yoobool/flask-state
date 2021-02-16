@@ -12,7 +12,11 @@ from ..exceptions.error_code import MsgCode
 from ..exceptions.log_msg import ErrorMsg, InfoMsg
 from ..models import model_init_app
 from ..services import redis_conn
-from ..services.host_status import query_flask_state_host, record_flask_state_host, record_flask_state_io_host
+from ..services.host_status import (
+    query_flask_state_host,
+    record_flask_state_host,
+    record_flask_state_io_host,
+)
 from ..utils.auth import auth_method, auth_user
 from ..utils.constants import HttpMethod, HTTPStatus
 from ..utils.file_lock import Lock
@@ -57,7 +61,10 @@ def init_app(app, interval=60, log_instance=None):
     t_host.setDaemon(True)
     t_host.start()
 
-    t_io = threading.Thread(target=record_io_timer, args=(app, 10), )
+    t_io = threading.Thread(
+        target=record_io_timer,
+        args=(app, 10),
+    )
     t_io.setDaemon(True)
     t_io.start()
 
@@ -107,10 +114,10 @@ def record_timer(app, interval):
 
 
 def record_io_timer(app, interval):
-    app.lock_flask_state = Lock.get_file_lock("io")
+    app.io_lock_flask_state = Lock.get_file_lock("io")
     with app.app_context():
         try:
-            current_app.lock_flask_state.acquire()
+            current_app.io_lock_flask_state.acquire()
 
             s = sched.scheduler(time.time, time.sleep)
             in_time = time.time()

@@ -1,17 +1,23 @@
+import math
 import os
 import platform
+from collections import namedtuple
 from datetime import datetime, timezone
 
 import psutil
 
 from ..conf.config import Config
 from ..dao.host_status import (
+    create_host_io,
     create_host_status,
+    delete_thirty_days_io_status,
     delete_thirty_days_status,
     retrieve_host_status,
     retrieve_host_status_yesterday,
+    retrieve_io_status,
     retrieve_latest_host_status,
-    create_host_io, delete_thirty_days_io_status, retrieve_latest_io_status)
+    retrieve_latest_io_status,
+)
 from ..exceptions import FlaskStateError, FlaskStateResponse, SuccessResponse
 from ..exceptions.error_code import MsgCode
 from ..exceptions.log_msg import ErrorMsg
@@ -19,7 +25,6 @@ from ..utils.constants import HTTPStatus, NumericConstants, TimeConstants
 from ..utils.date import get_current_ms, get_current_s, get_formatted_timestamp
 from ..utils.logger import logger
 from . import redis_conn
-import math
 
 
 def record_flask_state_host(interval, target_time):
@@ -106,7 +111,7 @@ def query_redis_info():
                 yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
                 if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
                     be_divided_num = (
-                            keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
+                        keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
                     )
                     delta_hits_ratio = (
                         float(
@@ -197,14 +202,25 @@ def query_flask_state_host(days) -> FlaskStateResponse:
         now_ts = get_current_ms()
         now_io = query_host_io_info()
         latest_io = retrieve_latest_io_status()
-        interval = math.ceil((now_ts - latest_io.get("ts")) / 1000)
-        if latest_io:
-            io_info.update({
-                "net_sent": (now_io.get("net_sent") - latest_io.get("net_sent")) / interval,
-                "net_recv": (now_io.get("net_recv") - latest_io.get("net_recv")) / interval,
-                "disk_read": (now_io.get("disk_read") - latest_io.get("disk_read")) / interval,
-                "disk_write": (now_io.get("disk_write") - latest_io.get("disk_write")) / interval,
-            })
+        if latest_io and math.ceil((now_ts - latest_io.get("ts")) / 1000) <= 60:
+            interval = math.ceil((now_ts - latest_io.get("ts")) / 1000)
+            io_info.update(
+                {
+                    "net_sent": (now_io.get("net_sent") - latest_io.get("net_sent")) / interval,
+                    "net_recv": (now_io.get("net_recv") - latest_io.get("net_recv")) / interval,
+                    "disk_read": (now_io.get("disk_read") - latest_io.get("disk_read")) / interval,
+                    "disk_write": (now_io.get("disk_write") - latest_io.get("disk_write")) / interval,
+                }
+            )
+        else:
+            io_info.update(
+                {
+                    "net_sent": 0,
+                    "net_recv": 0,
+                    "disk_read": 0,
+                    "disk_write": 0,
+                }
+            )
         current_status = query_host_info()
         current_status.update(query_redis_info())
         current_status.update(io_info)
@@ -214,7 +230,10 @@ def query_flask_state_host(days) -> FlaskStateResponse:
         current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
     result = retrieve_host_status(days)
     result = control_result_counts(result)
+    io_result = retrieve_io_status(days)
+    io_result = control_io_counts(io_result)
     arr = []
+    io_arr = []
     for status in result:
         arr.append(
             [
@@ -225,7 +244,15 @@ def query_flask_state_host(days) -> FlaskStateResponse:
                 status.disk_usage,
             ]
         )
-    data = {"currentStatistic": current_status, "items": arr}
+    for io_state in io_result:
+        io_arr.append(
+            [
+                int(io_state.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE),
+                io_state.net_recv,
+                io_state.net_sent,
+            ]
+        )
+    data = {"currentStatistic": current_status, "items": arr, "io": io_arr}
     return SuccessResponse(msg="Search success", data=data)
 
 
@@ -243,6 +270,33 @@ def control_result_counts(result) -> list:
         while index <= result_length - 1 and len(refine_result) < Config.MAX_RETURN_RECORDS:
             refine_result.append(result[int(index)])
             index += interval
+        result = refine_result
+    return result
+
+
+def control_io_counts(result) -> list:
+    result_length = len(result)
+    io_tuple = namedtuple("io", "net_recv, net_sent, ts")
+    if result_length > Config.MAX_RETURN_RECORDS:
+        refine_result = []
+        interval = round(result_length / Config.MAX_RETURN_RECORDS, 2)
+        index = 0
+        while index < result_length - 1 and len(refine_result) < Config.MAX_RETURN_RECORDS:
+            new_tmp = result[int(index)]
+            old_tmp = result[int(index + 1)]
+            now_item = io_tuple(new_tmp.net_recv - old_tmp.net_recv, new_tmp.net_sent - old_tmp.net_sent, new_tmp.ts)
+            refine_result.append(now_item)
+            index += interval
+        result = refine_result
+    else:
+        refine_result = []
+        for index in range(result_length - 1):
+            now_item = io_tuple(
+                result[index].net_recv - result[index + 1].net_recv,
+                result[index].net_sent - result[index + 1].net_sent,
+                result[index].ts,
+            )
+            refine_result.append(now_item)
         result = refine_result
     return result
 
