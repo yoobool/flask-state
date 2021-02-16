@@ -6,6 +6,8 @@ const IN = {
     "memory": "Penyimpanan",
     "disk_usage": "Penggunaan Disk",
     "load_avg": "Beban Rata",
+    "disk_io": "Disk IO",
+    "network_io": "Jaringan IO",
     "boot_seconds": "Uptime",
     "redis_status": "Status Redis",
     "used_memory": "Memori Total",

@@ -6,6 +6,8 @@ const vi = {
     "memory": "Ký ức",
     "disk_usage": "Sử dụng đĩa",
     "load_avg": "Tải trung bình",
+    "disk_io": "IO đĩa",
+    "network_io": "Mạng IO",
     "boot_seconds": "Gian hoạt",
     "redis_status": "Trạng thái Redis",
     "used_memory": "Phân bổ bộ nhớ",

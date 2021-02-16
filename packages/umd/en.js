@@ -6,6 +6,8 @@ const en = {
     "memory": "Memory",
     "disk_usage": "Disk Usage",
     "load_avg": "Load Avg",
+    "disk_io": "Disk IO",
+    "network_io": "Network IO",
     "boot_seconds": "Uptime",
     "redis_status": "Redis Status",
     "used_memory": "Used Mem",

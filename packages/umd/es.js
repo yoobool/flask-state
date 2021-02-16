@@ -6,6 +6,8 @@ const es = {
     "memory": "Memoria",
     "disk_usage": "Uso del disco",
     "load_avg": "Promedio de carga",
+    "disk_io": "E / S de disco",
+    "network_io": "E / S de red",
     "boot_seconds": "Tiempo de actividad",
     "redis_status": "Estado de Redis",
     "used_memory": "Memoria total",
