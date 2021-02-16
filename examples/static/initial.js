@@ -181,8 +181,8 @@ class MachineStatus {
                         hostInfoSpan[1].innerHTML = currentStatistic.cpu + '%';
                         hostInfoSpan[2].innerHTML = currentStatistic.disk_usage + '%';
                         hostInfoSpan[3].innerHTML = currentStatistic.load_avg[0] + "，" + currentStatistic.load_avg[1] + "，" + currentStatistic.load_avg[2];
-                        hostInfoSpan[4].innerHTML = "R" + MachineStatus.getFormatBit(currentStatistic.disk_read) + " | " + "W" + MachineStatus.getFormatBit(currentStatistic.disk_write);
-                        hostInfoSpan[5].innerHTML = "⬇ " + MachineStatus.getFormatBit(currentStatistic.net_recv) + " | " + "⬆ " + MachineStatus.getFormatBit(currentStatistic.net_sent);
+                        hostInfoSpan[4].innerHTML = "<span style='color: #6c70eb'>R </span>" + MachineStatus.getFormatBit(currentStatistic.disk_read) + " | " + "<span style='color: rgb(238, 66, 45)'>W </span>" + MachineStatus.getFormatBit(currentStatistic.disk_write);
+                        hostInfoSpan[5].innerHTML = "<span style='color: #6c70eb'>⬇ </span>" + MachineStatus.getFormatBit(currentStatistic.net_recv) + " | " + "<span style='color: rgb(238, 66, 45)'>⬆ </span>" + MachineStatus.getFormatBit(currentStatistic.net_sent);
 
                         hostInfoSpan[6].innerHTML = MachineStatus.getFormatSeconds(currentStatistic.boot_seconds || 0, this.language.days, this.language.hours, this.language.minutes, this.language.seconds);
 
@@ -397,7 +397,8 @@ class MachineStatus {
                 axisLabel: {
                     formatter: (value) => {
                         if (tableName === 'networkIO') {
-                            return MachineStatus.getFormatBit(value);
+                            let result = MachineStatus.getFormatBit(value, 0);
+                            return result.substring(0, result.length - 2);
                         }
                         return value + (titleText === 'Load Avg' ? '' : '%')
                     },
@@ -425,7 +426,7 @@ class MachineStatus {
             });
         }
         if (tableName === 'networkIO') {
-            baseData.legend.data = ['net_recv', 'net_sent'];
+            baseData.legend.data = ['recv', 'sent'];
             baseData.series = [];
             baseData.legend.data.forEach((name) => {
                 baseData.series.push({
@@ -479,26 +480,26 @@ class MachineStatus {
     };
 
     /* Get format Bit */
-    static getFormatBit(value) {
+    static getFormatBit(value, fixed = 2) {
         let suffix;
-        let b_value = value;
+        let b_value = value / 8;
         if (b_value >= 10e11) {
-            b_value = (b_value / 10e11).toFixed(2);
-            suffix = "tb/s";
+            b_value = (b_value / 10e11).toFixed(fixed);
+            suffix = "TB/s";
         } else if (b_value >= 10e8) {
-            b_value = (b_value / 10e8).toFixed(2);
-            suffix = "gb/s";
+            b_value = (b_value / 10e8).toFixed(fixed);
+            suffix = "GB/s";
         } else if (b_value >= 10e5) {
-            b_value = (b_value / 10e5).toFixed(2);
-            suffix = "mb/s";
+            b_value = (b_value / 10e5).toFixed(fixed);
+            suffix = "MB/s";
         } else if (b_value >= 10e2) {
-            b_value = (b_value / 10e2).toFixed(2);
-            suffix = "kb/s";
+            b_value = (b_value / 10e2).toFixed(fixed);
+            suffix = "KB/s";
         } else {
-            suffix = "b/s";
+            suffix = "B/s";
             b_value = b_value.toFixed(2);
         }
-        return b_value + suffix;
+        return b_value + ' ' + suffix;
     };
 
     /* Get format time */
