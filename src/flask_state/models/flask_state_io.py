@@ -23,7 +23,7 @@ class FlaskStateIO(db.Model):
     # disk
     disk_read = db.Column(BIGINT(unsigned=True), server_default=text("0"))
     disk_write = db.Column(BIGINT(unsigned=True), server_default=text("0"))
-    ts = db.Column(INTEGER(unsigned=True), server_default=text("0"))
+    ts = db.Column(BIGINT(unsigned=True), server_default=text("0"))
     __table_args__ = (
         db.PrimaryKeyConstraint("id"),
         db.Index("idx_ct", create_time.desc()),

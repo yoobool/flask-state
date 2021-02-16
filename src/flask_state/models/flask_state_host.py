@@ -22,7 +22,7 @@ class FlaskStateHost(db.Model):
     load_avg = db.Column(String(32), server_default="")
     disk_usage = db.Column(FLOAT(unsigned=True), server_default=text("0"))
     boot_seconds = db.Column(INTEGER(unsigned=True), server_default=text("0"))
-    ts = db.Column(INTEGER(unsigned=True), server_default=text("0"))
+    ts = db.Column(BIGINT(unsigned=True), server_default=text("0"))
 
     # redis
     used_memory = db.Column(INTEGER(unsigned=True), server_default=text("0"))
