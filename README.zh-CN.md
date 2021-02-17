@@ -1,6 +1,6 @@
 [English](https://github.com/yoobool/flask-state/blob/master/README.md) | 简体中文
 
-![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.6/src/flask_state/static/flask_state.png)
+![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.7/src/flask_state/static/flask_state.png)
 
 [![Contributor Badge](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
 [![Gitter Badge](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
@@ -12,7 +12,7 @@
 
 Flask-State是一款在您浏览器上使用的轻便、图表化插件。
 
-* **监控状态**：CPU，内存，磁盘，LoadAvg，启动时长。
+* **监控状态**：CPU，内存，磁盘，磁盘IO, 网络IO, LoadAvg，启动时长。
 * **可扩展**：除记录本机状态外，还包括丰富的扩展功能选择。其中有Redis监控、用户验证、自定义logging和i18n等。
 * **稳定**：轻量级的依赖关系，同时解决了多进程并发问题。
 
@@ -20,7 +20,7 @@ Flask-State是一个活跃的项目，经过了充分的测试以及有一系列
 
 ###
 
-![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.6/examples/static/flask_state.png)
+![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.7/examples/static/flask_state.png)
 
 ## Documentation
 
@@ -30,6 +30,21 @@ Flask-State是一个活跃的项目，经过了充分的测试以及有一系列
 ## Installation
 
 从这里 [PyPI](https://pip.pypa.io/en/stable/quickstart/) 下载:
+
+```bash
+pip install Flask-State
+```
+
+通过NPM安装Flask-State或将此脚本标签放在HTML文件的开头部分:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.7/packages/umd/flask-state.min.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.0.7/packages/flask-state.min.css" rel="stylesheet">
+```
+
+```bash
+npm install flask-state --save
+```
 
 ## Usage
 
