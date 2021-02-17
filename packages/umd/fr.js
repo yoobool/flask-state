@@ -6,6 +6,8 @@ const fr = {
     "memory": "Mémoire",
     "disk_usage": "Utilisation du disque",
     "load_avg": "Load Avg",
+    "disk_io": "Disque IO",
+    "network_io": "Réseau IO",
     "boot_seconds": "Temps de démarrage",
     "redis_status": "Statut Redis",
     "used_memory": "Mémoire totale",

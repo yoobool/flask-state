@@ -14,13 +14,13 @@ if SYSTEM == OperatingSystem.UNIX_SYSTEM:
 
 class Lock:
     @staticmethod
-    def get_file_lock():
-        return FileLock()
+    def get_file_lock(io=""):
+        return FileLock(io)
 
 
 class FileLock:
-    def __init__(self):
-        lock_file = "821e9dab54fec92e3d054b3367a50b70d328caed"
+    def __init__(self, type):
+        lock_file = "821e9dab54fec92e3d054b3367a50b70d328caed_{type}".format(type=type)
         if SYSTEM == OperatingSystem.WINDOWS_SYSTEM:
             lock_dir = os.environ["tmp"]
         else:

@@ -6,6 +6,8 @@ const ja = {
     "memory": "メモリ",
     "disk_usage": "ディスクの使用率",
     "load_avg": "平均読み込み時間",
+    "disk_io": "ディスクIO",
+    "network_io": "ネットワークIO",
     "boot_seconds": "起動時間の秒",
     "redis_status": "Redisの状態",
     "used_memory": "使用メモリ",

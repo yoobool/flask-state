@@ -6,6 +6,8 @@ const zh = {
     "memory": "内存",
     "disk_usage": "磁盘使用率",
     "load_avg": "Load Avg",
+    "disk_io": "磁盘IO",
+    "network_io": "网络IO",
     "boot_seconds": "启动时长",
     "redis_status": "Redis状态",
     "used_memory": "分配总内存",

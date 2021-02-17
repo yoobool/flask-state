@@ -28,6 +28,7 @@ class ErrorMsg(ExceptionMsg):
 
 class WarningMsg(ExceptionMsg):
     TIME_SMALL = {"msg": "Setting the recording time is too short", "level": "warning"}
+    LACK_REDIS = {"msg": "Redis module is not installed", "level": "warning"}
 
 
 class InfoMsg(ExceptionMsg):

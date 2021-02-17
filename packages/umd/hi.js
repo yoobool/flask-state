@@ -6,6 +6,8 @@ const hi = {
     "memory": "राम",
     "disk_usage": "डिस्क उपयोग",
     "load_avg": "औसत भार",
+    "disk_io": "डिस्क IO",
+    "network_io": "नेटवर्क आईओ",
     "boot_seconds": "अपटाइम",
     "redis_status": "रेडिस राज्य",
     "used_memory": "कुल मेमोरी आवंटित",
