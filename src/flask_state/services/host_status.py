@@ -170,16 +170,12 @@ def query_host_io_info():
     :return host status dict
     :rtype: dict
     """
-    try:
-        net_sent = psutil.net_io_counters().bytes_sent
-        net_recv = psutil.net_io_counters().bytes_recv
-        disk_read = psutil.disk_io_counters().read_bytes
-        disk_write = psutil.disk_io_counters().write_bytes
-    except:
-        net_sent = 0
-        net_recv = 0
-        disk_read = 0
-        disk_write = 0
+    net_io = psutil.net_io_counters()
+    disk_io = psutil.disk_io_counters()
+    net_sent = net_io.bytes_sent if net_io else 0
+    net_recv = net_io.bytes_recv if net_io else 0
+    disk_read = disk_io.read_bytes if disk_io else 0
+    disk_write = disk_io.write_bytes if disk_io else 0
     result = {
         "net_sent": net_sent,
         "net_recv": net_recv,
