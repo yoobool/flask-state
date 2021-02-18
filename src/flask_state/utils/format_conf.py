@@ -5,37 +5,6 @@ from ..exceptions.log_msg import ErrorMsg
 from .constants import CronConstants, DBAddressConstants, OperatingSystem, TimeScale
 
 
-def format_address(address) -> str:
-    """
-    Format incoming database address
-    :param address: initial database address
-    :return: format database address
-    :rtype: str
-    """
-    if not isinstance(address, str):
-        raise TypeError(
-            ErrorMsg.DATA_TYPE_ERROR.get_msg(
-                ".The target type is {}, not {}".format(str.__name__, type(address).__name__)
-            )
-        )
-    if (
-        len(address) < DBAddressConstants.MIN_ADDRESS_LENGTH
-        or address[: DBAddressConstants.MIN_ADDRESS_LENGTH - 1] != DBAddressConstants.DB_URL_HEADER
-    ):
-        raise ValueError(ErrorMsg.ERROR_ADDRESS.get_msg(".Error sqlite url: %s" % address))
-    if platform.system() == OperatingSystem.WINDOWS_SYSTEM:
-        index = max(
-            address[DBAddressConstants.MIN_ADDRESS_LENGTH - 1 :].rfind("\\"),
-            address[DBAddressConstants.MIN_ADDRESS_LENGTH - 1 :].rfind("/"),
-        )
-    else:
-        index = address[DBAddressConstants.MIN_ADDRESS_LENGTH - 1 :].rfind("/")
-    db_path = address[DBAddressConstants.MIN_ADDRESS_LENGTH - 1 :][:index] if index != -1 else "./"
-    if not os.access(db_path, os.W_OK):
-        raise ValueError(ErrorMsg.NO_ACCESS.get_msg(". No access path: %s" % address))
-    return address
-
-
 def format_cron(scope_tuple) -> list:
     """
     Format the input time range

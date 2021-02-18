@@ -20,7 +20,6 @@ from ..services.host_status import (
 from ..utils.auth import auth_method, auth_user
 from ..utils.constants import HttpMethod, HTTPStatus
 from ..utils.file_lock import Lock
-from ..utils.format_conf import format_address
 from ..utils.logger import DefaultLogger, logger
 from .response_methods import make_response_content
 
@@ -84,8 +83,8 @@ def init_redis(app):
 def init_db(app):
     if not app.config.get("SQLALCHEMY_BINDS", {}).get(Config.DEFAULT_BIND_SQLITE):
         raise KeyError(ErrorMsg.LACK_SQLITE.get_msg())
-    app.config["SQLALCHEMY_BINDS"][Config.DEFAULT_BIND_SQLITE] = format_address(
-        app.config["SQLALCHEMY_BINDS"].get(Config.DEFAULT_BIND_SQLITE)
+    app.config["SQLALCHEMY_BINDS"][Config.DEFAULT_BIND_SQLITE] = app.config["SQLALCHEMY_BINDS"].get(
+        Config.DEFAULT_BIND_SQLITE
     )
 
 
