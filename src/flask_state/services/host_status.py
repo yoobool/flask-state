@@ -208,10 +208,10 @@ def query_flask_state_host(days) -> FlaskStateResponse:
             interval = math.ceil((now_ts - latest_io.get("ts")) / 1000)
             io_info.update(
                 {
-                    "net_sent": (now_io.get("net_sent") - latest_io.get("net_sent")) / interval,
-                    "net_recv": (now_io.get("net_recv") - latest_io.get("net_recv")) / interval,
-                    "disk_read": (now_io.get("disk_read") - latest_io.get("disk_read")) / interval,
-                    "disk_write": (now_io.get("disk_write") - latest_io.get("disk_write")) / interval,
+                    "net_sent": (max(now_io.get("net_sent") - latest_io.get("net_sent"), 0)) / interval,
+                    "net_recv": (max(now_io.get("net_recv") - latest_io.get("net_recv"), 0)) / interval,
+                    "disk_read": (max(now_io.get("disk_read") - latest_io.get("disk_read"), 0)) / interval,
+                    "disk_write": (max(now_io.get("disk_write") - latest_io.get("disk_write"), 0)) / interval,
                 }
             )
         else:
@@ -285,7 +285,9 @@ def control_io_counts(result) -> list:
         while index < result_length - 1 and len(refine_result) < Config.MAX_RETURN_RECORDS:
             new_tmp = result[int(index)]
             old_tmp = result[int(index + 1)]
-            now_item = io_tuple(new_tmp.net_recv - old_tmp.net_recv, new_tmp.net_sent - old_tmp.net_sent, new_tmp.ts)
+            now_item = io_tuple(
+                max(new_tmp.net_recv - old_tmp.net_recv, 0), max(new_tmp.net_sent - old_tmp.net_sent, 0), new_tmp.ts
+            )
             refine_result.append(now_item)
             index += interval
         result = refine_result
