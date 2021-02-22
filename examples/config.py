@@ -18,7 +18,7 @@ def setting_app():
 
     # Redis conf
     app.config["REDIS_CONF"] = {
-        "REDIS_STATUS": True,
+        "REDIS_STATUS": False,
         "REDIS_HOST": "127.0.0.1",
         "REDIS_PORT": 16379,
         "REDIS_PASSWORD": "password",

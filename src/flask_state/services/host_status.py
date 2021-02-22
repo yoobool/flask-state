@@ -23,6 +23,7 @@ from ..exceptions.error_code import MsgCode
 from ..exceptions.log_msg import ErrorMsg
 from ..utils.constants import HTTPStatus, NumericConstants, TimeConstants
 from ..utils.date import get_current_ms, get_current_s, get_formatted_timestamp
+from ..utils.file_lock import db_lock
 from ..utils.logger import logger
 from . import redis_conn
 
@@ -44,6 +45,7 @@ def record_flask_state_host(interval, target_time):
         redis_status = query_redis_info()
         result_conf.update(redis_status)
 
+        db_lock.acquire()
         create_host_status(result_conf)
         now_time = get_current_s()
         new_day_utc = (
@@ -51,8 +53,9 @@ def record_flask_state_host(interval, target_time):
         )
         if now_time <= new_day_utc + interval:
             delete_thirty_days_status()
-
+        db_lock.release()
     except Exception as e:
+        db_lock.release()
         logger.exception(e)
 
 
@@ -152,6 +155,7 @@ def record_flask_state_io_host(interval, target_time):
         host_io_status = query_host_io_info()
         result_conf.update(host_io_status)
 
+        db_lock.acquire()
         create_host_io(result_conf)
         now_time = get_current_s()
         new_day_utc = (
@@ -159,8 +163,9 @@ def record_flask_state_io_host(interval, target_time):
         )
         if now_time <= new_day_utc + interval:
             delete_thirty_days_io_status()
-
+        db_lock.release()
     except Exception as e:
+        db_lock.release()
         logger.exception(e)
 
 

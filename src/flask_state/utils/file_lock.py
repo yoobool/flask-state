@@ -1,7 +1,10 @@
 import os
 import platform
+import threading
 
 from .constants import OperatingSystem
+
+__all__ = ["Lock", "db_lock"]
 
 SYSTEM = (
     OperatingSystem.WINDOWS_SYSTEM
@@ -52,3 +55,17 @@ class FileLock:
                     self._fn.close()
                 except Exception as e:
                     raise e
+
+
+class DbLock:
+    def __init__(self):
+        self.lock = threading.Lock()
+
+    def acquire(self):
+        self.lock.acquire()
+
+    def release(self):
+        self.lock.release()
+
+
+db_lock = DbLock()
