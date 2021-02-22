@@ -56,7 +56,7 @@ def record_flask_state_host(interval, target_time):
         db_lock.release()
     except Exception as e:
         db_lock.release()
-        logger.exception(e)
+        logger.exception(str(e))
 
 
 def query_host_info():
@@ -136,7 +136,7 @@ def query_redis_info():
                 delta_hits_ratio=delta_hits_ratio,
             )
         except Exception as t:
-            logger.exception(t)
+            logger.exception(str(t))
     return result
 
 
@@ -166,7 +166,7 @@ def record_flask_state_io_host(interval, target_time):
         db_lock.release()
     except Exception as e:
         db_lock.release()
-        logger.exception(e)
+        logger.exception(str(e))
 
 
 def query_host_io_info():

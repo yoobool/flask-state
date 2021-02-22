@@ -151,5 +151,5 @@ def query_flask_state():
         logger.warning(e)
         return make_response_content(e, http_status=e.status_code)
     except Exception as e:
-        logger.exception(e)
+        logger.exception(str(e))
         return make_response_content(ErrorResponse(MsgCode.UNKNOWN_ERROR), http_status=HTTPStatus.INTERNAL_SERVER_ERROR)
