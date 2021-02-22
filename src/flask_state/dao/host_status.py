@@ -109,6 +109,8 @@ def delete_thirty_days_status():
         if result:
             db.session.commit()
             logger.info(InfoMsg.DELETE_SUCCESS.get_msg())
+        else:
+            db.session.rollback()
     except Exception as e:
         db.session.rollback()
         raise e
@@ -125,6 +127,8 @@ def delete_thirty_days_io_status():
         if result:
             db.session.commit()
             logger.info(InfoMsg.DELETE_SUCCESS.get_msg())
+        else:
+            db.session.rollback()
     except Exception as e:
         db.session.rollback()
         raise e
