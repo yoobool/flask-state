@@ -20,7 +20,7 @@ Flask-State是一个活跃的项目，经过了充分的测试以及有一系列
 
 ###
 
-![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.7/examples/static/flask_state.png)
+![Screenshot](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
 ## Documentation
 

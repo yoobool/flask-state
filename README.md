@@ -20,7 +20,7 @@ built on top of lightweight dependencies.
 This project is in active development and thoroughly tested to ensure that Flask-State
 stays up-to-date with its project roadmap.
 
-![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.0.7/examples/static/flask_state.png)
+![Screenshot](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
 ## Documentation
 
