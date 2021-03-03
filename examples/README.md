@@ -16,7 +16,7 @@ python3 -m venv env
 ```
 Install packages for `examples`
 ```shell script
-pip install -e ".[examples]"
+pip install "flask-state[full]"
 ```
 
 ### Install Redis
