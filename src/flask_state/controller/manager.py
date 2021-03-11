@@ -43,7 +43,7 @@ def query_flask_state():
         logger.exception(str(e))
         error_response = ErrorResponse(MsgCode.UNKNOWN_ERROR)
         http_status = HTTPStatus.INTERNAL_SERVER_ERROR
-        return make_response_content(error_response)
+        return make_response_content(error_response, http_status=http_status)
 
 
 def init_url_rules(app):
