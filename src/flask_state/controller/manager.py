@@ -72,8 +72,8 @@ def init_db(app):
 
 
 def record_timer(app, function, interval, lock_group, lock_key, priority=1):
-    app.locks[lock_group][lock_key] = Lock.get_file_lock(lock_key)
     with app.app_context():
+        app.locks[lock_group][lock_key] = Lock.get_file_lock(lock_key)
         try:
             current_app.locks[lock_group][lock_key].acquire()
             if lock_key == "host":
