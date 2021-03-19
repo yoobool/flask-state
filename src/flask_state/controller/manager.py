@@ -64,11 +64,9 @@ def init_redis(app):
 
 
 def init_db(app):
-    try:
-        sqlalchemy_binds = app.config["SQLALCHEMY_BINDS"]
-        sqlalchemy_binds[Config.DEFAULT_BIND_SQLITE]
-    except KeyError as e:
-        raise e(ErrorMsg.LACK_SQLITE.get_msg())
+    sqlalchemy_binds = app.config["SQLALCHEMY_BINDS"]
+    if Config.DEFAULT_BIND_SQLITE not in sqlalchemy_binds:
+        raise KeyError(ErrorMsg.LACK_SQLITE.get_msg())
 
 
 def record_timer(app, function, interval, lock_group, lock_key, priority=1):
