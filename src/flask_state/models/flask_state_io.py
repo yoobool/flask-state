@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import func
-from sqlalchemy.dialects.mysql import BIGINT, DATETIME, FLOAT, INTEGER
+from sqlalchemy.dialects.mysql import BIGINT, DATETIME, INTEGER
 from sqlalchemy.sql import text
 
 from ..conf.config import Config
@@ -33,9 +33,9 @@ class FlaskStateIO(db.Model):
     )
 
     def __repr__(self):
-        return "<FlaskStateIO net_sent: {}, net_recv:{}, disk_read_bytes:{}, disk_write_bytes:{}>".format(
+        return "<FlaskStateIO net_sent: {}, net_recv:{}, disk_read:{}, disk_write:{}>".format(
             self.net_sent,
             self.net_recv,
-            self.disk_read_bytes,
-            self.disk_write_bytes,
+            self.disk_read,
+            self.disk_write,
         )
