@@ -53,10 +53,10 @@ def record_flask_state_host(interval, target_time):
         )
         if now_time <= new_day_utc + interval:
             delete_thirty_days_status()
-        db_lock.release()
     except Exception as e:
-        db_lock.release()
         logger.exception(str(e))
+    finally:
+        db_lock.release()
 
 
 def query_host_info():
@@ -163,10 +163,10 @@ def record_flask_state_io_host(interval, target_time):
         )
         if now_time <= new_day_utc + interval:
             delete_thirty_days_io_status()
-        db_lock.release()
     except Exception as e:
-        db_lock.release()
         logger.exception(str(e))
+    finally:
+        db_lock.release()
 
 
 def query_host_io_info():
