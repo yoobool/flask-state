@@ -247,28 +247,24 @@ class MachineStatus {
                         }
                     }
 
-                    data.items.ts = data.items.ts.map(elem => SECONDS_TO_MILLISECONDS * elem);
-
                     const cpuCount = currentStatistic.cpu_count;
-                    MachineStatus.initialCPUOptions(cpuCount);
-                    this.cpuOption.xAxis.data = data.items.ts;
+                    this.initialCPUOptions(cpuCount, data);
+                    this.cpuOption.xAxis.data = data.host.ts;
                     this.consoleCpuChart.setOption(this.cpuOption);
 
-                    data.io.reverse();
-                    let ioMap = MachineStatus.getIOChartsData(data.io);
-                    this.networkIOOption.xAxis.data = ioMap.ts_list;
-                    this.networkIOOption.series[0].data = ioMap.net_recv;
-                    this.networkIOOption.series[1].data = ioMap.net_sent;
+                    this.networkIOOption.xAxis.data = data.io.ts;
+                    this.networkIOOption.series[0].data = data.io.net_recv;
+                    this.networkIOOption.series[1].data = data.io.net_sent;
                     this.networkIOChart.setOption(this.networkIOOption);
 
-                    this.memoryOption.xAxis.data = data.items.ts;
-                    this.memoryOption.series[0].data = data.items.memory;
+                    this.memoryOption.xAxis.data = data.host.ts;
+                    this.memoryOption.series[0].data = data.host.memory;
                     this.consoleMemoryChart.setOption(this.memoryOption);
 
-                    this.loadavgOption.xAxis.data = data.items.ts;
-                    this.loadavgOption.series[0].data = data.items.loadavg;
-                    this.loadavgOption.series[1].data = data.items.loadavg5;
-                    this.loadavgOption.series[2].data = data.items.loadavg15;
+                    this.loadavgOption.xAxis.data = data.host.ts;
+                    this.loadavgOption.series[0].data = data.host.loadavg;
+                    this.loadavgOption.series[1].data = data.host.loadavg5;
+                    this.loadavgOption.series[2].data = data.host.loadavg15;
                     this.consoleLoadavgChart.setOption(this.loadavgOption);
 
 
@@ -322,24 +318,36 @@ class MachineStatus {
         chartList.forEach(chart => chart.resize());
     }
 
-    static initialCPUOptions(cpuCount) {
+    initialCPUOptions(cpuCount, data) {
         this.cpuOption.legend.data = [];
+        this.cpuOption.color = ["#42a5f5", "#26c6da", "#26a69a", "#66bb6a", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726"];
         this.cpuOption.legend.selected = {};
+        this.cpuOption.series = [];
         for (let i = 0; i < cpuCount + 1; i++) {
             if (i === 0) {
-                this.cpuOption.series[i].data = data.items.cpu;
-                this.cpuOption.legend.data.push("cpu")
-                this.cpuOption.legend.selected["cpu"] = true;
+                let name = "cpu";
+                this.cpuOption.series.push({
+                    name: name,
+                    type: 'line',
+                    symbol: 'none',
+                    hoverAnimation: false,
+                    data: data.host[name]
+                });
+                this.cpuOption.legend.data.push(name)
+                this.cpuOption.legend.selected[name] = true;
             } else {
-                this.cpuOption.series[i].data = data.items[`cpu${i - 1}`];
-                this.cpuOption.legend.data.push(`cpu${i - 1}`)
-                this.cpuOption.legend.selected[`cpu${i - 1}`] = false;
+                let name = `cpu${i - 1}`;
+                this.cpuOption.series.push({
+                    name: name,
+                    type: 'line',
+                    symbol: 'none',
+                    hoverAnimation: false,
+                    data: data.host[name]
+                });
+                this.cpuOption.legend.data.push(name)
+                this.cpuOption.legend.selected[name] = false;
             }
         }
-        this.cpuOption.series = [];
-        this.cpuOption.legend.data.forEach((name) => {
-            this.cpuOption.series.push({name: name, type: 'line', symbol: 'none', hoverAnimation: false});
-        });
     }
 
     /* Initialize echart */
@@ -352,7 +360,7 @@ class MachineStatus {
             tooltip: {
                 trigger: 'axis',
                 formatter: (params) => {
-                    let value = echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', new Date(parseInt(params[0].axisValue)), false) + '<br />';
+                    let value = echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', new Date(parseInt(params[0].axisValue * SECONDS_TO_MILLISECONDS)), false) + '<br />';
                     if (tableName === 'networkIO') {
                         for (let i = 0; i < params.length; i++) {
                             value += (params[i].marker + params[i].seriesName + ': ' + MachineStatus.getFormatBit(params[i].value) + '<br />')
@@ -392,7 +400,7 @@ class MachineStatus {
                 boundaryGap: false,
                 axisLabel: {
                     formatter: function (value) {
-                        return echarts.format.formatTime('hh:mm', new Date(parseInt(value)), false);
+                        return echarts.format.formatTime('hh:mm', new Date(parseInt(value * SECONDS_TO_MILLISECONDS)), false);
                     }
                 }
             },
@@ -433,22 +441,6 @@ class MachineStatus {
         }
         return baseData;
     }
-
-    /* Get Echarts data */
-    static getIOChartsData(rawData) {
-        let netRecvList = [];
-        let netSentList = [];
-        let tsList = [];
-        for (let i = 0; i < rawData.length; i++) {
-            let item = rawData[i];
-            tsList.push(item[0] * SECONDS_TO_MILLISECONDS);
-            netRecvList.push(item[1]);
-            netSentList.push(item[2]);
-        }
-        return {
-            'net_recv': netRecvList, 'net_sent': netSentList, 'ts_list': tsList
-        };
-    };
 
     /* Get format Bit */
     static getFormatBit(value, fixed = 2) {
