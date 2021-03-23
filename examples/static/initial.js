@@ -380,6 +380,7 @@ class MachineStatus {
                 },
                 show: tableName !== 'memory',
             },
+            series: [],
             grid: {
                 left: '3%',
                 right: '4%',
@@ -421,7 +422,6 @@ class MachineStatus {
             case "loadavg":
                 baseData.color = ['#ffa726', '#42a5f5', '#66bb6a'];
                 baseData.legend.data = ['1 ' + lineName, '5 ' + lineName, '15 ' + lineName];
-                baseData.series = [];
                 baseData.legend.data.forEach((name) => {
                     baseData.series.push({name: name, type: 'line', symbol: 'none', hoverAnimation: false});
                 });
@@ -429,7 +429,6 @@ class MachineStatus {
             case "networkIO":
                 baseData.color = ['#ffa726', '#42a5f5'];
                 baseData.legend.data = ['recv', 'sent'];
-                baseData.series = [];
                 baseData.legend.data.forEach((name) => {
                     baseData.series.push({name: name, type: 'line', symbol: 'none', hoverAnimation: false});
                 });
@@ -437,7 +436,7 @@ class MachineStatus {
             case "memory":
                 baseData.color = ['#42a5f5'];
                 baseData.legend.data = [lineName];
-                baseData.series = [{name: lineName, type: 'line', symbol: 'none', hoverAnimation: false}]
+                baseData.series.push({name: lineName, type: 'line', symbol: 'none', hoverAnimation: false});
         }
         return baseData;
     }
