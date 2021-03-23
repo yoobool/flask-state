@@ -37,11 +37,11 @@
             this.initFlaskStateLanguage(this.language);
             this.setInitParams();
             if (this.mobile) {
-                this.setTagChangeEventListener(this.consoleCpuChart, this.consoleMemoryChart, this.consoleLoadavgChart, this.consoleDiskUsageChart);
+                this.setTagChangeEventListener(this.consoleCpuChart, this.consoleMemoryChart, this.consoleLoadavgChart, this.networkIOChart);
             }
             // Bind window resizing redraw event
             window.addEventListener('resize', () => {
-                MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskUsageChart]);
+                MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.networkIOChart]);
             })
         };
 
@@ -155,9 +155,9 @@
             this.consoleCpuChart = echarts.init(document.getElementById('fs-info-cpu-chart'), null, {renderer: 'svg'});
             this.consoleMemoryChart = echarts.init(document.getElementById('fs-info-memory-chart'), null, {renderer: 'svg'});
             this.consoleLoadavgChart = echarts.init(document.getElementById('fs-info-loadavg-chart'), null, {renderer: 'svg'});
-            this.consoleDiskUsageChart = echarts.init(document.getElementById('fs-info-networkio-chart'), null, {renderer: 'svg'});
-            this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', '', this.language.today || 'Today');
-            this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', '', this.language.today || 'Today');
+            this.networkIOChart = echarts.init(document.getElementById('fs-info-networkio-chart'), null, {renderer: 'svg'});
+            this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', 'cpu', this.language.today || 'Today');
+            this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', 'memory', this.language.today || 'Today');
             this.networkIOOption = MachineStatus.generateChatOption(this.mobile, this.language.network_io || 'Network IO', 'networkIO', this.language.today || 'Today');
             this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes || 'min');
         }
@@ -167,7 +167,7 @@
             this.consoleCpuChart.showLoading();
             this.consoleMemoryChart.showLoading();
             this.consoleLoadavgChart.showLoading();
-            this.consoleDiskUsageChart.showLoading();
+            this.networkIOChart.showLoading();
             fetch(
                 "/v0/state/hoststatus",
                 {
@@ -260,51 +260,37 @@
                             }
                         }
 
-                        const fields = ["ts", "cpu", "memory", "load_avg"];
-                        data.items = data.items.map(item => {
-                            let element = {};
-                            fields.forEach((field, index) => {
-                                if (field === "ts") return element[field] = SECONDS_TO_MILLISECONDS * item[index];
-                                element[field] = item[index];
-                            });
-                            return element;
-                        });
-                        data.items.reverse();
+                        data.items.ts = data.items.ts.map(elem => SECONDS_TO_MILLISECONDS * elem);
+
+                        const cpuCount = currentStatistic.cpu_count;
+                        MachineStatus.initialCPUOptions(cpuCount);
+                        this.cpuOption.xAxis.data = data.items.ts;
+                        this.consoleCpuChart.setOption(this.cpuOption);
+
                         data.io.reverse();
-                        let dataMap = MachineStatus.getChartsData(data.items);
                         let ioMap = MachineStatus.getIOChartsData(data.io);
-
-                        let tsList = dataMap.ts_list;
-                        let cpuList = dataMap.cpu_list;
-                        let memoryList = dataMap.memory_list;
-                        let loadavgList = dataMap.load_avg_list[0];
-                        let loadavg5MinList = dataMap.load_avg_list[1];
-                        let loadavg15MinList = dataMap.load_avg_list[2];
-
                         this.networkIOOption.xAxis.data = ioMap.ts_list;
                         this.networkIOOption.series[0].data = ioMap.net_recv;
                         this.networkIOOption.series[1].data = ioMap.net_sent;
-                        this.consoleDiskUsageChart.setOption(this.networkIOOption);
+                        this.networkIOChart.setOption(this.networkIOOption);
 
-                        this.memoryOption.xAxis.data = tsList;
-                        this.cpuOption.xAxis.data = tsList;
-                        this.loadavgOption.xAxis.data = tsList;
-
-                        this.memoryOption.series[0].data = memoryList;
-                        this.cpuOption.series[0].data = cpuList;
-                        this.loadavgOption.series[0].data = loadavgList;
-                        this.loadavgOption.series[1].data = loadavg5MinList;
-                        this.loadavgOption.series[2].data = loadavg15MinList;
-
+                        this.memoryOption.xAxis.data = data.items.ts;
+                        this.memoryOption.series[0].data = data.items.memory;
                         this.consoleMemoryChart.setOption(this.memoryOption);
-                        this.consoleCpuChart.setOption(this.cpuOption);
+
+                        this.loadavgOption.xAxis.data = data.items.ts;
+                        this.loadavgOption.series[0].data = data.items.loadavg;
+                        this.loadavgOption.series[1].data = data.items.loadavg5;
+                        this.loadavgOption.series[2].data = data.items.loadavg15;
                         this.consoleLoadavgChart.setOption(this.loadavgOption);
-                        MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.consoleDiskUsageChart]);
+
+
+                        MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.networkIOChart]);
                     }).then(() => {
                         this.consoleMemoryChart.hideLoading();
                         this.consoleCpuChart.hideLoading();
                         this.consoleLoadavgChart.hideLoading();
-                        this.consoleDiskUsageChart.hideLoading();
+                        this.networkIOChart.hideLoading();
                     })
                 }
             }).catch(function (err) {
@@ -349,10 +335,29 @@
             chartList.forEach(chart => chart.resize());
         }
 
+        static initialCPUOptions(cpuCount) {
+            this.cpuOption.legend.data = [];
+            this.cpuOption.legend.selected = {};
+            for (let i = 0; i < cpuCount + 1; i++) {
+                if (i === 0) {
+                    this.cpuOption.series[i].data = data.items.cpu;
+                    this.cpuOption.legend.data.push("cpu")
+                    this.cpuOption.legend.selected["cpu"] = true;
+                } else {
+                    this.cpuOption.series[i].data = data.items[`cpu${i - 1}`];
+                    this.cpuOption.legend.data.push(`cpu${i - 1}`)
+                    this.cpuOption.legend.selected[`cpu${i - 1}`] = false;
+                }
+            }
+            this.cpuOption.series = [];
+            this.cpuOption.legend.data.forEach((name) => {
+                this.cpuOption.series.push({name: name, type: 'line', symbol: 'none', hoverAnimation: false});
+            });
+        }
+
         /* Initialize echart */
         static generateChatOption(isMobile, titleText, tableName = '', lineName = '') {
             let baseData = {
-                color: tableName === 'loadavg' ? ['#ffa726', '#42a5f5', '#66bb6a'] : tableName === 'networkIO' ? ['#ffa726', '#42a5f5'] : ['#42a5f5'],
                 title: {
                     show: !isMobile,
                     text: titleText
@@ -375,11 +380,10 @@
                     }
                 },
                 legend: {
-                    data: [lineName],
                     textStyle: {
                         fontSize: 14
                     },
-                    show: titleText === 'Load Avg' || tableName === "networkIO",
+                    show: tableName !== 'memory',
                 },
                 grid: {
                     left: '3%',
@@ -417,64 +421,31 @@
                         },
                     },
                 },
-                series: [
-                    {
-                        name: lineName,
-                        type: 'line',
-                        symbol: 'none',
-                        hoverAnimation: false
-                    }
-                ]
             };
-            if (tableName === 'loadavg') {
-                baseData.legend.data = ['1 ' + lineName, '5 ' + lineName, '15 ' + lineName];
-                baseData.series = [];
-                baseData.legend.data.forEach((name) => {
-                    baseData.series.push({
-                        name: name,
-                        type: 'line',
-                        symbol: 'none',
-                        hoverAnimation: false
+            switch (tableName) {
+                case "loadavg":
+                    baseData.color = ['#ffa726', '#42a5f5', '#66bb6a'];
+                    baseData.legend.data = ['1 ' + lineName, '5 ' + lineName, '15 ' + lineName];
+                    baseData.series = [];
+                    baseData.legend.data.forEach((name) => {
+                        baseData.series.push({name: name, type: 'line', symbol: 'none', hoverAnimation: false});
                     });
-                });
-            }
-            if (tableName === 'networkIO') {
-                baseData.legend.data = ['recv', 'sent'];
-                baseData.series = [];
-                baseData.legend.data.forEach((name) => {
-                    baseData.series.push({
-                        name: name,
-                        type: 'line',
-                        symbol: 'none',
-                        hoverAnimation: false
+                    break;
+                case "networkIO":
+                    baseData.color = ['#ffa726', '#42a5f5'];
+                    baseData.legend.data = ['recv', 'sent'];
+                    baseData.series = [];
+                    baseData.legend.data.forEach((name) => {
+                        baseData.series.push({name: name, type: 'line', symbol: 'none', hoverAnimation: false});
                     });
-                });
+                    break;
+                case "memory":
+                    baseData.color = ['#42a5f5'];
+                    baseData.legend.data = [lineName];
+                    baseData.series = [{name: lineName, type: 'line', symbol: 'none', hoverAnimation: false}]
             }
             return baseData;
         }
-
-        /* Get Echarts data */
-        static getChartsData(rawData) {
-            let cpuList = [];
-            let loadAvgList = [];
-            let loadAvg5minList = [];
-            let loadAvg15minList = [];
-            let memoryList = [];
-            let tsList = [];
-            for (let i = 0; i < rawData.length; i++) {
-                let item = rawData[i];
-                cpuList.push(item.cpu);
-                loadAvgList.push(item.load_avg[0]);
-                loadAvg5minList.push(item.load_avg[1]);
-                loadAvg15minList.push(item.load_avg[2]);
-                memoryList.push(item.memory);
-                tsList.push(item.ts);
-            }
-            return {
-                'cpu_list': cpuList, 'load_avg_list': [loadAvgList, loadAvg5minList, loadAvg15minList],
-                'memory_list': memoryList, 'ts_list': tsList
-            };
-        };
 
         /* Get Echarts data */
         static getIOChartsData(rawData) {
