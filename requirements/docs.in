@@ -2,3 +2,4 @@ Flask
 Flask-SQLAlchemy
 redis
 psutil
+alembic
