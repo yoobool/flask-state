@@ -248,34 +248,33 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
     cpu_count = psutil.cpu_count()
     current_status["cpu_count"] = cpu_count
+
     host_result = control_result_counts(retrieve_host_status(days))
-    io_result = control_io_counts(retrieve_io_status(days))
-    arr = {"ts": [], "cpu": [], "loadavg": [], "loadavg5": [], "loadavg15": [], "memory": []}
+    host_arr = {"ts": [], "cpu": [], "loadavg": [], "loadavg5": [], "loadavg15": [], "memory": []}
     for i in range(cpu_count):
-        arr["cpu{num}".format(num=i)] = []
-    io_arr = []
+        host_arr["cpu{num}".format(num=i)] = []
     for status in host_result:
-        arr["ts"].append(int(status.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
+        host_arr["ts"].append(int(status.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
         loadavg_arr = status.load_avg.split(",")
-        arr["loadavg"].append(loadavg_arr[0])
-        arr["loadavg5"].append(loadavg_arr[1])
-        arr["loadavg15"].append(loadavg_arr[2])
-        arr["memory"].append(status.memory)
+        host_arr["loadavg"].append(loadavg_arr[0])
+        host_arr["loadavg5"].append(loadavg_arr[1])
+        host_arr["loadavg15"].append(loadavg_arr[2])
+        host_arr["memory"].append(status.memory)
         cpus = json.loads(status.cpus)
         for i in range(-1, cpu_count):
             if i == -1:
-                arr["cpu"].append(status.cpu)
+                host_arr["cpu"].append(status.cpu)
             else:
-                arr["cpu{num}".format(num=i)].append(cpus[i] if len(cpus) > i else 0)
+                host_arr["cpu{num}".format(num=i)].append(cpus[i] if len(cpus) > i else 0)
+
+    io_result = control_io_counts(retrieve_io_status(days))
+    io_result.reverse()
+    io_arr = {"ts": [], "net_recv": [], "net_sent": []}
     for io_state in io_result:
-        io_arr.append(
-            [
-                int(io_state.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE),
-                io_state.net_recv,
-                io_state.net_sent,
-            ]
-        )
-    data = {"currentStatistic": current_status, "items": arr, "io": io_arr}
+        io_arr["ts"].append(int(io_state.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
+        io_arr["net_recv"].append(io_state.net_recv)
+        io_arr["net_sent"].append(io_state.net_sent)
+    data = {"currentStatistic": current_status, "host": host_arr, "io": io_arr}
     return SuccessResponse(msg="Search success", data=data)
 
 
