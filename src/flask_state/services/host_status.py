@@ -195,6 +195,37 @@ def query_host_io_info():
     return result
 
 
+def get_network_io_pers():
+    """
+    Get current network io data
+    :rtype: dict
+    """
+    now_ts = get_current_ms()
+    now_io = query_host_io_info()
+    io_data = {}
+    latest_io = retrieve_latest_io_status()
+    if latest_io and math.ceil((now_ts - latest_io.get("ts")) / 1000) <= 60:
+        interval = math.ceil((now_ts - latest_io.get("ts")) / 1000)
+        io_data.update(
+            {
+                "net_sent": (max(now_io.get("net_sent") - latest_io.get("net_sent"), 0)) / interval,
+                "net_recv": (max(now_io.get("net_recv") - latest_io.get("net_recv"), 0)) / interval,
+                "disk_read": (max(now_io.get("disk_read") - latest_io.get("disk_read"), 0)) / interval,
+                "disk_write": (max(now_io.get("disk_write") - latest_io.get("disk_write"), 0)) / interval,
+            }
+        )
+    else:
+        io_data.update(
+            {
+                "net_sent": 0,
+                "net_recv": 0,
+                "disk_read": 0,
+                "disk_write": 0,
+            }
+        )
+    return io_data
+
+
 def query_flask_state_host(days) -> FlaskStateResponse:
     """
     Query the local status and redis status of [1,3,7,30] days
@@ -209,44 +240,21 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     if days not in TimeConstants.DAYS_SCOPE:
         raise FlaskStateError(**MsgCode.OVERSTEP_DAYS_SCOPE.value, status_code=HTTPStatus.BAD_REQUEST)
     try:
-        io_info = {}
-        now_ts = get_current_ms()
-        now_io = query_host_io_info()
-        latest_io = retrieve_latest_io_status()
-        if latest_io and math.ceil((now_ts - latest_io.get("ts")) / 1000) <= 60:
-            interval = math.ceil((now_ts - latest_io.get("ts")) / 1000)
-            io_info.update(
-                {
-                    "net_sent": (max(now_io.get("net_sent") - latest_io.get("net_sent"), 0)) / interval,
-                    "net_recv": (max(now_io.get("net_recv") - latest_io.get("net_recv"), 0)) / interval,
-                    "disk_read": (max(now_io.get("disk_read") - latest_io.get("disk_read"), 0)) / interval,
-                    "disk_write": (max(now_io.get("disk_write") - latest_io.get("disk_write"), 0)) / interval,
-                }
-            )
-        else:
-            io_info.update(
-                {
-                    "net_sent": 0,
-                    "net_recv": 0,
-                    "disk_read": 0,
-                    "disk_write": 0,
-                }
-            )
         current_status = query_host_info()
         current_status.update(query_redis_info())
-        current_status.update(io_info)
+        current_status.update(get_network_io_pers())
     except:
         current_status = retrieve_latest_host_status()
     current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
     cpu_count = psutil.cpu_count()
     current_status["cpu_count"] = cpu_count
-    result = control_result_counts(retrieve_host_status(days))
+    host_result = control_result_counts(retrieve_host_status(days))
     io_result = control_io_counts(retrieve_io_status(days))
     arr = {"ts": [], "cpu": [], "loadavg": [], "loadavg5": [], "loadavg15": [], "memory": []}
     for i in range(cpu_count):
         arr["cpu{num}".format(num=i)] = []
     io_arr = []
-    for status in result:
+    for status in host_result:
         arr["ts"].append(int(status.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
         loadavg_arr = status.load_avg.split(",")
         arr["loadavg"].append(loadavg_arr[0])
@@ -290,6 +298,11 @@ def control_result_counts(result) -> list:
 
 
 def control_io_counts(result) -> list:
+    """
+    Control the io search results to the specified number
+    :param result: db query result
+    :return: result after treatment
+    """
     result_length = len(result)
     io_tuple = namedtuple("io", "net_recv, net_sent, ts")
     if result_length > Config.MAX_RETURN_RECORDS:
@@ -321,16 +334,3 @@ def control_io_counts(result) -> list:
             refine_result.append(now_item)
         result = refine_result
     return result
-
-
-def row2dict(field):
-    """
-    Model class to dictionary class
-    :param field: database query results
-    :return: database query results dictionary
-    """
-    d = {}
-    for column in field.__table__.columns:
-        if column.name not in ("create_time", "update_time"):
-            d[column.name] = getattr(field, column.name)
-    return d
