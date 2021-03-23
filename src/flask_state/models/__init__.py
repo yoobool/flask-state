@@ -3,6 +3,7 @@ from sqlalchemy import String
 
 from ..conf.config import Config
 from ..migrate import upgrade
+from ..utils.logger import logger
 
 db = SQLAlchemy()
 
@@ -38,6 +39,7 @@ def model_init_app(app):
                     is_new = db.session.query(AlembicVersion.version_num == Config.DB_VERSION).first()
                     if not is_new:
                         upgrade(app)
-        except:
+        except Exception as e:
+            logger.error(e)
             pass
         db.create_all(bind=Config.DEFAULT_BIND_SQLITE, app=app)
