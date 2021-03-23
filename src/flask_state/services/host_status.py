@@ -244,7 +244,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     io_result = control_io_counts(retrieve_io_status(days))
     arr = {"ts": [], "cpu": [], "loadavg": [], "loadavg5": [], "loadavg15": [], "memory": []}
     for i in range(cpu_count):
-        arr[f"cpu{i}"] = []
+        arr["cpu{num}".format(num=i)] = []
     io_arr = []
     for status in result:
         arr["ts"].append(int(status.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
@@ -258,7 +258,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
             if i == -1:
                 arr["cpu"].append(status.cpu)
             else:
-                arr[f"cpu{i}"].append(cpus[i] if len(cpus) > i else 0)
+                arr["cpu{num}".format(num=i)].append(cpus[i] if len(cpus) > i else 0)
     for io_state in io_result:
         io_arr.append(
             [
