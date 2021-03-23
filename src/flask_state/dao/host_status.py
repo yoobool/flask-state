@@ -22,9 +22,10 @@ def retrieve_host_status(days) -> list:
             FlaskStateHost.memory,
             FlaskStateHost.load_avg,
             FlaskStateHost.ts,
+            FlaskStateHost.cpus,
         )
         .filter(FlaskStateHost.ts > target_time)
-        .order_by(FlaskStateHost.ts.desc())
+        .order_by(FlaskStateHost.ts)
         .all()
     )
     return result

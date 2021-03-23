@@ -1,3 +1,4 @@
+import json
 import math
 import os
 import platform
@@ -65,7 +66,9 @@ def query_host_info():
     :return host status dict
     :rtype: dict
     """
-    cpu = psutil.cpu_percent(interval=Config.CPU_PERCENT_INTERVAL)
+    cpus = psutil.cpu_percent(interval=Config.CPU_PERCENT_INTERVAL, percpu=True)
+    core_number = len(cpus)
+    cpu = round(sum(cpus) / core_number, 1)
     memory = psutil.virtual_memory().percent
     if platform.system() == "Windows":
         load_avg = Config.DEFAULT_WINDOWS_LOAD_AVG
@@ -76,6 +79,7 @@ def query_host_info():
     result = {
         "ts": get_current_ms(),
         "cpu": cpu,
+        "cpus": str(cpus).replace(" ", ""),
         "memory": memory,
         "load_avg": load_avg,
         "disk_usage": disk_usage,
@@ -231,25 +235,30 @@ def query_flask_state_host(days) -> FlaskStateResponse:
         current_status = query_host_info()
         current_status.update(query_redis_info())
         current_status.update(io_info)
-        current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
     except:
         current_status = retrieve_latest_host_status()
-        current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
-    result = retrieve_host_status(days)
-    result = control_result_counts(result)
-    io_result = retrieve_io_status(days)
-    io_result = control_io_counts(io_result)
-    arr = []
+    current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
+    cpu_count = psutil.cpu_count()
+    current_status["cpu_count"] = cpu_count
+    result = control_result_counts(retrieve_host_status(days))
+    io_result = control_io_counts(retrieve_io_status(days))
+    arr = {"ts": [], "cpu": [], "loadavg": [], "loadavg5": [], "loadavg15": [], "memory": []}
+    for i in range(cpu_count):
+        arr[f"cpu{i}"] = []
     io_arr = []
     for status in result:
-        arr.append(
-            [
-                int(status.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE),
-                status.cpu,
-                status.memory,
-                status.load_avg.split(","),
-            ]
-        )
+        arr["ts"].append(int(status.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
+        loadavg_arr = status.load_avg.split(",")
+        arr["loadavg"].append(loadavg_arr[0])
+        arr["loadavg5"].append(loadavg_arr[1])
+        arr["loadavg15"].append(loadavg_arr[2])
+        arr["memory"].append(status.memory)
+        cpus = json.loads(status.cpus)
+        for i in range(-1, cpu_count):
+            if i == -1:
+                arr["cpu"].append(status.cpu)
+            else:
+                arr[f"cpu{i}"].append(cpus[i] if len(cpus) > i else 0)
     for io_state in io_result:
         io_arr.append(
             [
@@ -288,6 +297,9 @@ def control_io_counts(result) -> list:
         interval = round(result_length / Config.MAX_RETURN_RECORDS, 2)
         index = 0
         while index < result_length - 1 and len(refine_result) < Config.MAX_RETURN_RECORDS:
+            if result[int(index)].ts - result[int(index + 1)].ts > TimeConstants.FIF_SECOND_TO_MILLSECOND:
+                index += interval
+                continue
             new_tmp = result[int(index)]
             old_tmp = result[int(index + 1)]
             now_item = io_tuple(
@@ -299,6 +311,8 @@ def control_io_counts(result) -> list:
     else:
         refine_result = []
         for index in range(result_length - 1):
+            if result[index].ts - result[index + 1].ts > TimeConstants.FIF_SECOND_TO_MILLSECOND:
+                continue
             now_item = io_tuple(
                 result[index].net_recv - result[index + 1].net_recv,
                 result[index].net_sent - result[index + 1].net_sent,
