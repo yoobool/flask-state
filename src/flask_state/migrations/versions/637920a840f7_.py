@@ -18,10 +18,14 @@ def downgrade_():
 
 
 def upgrade(engine_name):
+    if engine_name != "flask_state_sqlite":
+        return
     globals()["upgrade_%s" % engine_name]()
 
 
 def downgrade(engine_name):
+    if engine_name != "flask_state_sqlite":
+        return
     globals()["downgrade_%s" % engine_name]()
 
 
