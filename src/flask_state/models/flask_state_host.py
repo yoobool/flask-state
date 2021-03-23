@@ -18,7 +18,7 @@ class FlaskStateHost(db.Model):
 
     # host
     cpu = db.Column(FLOAT(unsigned=True), server_default=text("0"))
-    cpus = db.Column(String(128), server_default="")
+    cpus = db.Column(String(128), server_default="[]")
     memory = db.Column(FLOAT(unsigned=True), server_default=text("0"))
     load_avg = db.Column(String(32), server_default="")
     disk_usage = db.Column(FLOAT(unsigned=True), server_default=text("0"))

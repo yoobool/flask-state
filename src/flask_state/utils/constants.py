@@ -44,6 +44,7 @@ class CronConstants:
 
 class TimeConstants:
     SECONDS_TO_MILLISECOND_MULTIPLE = 1000  # Second to millisecond multiple
+    FIF_SECOND_TO_MILLSECOND = 15000
     ONE_MINUTE_SECONDS = 60
     DAYS_SCOPE = {
         1: "ONE_DAY",
