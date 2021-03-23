@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 redis
 pytest
 psutil
+alembic
