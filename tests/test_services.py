@@ -61,7 +61,7 @@ def test_query_flask_state_host(app):
             assert response_content.get_code() == 200
             assert "Search success" == response_content.get_msg()
             assert isinstance(response_content.data.get("currentStatistic"), dict)
-            assert isinstance(response_content.data.get("items"), list)
+            assert isinstance(response_content.data.get("items"), dict)
             assert isinstance(response_content, SuccessResponse)
 
         for day in test_error_day:
