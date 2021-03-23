@@ -26,7 +26,7 @@ def downgrade(engine_name):
 
 
 def upgrade_flask_state_sqlite():
-    op.add_column("flask_state_host", sa.Column("cpus", sa.String(128), nullable=True, default=""))
+    op.add_column("flask_state_host", sa.Column("cpus", sa.String(128), nullable=True, server_default=""))
 
 
 def downgrade_flask_state_sqlite():
