@@ -47,6 +47,10 @@ def query_flask_state():
 
 
 def init_url_rules(app):
+    """
+    Initialize the flask-state route
+    :param app: flask app
+    """
     app.add_url_rule(
         "/v0/state/hoststatus",
         endpoint="state_host_status",
@@ -56,6 +60,10 @@ def init_url_rules(app):
 
 
 def init_redis(app):
+    """
+    Initialize redis connection
+    :param app: flask app
+    """
     state = app.config.get("REDIS_CONF", {})
     if state.get("REDIS_STATUS"):
         keys = ["REDIS_HOST", "REDIS_PORT", "REDIS_PASSWORD"]
@@ -64,6 +72,10 @@ def init_redis(app):
 
 
 def init_db(app):
+    """
+    Determine whether the flask-state database is bound correctly
+    :param app: flask app
+    """
     sqlalchemy_binds = app.config["SQLALCHEMY_BINDS"]
     if Config.DEFAULT_BIND_SQLITE not in sqlalchemy_binds:
         raise KeyError(ErrorMsg.LACK_SQLITE.get_msg())
@@ -95,6 +107,7 @@ def record_timer(app, function, interval, lock_group, lock_key, priority=1):
                 scheduler.enter(**event)
                 scheduler.run()
         except BlockingIOError:
+            # The process that failed to obtain the lock resource exits directly
             pass
         except Exception as e:
             current_app.locks[lock_group][lock_key].release()
