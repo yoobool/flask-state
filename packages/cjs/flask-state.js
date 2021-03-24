@@ -333,7 +333,9 @@
 
         initialCPUOptions(cpuCount, data) {
             this.cpuOption.legend.data = [];
-            this.cpuOption.color = ["#42a5f5", "#26c6da", "#26a69a", "#66bb6a", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726"];
+            this.cpuOption.color = ["#42a5f5", '#F75B81', '#8083E5', '#FBA364',
+                "#A1887F", "#89E8E0", "#FFDE99", "#87EE84",
+                "#EDA8FF", "#FFF176"];
             this.cpuOption.legend.selected = {};
             this.cpuOption.series = [];
             for (let i = 0; i < cpuCount + 1; i++) {
