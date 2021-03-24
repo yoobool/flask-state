@@ -324,6 +324,7 @@ class MachineStatus {
             "#A1887F", "#89E8E0", "#FFDE99", "#87EE84",
             "#EDA8FF", "#FFF176"];
         this.cpuOption.legend.selected = {};
+        this.cpuOption.legend.width = "80%";
         this.cpuOption.series = [];
         for (let i = 0; i < cpuCount + 1; i++) {
             if (i === 0) {
@@ -333,7 +334,7 @@ class MachineStatus {
                     type: 'line',
                     symbol: 'none',
                     hoverAnimation: false,
-                    data: data.host[name]
+                    data: data.host[name] || [],
                 });
                 this.cpuOption.legend.data.push(name)
                 this.cpuOption.legend.selected[name] = true;
@@ -344,7 +345,7 @@ class MachineStatus {
                     type: 'line',
                     symbol: 'none',
                     hoverAnimation: false,
-                    data: data.host[name]
+                    data: data.host[name] || [],
                 });
                 this.cpuOption.legend.data.push(name)
                 this.cpuOption.legend.selected[name] = false;
