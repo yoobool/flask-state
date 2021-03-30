@@ -1,5 +1,5 @@
+import sqlalchemy as sa
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String
 
 from ..conf.config import Config
 from ..migrate import upgrade
@@ -12,7 +12,7 @@ class AlembicVersion(db.Model):
     __bind_key__ = Config.DEFAULT_BIND_SQLITE
     __tablename__ = "alembic_version"
 
-    version_num = db.Column(String(32), unique=True)
+    version_num = db.Column(sa.String(32), unique=True)
 
     __table_args__ = (
         db.PrimaryKeyConstraint("version_num"),
@@ -30,12 +30,16 @@ def model_init_app(app):
     with app.app_context():
         db.init_app(app)
         app.extensions["migrate"] = _Migrate(db)
-        tables = [table.name for table in db.get_tables_for_bind(bind=Config.DEFAULT_BIND_SQLITE)]
-        db.create_all(bind=Config.DEFAULT_BIND_SQLITE, app=app)
+        engine = db.get_engine(app=app, bind=Config.DEFAULT_BIND_SQLITE)
+        tables = sa.inspect(engine).get_table_names()
+
+        if Config.ALEMBIC_VERSION not in tables:
+            AlembicVersion.__table__.create(engine)
         try:
-            is_new = db.session.query(AlembicVersion.version_num == Config.DB_VERSION).first()
-            if not is_new:
-                upgrade(app)
+            if tables:
+                is_new = db.session.query(AlembicVersion.version_num == Config.DB_VERSION).first()
+                if not is_new:
+                    upgrade(app)
         except Exception as e:
-            logger.error(e)
-            pass
+            logger.exception(e)
+        db.create_all(bind=Config.DEFAULT_BIND_SQLITE, app=app)
