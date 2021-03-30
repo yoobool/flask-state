@@ -31,15 +31,11 @@ def model_init_app(app):
         db.init_app(app)
         app.extensions["migrate"] = _Migrate(db)
         tables = [table.name for table in db.get_tables_for_bind(bind=Config.DEFAULT_BIND_SQLITE)]
+        db.create_all(bind=Config.DEFAULT_BIND_SQLITE, app=app)
         try:
-            if tables:
-                if Config.ALEMBIC_VERSION not in tables:
-                    upgrade(app)
-                else:
-                    is_new = db.session.query(AlembicVersion.version_num == Config.DB_VERSION).first()
-                    if not is_new:
-                        upgrade(app)
+            is_new = db.session.query(AlembicVersion.version_num == Config.DB_VERSION).first()
+            if not is_new:
+                upgrade(app)
         except Exception as e:
             logger.error(e)
             pass
-        db.create_all(bind=Config.DEFAULT_BIND_SQLITE, app=app)
