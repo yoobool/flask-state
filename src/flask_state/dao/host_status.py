@@ -1,3 +1,4 @@
+from ..conf.config import Config
 from ..exceptions.log_msg import InfoMsg
 from ..models import db
 from ..models.flask_state_host import FlaskStateHost
@@ -31,12 +32,11 @@ def retrieve_host_status(days) -> list:
     return result
 
 
-def retrieve_io_status(days) -> list:
+def retrieve_io_status() -> list:
     """
     Query the status within the time period and flashback
 
     """
-    target_time = get_current_ms() - get_query_ms(days)
     result = (
         FlaskStateHost.query.with_entities(
             FlaskStateIO.disk_read,
@@ -45,8 +45,8 @@ def retrieve_io_status(days) -> list:
             FlaskStateIO.net_sent,
             FlaskStateIO.ts,
         )
-        .filter(FlaskStateIO.ts > target_time)
         .order_by(FlaskStateIO.ts.desc())
+        .limit(Config.MAX_RETURN_RECORDS)
         .all()
     )
     return result

@@ -267,7 +267,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
             else:
                 host_arr["cpu{num}".format(num=i)].append(cpus[i] if len(cpus) > i else 0)
 
-    io_result = control_io_counts(retrieve_io_status(days))
+    io_result = control_io_counts(retrieve_io_status())
     io_result.reverse()
     io_arr = {"ts": [], "net_recv": [], "net_sent": []}
     for io_state in io_result:
