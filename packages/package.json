@@ -1,6 +1,6 @@
 {
   "name": "flask-state",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Flask-States is a visual plug-in based on flask. It can record the local state every minute and read the status of redis if you have configured redis，and generate data chart to show to users through Echarts.",
   "main": "index.js",
   "scripts": {
