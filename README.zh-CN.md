@@ -1,6 +1,6 @@
 [English](https://github.com/yoobool/flask-state/blob/master/README.md) | 简体中文
 
-![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.0/src/flask_state/static/flask_state.png)
+![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.1/src/flask_state/static/flask_state.png)
 
 [![Contributor Badge](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
 [![Gitter Badge](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
@@ -20,7 +20,7 @@ Flask-State是一个活跃的项目，经过了充分的测试以及有一系列
 
 ###
 
-![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.0/examples/static/flask_state.png)
+![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.1/examples/static/flask_state.png)
 
 ## Documentation
 
@@ -38,8 +38,8 @@ pip install Flask-State
 通过NPM安装Flask-State或将此脚本标签放在HTML文件的开头部分:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.1.0/packages/umd/flask-state.min.js"></script>
-<link href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.1.0/packages/flask-state.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.1.1/packages/umd/flask-state.min.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.1.1/packages/flask-state.min.css" rel="stylesheet">
 ```
 
 ```bash
