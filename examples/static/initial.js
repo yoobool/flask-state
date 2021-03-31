@@ -19,16 +19,17 @@ class MachineStatus {
         this.language = language;
         this.mobile = MachineStatus.isMobile();
         this.index = 0;
+        this.tag = 0; // 0 is network_io, 1 is disk_io
         this.initFlaskStateContainer(this.mobile);
         this.setEventListener();
         this.initFlaskStateLanguage(this.language);
         this.setInitParams();
         if (this.mobile) {
-            this.setTagChangeEventListener(this.consoleCpuChart, this.consoleMemoryChart, this.consoleLoadavgChart, this.networkIOChart);
+            this.setTagChangeEventListener(this.consoleCpuChart, this.consoleMemoryChart, this.consoleLoadavgChart, this.IOChart);
         }
         // Bind window resizing redraw event
         window.addEventListener('resize', () => {
-            MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.networkIOChart]);
+            MachineStatus.resizeChartTimer([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.IOChart]);
         })
     };
 
@@ -142,10 +143,11 @@ class MachineStatus {
         this.consoleCpuChart = echarts.init(document.getElementById('fs-info-cpu-chart'), null, {renderer: 'svg'});
         this.consoleMemoryChart = echarts.init(document.getElementById('fs-info-memory-chart'), null, {renderer: 'svg'});
         this.consoleLoadavgChart = echarts.init(document.getElementById('fs-info-loadavg-chart'), null, {renderer: 'svg'});
-        this.networkIOChart = echarts.init(document.getElementById('fs-info-networkio-chart'), null, {renderer: 'svg'});
+        this.IOChart = echarts.init(document.getElementById('fs-info-networkio-chart'), null, {renderer: 'svg'});
         this.cpuOption = MachineStatus.generateChatOption(this.mobile, this.language.cpu || 'CPU', 'cpu', this.language.today || 'Today');
         this.memoryOption = MachineStatus.generateChatOption(this.mobile, this.language.memory || 'Memory', 'memory', this.language.today || 'Today');
         this.networkIOOption = MachineStatus.generateChatOption(this.mobile, this.language.network_io || 'Network IO', 'networkIO', this.language.today || 'Today');
+        this.diskIOOption = MachineStatus.generateChatOption(this.mobile, this.language.disk_io || 'Disk IO', 'diskIO', this.language.today || 'Today');
         this.loadavgOption = MachineStatus.generateChatOption(this.mobile, 'Load Avg', 'loadavg', this.language.minutes || 'min');
     }
 
@@ -154,7 +156,7 @@ class MachineStatus {
         this.consoleCpuChart.showLoading();
         this.consoleMemoryChart.showLoading();
         this.consoleLoadavgChart.showLoading();
-        this.networkIOChart.showLoading();
+        this.IOChart.showLoading();
         fetch(
             "/v0/state/hoststatus",
             {
@@ -255,7 +257,28 @@ class MachineStatus {
                     this.networkIOOption.xAxis.data = data.io.ts;
                     this.networkIOOption.series[0].data = data.io.net_recv;
                     this.networkIOOption.series[1].data = data.io.net_sent;
-                    this.networkIOChart.setOption(this.networkIOOption);
+                    this.diskIOOption.series[0].data = data.io.disk_read;
+                    this.diskIOOption.series[1].data = data.io.disk_write;
+                    this.networkIOOption.toolbox.feature = {
+                        mySwitchButton: {
+                            title: 'switch',
+                            icon: 'image://data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjE3MTcwOTMzMzYxIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjMxNjUiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PC9zdHlsZT48L2RlZnM+PHBhdGggZD0iTTk2MCA2MDhIOTZhMzIgMzIgMCAwIDAtMjIuNzIgNTQuNGwyNTIuMTYgMjU2IDQ1LjQ0LTQ0LjhMMTczLjc2IDY3Mkg5NjB6TTk1Ni40OCAzOTYuNDhhMzIgMzIgMCAwIDAtNy4wNC0zNC44OGwtMjUyLjE2LTI1Ni00NS40NCA0NC44IDE5OC40IDIwMS42SDY0djY0aDg2NGEzMiAzMiAwIDAgMCAyOC40OC0xOS41MnoiIHAtaWQ9IjMxNjYiIGZpbGw9IiM4YThhOGEiPjwvcGF0aD48L3N2Zz4=',
+                            onclick: () => {
+                                if (this.tag === 0) {
+                                    this.IOChart.setOption(this.diskIOOption);
+                                    this.tag = 1;
+                                } else {
+                                    this.IOChart.setOption(this.networkIOOption);
+                                    this.tag = 0;
+                                }
+                                this.IOChart.resize();
+                            }
+                        },
+                        saveAsImage: {
+                            title: ' ',
+                        },
+                    };
+                    this.IOChart.setOption(this.networkIOOption);
 
                     this.memoryOption.xAxis.data = data.host.ts;
                     this.memoryOption.series[0].data = data.host.memory;
@@ -268,12 +291,12 @@ class MachineStatus {
                     this.consoleLoadavgChart.setOption(this.loadavgOption);
 
 
-                    MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.networkIOChart]);
+                    MachineStatus.resizeChart([this.consoleMemoryChart, this.consoleCpuChart, this.consoleLoadavgChart, this.IOChart]);
                 }).then(() => {
                     this.consoleMemoryChart.hideLoading();
                     this.consoleCpuChart.hideLoading();
                     this.consoleLoadavgChart.hideLoading();
-                    this.networkIOChart.hideLoading();
+                    this.IOChart.hideLoading();
                 })
             }
         }).catch(function (err) {
@@ -364,7 +387,7 @@ class MachineStatus {
                 trigger: 'axis',
                 formatter: (params) => {
                     let value = echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', new Date(parseInt(params[0].axisValue * SECONDS_TO_MILLISECONDS)), false) + '<br />';
-                    if (tableName === 'networkIO') {
+                    if (tableName === 'networkIO' || tableName === 'diskIO') {
                         for (let i = 0; i < params.length; i++) {
                             value += (params[i].marker + params[i].seriesName + ': ' + MachineStatus.getFormatBit(params[i].value) + '<br />')
                         }
@@ -396,7 +419,7 @@ class MachineStatus {
                 feature: {
                     saveAsImage: {
                         title: ' ',
-                    }
+                    },
                 },
             },
             xAxis: {
@@ -412,7 +435,7 @@ class MachineStatus {
                 type: 'value',
                 axisLabel: {
                     formatter: (value) => {
-                        if (tableName === 'networkIO') {
+                        if (tableName === 'networkIO' || tableName === 'diskIO') {
                             let result = MachineStatus.getFormatBit(value, 0);
                             return result.substring(0, result.length - 2);
                         }
@@ -432,6 +455,13 @@ class MachineStatus {
             case "networkIO":
                 baseData.color = ['#ffa726', '#42a5f5'];
                 baseData.legend.data = ['recv', 'sent'];
+                baseData.legend.data.forEach((name) => {
+                    baseData.series.push({name: name, type: 'line', symbol: 'none', hoverAnimation: false});
+                });
+                break;
+            case "diskIO":
+                baseData.color = ['#ffa726', '#42a5f5'];
+                baseData.legend.data = ['read', 'write'];
                 baseData.legend.data.forEach((name) => {
                     baseData.series.push({name: name, type: 'line', symbol: 'none', hoverAnimation: false});
                 });
