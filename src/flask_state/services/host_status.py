@@ -195,7 +195,7 @@ def query_host_io_info():
     return result
 
 
-def get_network_io_pers():
+def get_io_pers():
     """
     Get current network io data
     :rtype: dict
@@ -242,7 +242,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     try:
         current_status = query_host_info()
         current_status.update(query_redis_info())
-        current_status.update(get_network_io_pers())
+        current_status.update(get_io_pers())
     except:
         current_status = retrieve_latest_host_status()
     current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
@@ -269,11 +269,13 @@ def query_flask_state_host(days) -> FlaskStateResponse:
 
     io_result = control_io_counts(retrieve_io_status())
     io_result.reverse()
-    io_arr = {"ts": [], "net_recv": [], "net_sent": []}
+    io_arr = {"ts": [], "net_recv": [], "net_sent": [], "disk_read": [], "disk_write": []}
     for io_state in io_result:
         io_arr["ts"].append(int(io_state.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
         io_arr["net_recv"].append(io_state.net_recv)
         io_arr["net_sent"].append(io_state.net_sent)
+        io_arr["disk_read"].append(io_state.disk_read)
+        io_arr["disk_write"].append(io_state.disk_write)
     data = {"currentStatistic": current_status, "host": host_arr, "io": io_arr}
     return SuccessResponse(msg="Search success", data=data)
 
@@ -303,7 +305,7 @@ def control_io_counts(result) -> list:
     :return: result after treatment
     """
     result_length = len(result)
-    io_tuple = namedtuple("io", "net_recv, net_sent, ts")
+    io_tuple = namedtuple("io", "net_recv, net_sent, disk_read, disk_write, ts")
     if result_length > Config.MAX_RETURN_RECORDS:
         refine_result = []
         interval = round(result_length / Config.MAX_RETURN_RECORDS, 2)
@@ -315,7 +317,11 @@ def control_io_counts(result) -> list:
             new_tmp = result[int(index)]
             old_tmp = result[int(index + 1)]
             now_item = io_tuple(
-                max(new_tmp.net_recv - old_tmp.net_recv, 0), max(new_tmp.net_sent - old_tmp.net_sent, 0), new_tmp.ts
+                max(new_tmp.net_recv - old_tmp.net_recv, 0),
+                max(new_tmp.net_sent - old_tmp.net_sent, 0),
+                max(new_tmp.disk_read - old_tmp.disk_read, 0),
+                max(new_tmp.disk_write - old_tmp.disk_write, 0),
+                new_tmp.ts,
             )
             refine_result.append(now_item)
             index += interval
@@ -328,6 +334,8 @@ def control_io_counts(result) -> list:
             now_item = io_tuple(
                 result[index].net_recv - result[index + 1].net_recv,
                 result[index].net_sent - result[index + 1].net_sent,
+                result[index].disk_read - result[index + 1].disk_read,
+                result[index].disk_write - result[index + 1].disk_write,
                 result[index].ts,
             )
             refine_result.append(now_item)
