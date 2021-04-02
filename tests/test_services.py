@@ -45,7 +45,7 @@ def test_control_return_count():
     """
     len_list = {1: 1, 100: 100, 480: 480, 500: 480, 1000: 480}
     for key in len_list:
-        assert len_list.get(key) == len(host_status.control_result_counts(list([0]) * key))
+        assert len_list.get(key) == len(host_status.control_result_counts([0] * key))
 
 
 def test_query_flask_state_host(app):

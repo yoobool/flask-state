@@ -5,9 +5,8 @@ import time
 
 from flask import make_response
 
-from src.flask_state.exceptions.log_msg import ErrorMsg
 from src.flask_state.utils import auth, date, file_lock
-from src.flask_state.utils.constants import DBAddressConstants, TimeConstants
+from src.flask_state.utils.constants import TimeConstants
 
 
 # auth

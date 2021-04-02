@@ -1,5 +1,4 @@
 import os
-import warnings
 
 import psutil
 
@@ -58,7 +57,7 @@ def test_clear_expire_data(app):
     thirty_day = 30
 
     # insert expire data
-    for i in range(expire_data_length):
+    for _ in range(expire_data_length):
         cpu = psutil.cpu_percent(interval=config.Config.CPU_PERCENT_INTERVAL)
         memory = psutil.virtual_memory().percent
         try:
