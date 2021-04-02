@@ -1,8 +1,5 @@
-import os
-import platform
-
 from ..exceptions.log_msg import ErrorMsg
-from .constants import CronConstants, DBAddressConstants, OperatingSystem, TimeScale
+from .constants import CronConstants, TimeScale
 
 
 def format_cron(scope_tuple) -> list:

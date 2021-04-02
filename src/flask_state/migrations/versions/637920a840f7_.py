@@ -9,14 +9,6 @@ branch_labels = None
 depends_on = None
 
 
-def upgrade_():
-    pass
-
-
-def downgrade_():
-    pass
-
-
 def upgrade(engine_name):
     if engine_name != "flask_state_sqlite":
         return

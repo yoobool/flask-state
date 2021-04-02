@@ -20,7 +20,7 @@ class AlembicVersion(db.Model):
     )
 
 
-class _Migrate(object):
+class _Migrate:
     def __init__(self, db, **kwargs):
         self.db = db
         self.configure_args = kwargs

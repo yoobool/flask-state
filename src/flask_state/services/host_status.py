@@ -243,7 +243,7 @@ def query_flask_state_host(days) -> FlaskStateResponse:
         current_status = query_host_info()
         current_status.update(query_redis_info())
         current_status.update(get_io_pers())
-    except:
+    except Exception:
         current_status = retrieve_latest_host_status()
     current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
     cpu_count = psutil.cpu_count()

@@ -74,7 +74,7 @@ class Cron:
                 year % NumericConstants.FOUR_TIMES == NumericConstants.REMAINDER_ZERO
                 and year % NumericConstants.A_HUNDRED_TIMES != NumericConstants.REMAINDER_ZERO
             ):
-                """ Determine whether this year is a leap year """
+                # Determine whether this year is a leap year
                 return (
                     common_max_index
                     if self.days[-1] < CronConstants.LEAP_YEAR_FEBRUARY_DAY

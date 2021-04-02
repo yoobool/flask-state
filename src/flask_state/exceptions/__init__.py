@@ -5,15 +5,15 @@ from enum import Enum, unique
 class FlaskStateResponse(ABC):
     @abstractmethod
     def get_code(self):
-        pass
+        raise NotImplementedError("get_code() not implemented")
 
     @abstractmethod
     def get_msg(self):
-        pass
+        raise NotImplementedError("get_msg() not implemented")
 
     @abstractmethod
     def get_data(self):
-        pass
+        raise NotImplementedError("get_data() not implemented")
 
 
 # Success response
@@ -76,6 +76,7 @@ class FlaskStateError(Exception):
         :param int status_code: standard http status code use by FlaskState
         :param str msg:
         """
+        super().__init__(**kwargs)
         self.status_code = int(kwargs.get("status_code"))
         self.msg = str(kwargs.get("msg"))
         self.reply_code = kwargs.get("code", self.status_code)

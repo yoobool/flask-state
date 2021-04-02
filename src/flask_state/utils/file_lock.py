@@ -22,8 +22,8 @@ class Lock:
 
 
 class FileLock:
-    def __init__(self, type):
-        lock_file = "821e9dab54fec92e3d054b3367a50b70d328caed_{type}".format(type=type)
+    def __init__(self, service):
+        lock_file = "821e9dab54fec92e3d054b3367a50b70d328caed_{service}".format(service=service)
         if SYSTEM == OperatingSystem.WINDOWS_SYSTEM:
             lock_dir = os.environ["tmp"]
         else:

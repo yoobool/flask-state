@@ -6,11 +6,6 @@ class OperatingSystem:
     UNIX_SYSTEM = "Unix"  # Unix system
 
 
-class DBAddressConstants:
-    DB_URL_HEADER = "sqlite:///"  # Database URL specification header
-    MIN_ADDRESS_LENGTH = 11  # Minimum number of address length
-
-
 class CronConstants:
     NOT_RANGE_LENGTH = 1  # Do not use the "-" time period divided into length. E.g. "59" -> ["59"]
     IS_RANGE_LENGTH = 2  # Use "-" to split the length of the time period. E.g. "0-59" -> "["0", "59"]"
