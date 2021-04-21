@@ -21,7 +21,8 @@ const IN = {
     "hours": "jam",
     "minutes": "min",
     "seconds": "seconds",
-    "today": "Hari ini"
+    "today": "Hari ini",
+    "users": "pengguna",
 };
 
 flaskState.IN = IN;

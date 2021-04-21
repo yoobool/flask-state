@@ -21,7 +21,8 @@ const zh = {
     "hours": "小时",
     "minutes": "分钟",
     "seconds": "秒",
-    "today": "今天"
+    "today": "今天",
+    "users": "登录用户",
 };
 
 flaskState.zh = zh;

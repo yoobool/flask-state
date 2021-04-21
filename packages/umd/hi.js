@@ -21,7 +21,8 @@ const hi = {
     "hours": "घंटे",
     "minutes": "मिनट",
     "seconds": "सेकंड",
-    "today": "आज"
+    "today": "आज",
+    "users": "उपयोगकर्ताओं",
 };
 
 flaskState.hi = hi;

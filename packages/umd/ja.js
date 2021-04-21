@@ -21,7 +21,8 @@ const ja = {
     "hours": "時間",
     "minutes": "分",
     "seconds": "秒",
-    "today": "今日"
+    "today": "今日",
+    "users": "ユーザー",
 };
 
 flaskState.ja = ja;

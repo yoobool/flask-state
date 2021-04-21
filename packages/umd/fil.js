@@ -21,7 +21,8 @@ const fil = {
     "hours": "oras",
     "minutes": "min",
     "seconds": "segundo",
-    "today": "ngayon"
+    "today": "ngayon",
+    "users": "mga gumagamit",
 };
 
 flaskState.fil = fil;

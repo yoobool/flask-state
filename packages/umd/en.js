@@ -21,7 +21,8 @@ const en = {
     "hours": "hours",
     "minutes": "min",
     "seconds": "seconds",
-    "today": "Today"
+    "today": "Today",
+    "users": "Users",
 };
 
 flaskState.en = en;

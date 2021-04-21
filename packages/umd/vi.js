@@ -21,7 +21,8 @@ const vi = {
     "hours": "giờ",
     "minutes": "min",
     "seconds": "giây",
-    "today": "Hôm nay"
+    "today": "Hôm nay",
+    "users": "người dùng",
 };
 
 flaskState.vi = vi;

@@ -21,7 +21,8 @@ const en = {
     "hours": "hours",
     "minutes": "min",
     "seconds": "seconds",
-    "today": "Today"
+    "today": "Today",
+    "users": "Users",
 };
 
 /* Language: Chinese */
@@ -47,7 +48,8 @@ const zh = {
     "hours": "小时",
     "minutes": "分钟",
     "seconds": "秒",
-    "today": "今天"
+    "today": "今天",
+    "users": "登录用户",
 };
 
 /* Language: Japanese */
@@ -73,7 +75,8 @@ const ja = {
     "hours": "時間",
     "minutes": "分",
     "seconds": "秒",
-    "today": "今日"
+    "today": "今日",
+    "users": "ユーザー",
 };
 
 /* Language: Spanish */
@@ -99,7 +102,8 @@ const es = {
     "hours": "horas",
     "minutes": "min",
     "seconds": "segundos",
-    "today": "Hoy"
+    "today": "Hoy",
+    "users": "usuarios",
 };
 
 /* Language: Indonesian */
@@ -125,7 +129,8 @@ const IN = {
     "hours": "jam",
     "minutes": "min",
     "seconds": "seconds",
-    "today": "Hari ini"
+    "today": "Hari ini",
+    "users": "pengguna",
 };
 
 /* Language: French */
@@ -151,7 +156,8 @@ const fr = {
     "hours": "heures",
     "minutes": "min",
     "seconds": "secondes",
-    "today": "aujourd'hui"
+    "today": "aujourd'hui",
+    "users": "utilisateurs",
 };
 
 /* Language: Philippines */
@@ -177,7 +183,8 @@ const fil = {
     "hours": "oras",
     "minutes": "min",
     "seconds": "segundo",
-    "today": "ngayon"
+    "today": "ngayon",
+    "users": "mga gumagamit",
 };
 
 /* Language: Vietnamese */
@@ -203,7 +210,8 @@ const vi = {
     "hours": "giờ",
     "minutes": "min",
     "seconds": "giây",
-    "today": "Hôm nay"
+    "today": "Hôm nay",
+    "users": "người dùng",
 };
 
 /* Language: Hindi */
@@ -229,7 +237,8 @@ const hi = {
     "hours": "घंटे",
     "minutes": "मिनट",
     "seconds": "सेकंड",
-    "today": "आज"
+    "today": "आज",
+    "users": "उपयोगकर्ताओं",
 };
 
 export {zh, en, ja, es, IN, fr, fil, vi, hi};
