@@ -46,6 +46,7 @@ def record_flask_state_host(interval, target_time):
     try:
         result_conf = {}
         host_status = query_host_info()
+        del host_status["users"]
         result_conf.update(host_status)
         redis_status = query_redis_info()
         result_conf.update(redis_status)
@@ -84,6 +85,7 @@ def query_host_info():
         load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
     disk_usage = psutil.disk_usage("/").percent
     boot_ts = psutil.boot_time()
+    users = len(psutil.users())
     result = {
         "ts": get_current_ms(),
         "cpu": cpu,
@@ -92,6 +94,7 @@ def query_host_info():
         "load_avg": load_avg,
         "disk_usage": disk_usage,
         "boot_seconds": int(get_current_s() - boot_ts),
+        "users": users,
     }
     return result
 
