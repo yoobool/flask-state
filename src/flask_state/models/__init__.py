@@ -37,7 +37,11 @@ def model_init_app(app):
             AlembicVersion.__table__.create(engine)
         try:
             if tables:
-                is_new = db.session.query(AlembicVersion.version_num == Config.DB_VERSION).first()
+                is_new = (
+                    db.session.query(AlembicVersion)
+                    .filter(AlembicVersion.version_num == Config.DB_VERSION)
+                    .first()
+                )
                 if not is_new:
                     upgrade(app)
         except Exception as e:
