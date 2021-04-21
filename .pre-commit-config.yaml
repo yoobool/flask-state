@@ -3,7 +3,7 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
-        args: ["-l", "120"]
+        args: ["-l", "80"]
   - repo: https://github.com/codespell-project/codespell
     rev: v1.17.1
     hooks:
