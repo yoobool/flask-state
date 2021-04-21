@@ -14,15 +14,22 @@ class FlaskStateIO(db.Model):
 
     id = db.Column(INTEGER(unsigned=True), autoincrement=True)
     create_time = db.Column(DATETIME, server_default=func.now())
-    update_time = db.Column(DATETIME, server_default=func.now(), onupdate=func.now())
+    update_time = db.Column(
+        DATETIME, server_default=func.now(), onupdate=func.now()
+    )
 
     # network
     net_sent = db.Column(BIGINT(unsigned=True), server_default=text("0"))
     net_recv = db.Column(BIGINT(unsigned=True), server_default=text("0"))
+    packets_sent = db.Column(BIGINT(unsigned=True), server_default=text("0"))
+    packets_recv = db.Column(BIGINT(unsigned=True), server_default=text("0"))
 
     # disk
     disk_read = db.Column(BIGINT(unsigned=True), server_default=text("0"))
     disk_write = db.Column(BIGINT(unsigned=True), server_default=text("0"))
+    read_count = db.Column(BIGINT(unsigned=True), server_default=text("0"))
+    write_count = db.Column(BIGINT(unsigned=True), server_default=text("0"))
+
     ts = db.Column(BIGINT(unsigned=True), server_default=text("0"))
     __table_args__ = (
         db.PrimaryKeyConstraint("id"),

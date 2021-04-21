@@ -36,7 +36,11 @@ def record_flask_state_host(interval, target_time):
     """
     if get_current_s() - target_time > Config.ABANDON_THRESHOLD:
         format_date = get_formatted_timestamp(target_time)
-        logger.error(ErrorMsg.RUN_TIME_ERROR.get_msg(". Target time is {}".format(format_date)))
+        logger.error(
+            ErrorMsg.RUN_TIME_ERROR.get_msg(
+                ". Target time is {}".format(format_date)
+            )
+        )
         return
 
     try:
@@ -50,7 +54,11 @@ def record_flask_state_host(interval, target_time):
         create_host_status(result_conf)
         now_time = get_current_s()
         new_day_utc = (
-            datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc).timestamp()
+            datetime.utcnow()
+            .replace(
+                hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
+            )
+            .timestamp()
         )
         if now_time <= new_day_utc + interval:
             delete_thirty_days_status()
@@ -107,23 +115,43 @@ def query_redis_info():
             keyspace_hits = redis_info.get("keyspace_hits")
             keyspace_misses = redis_info.get("keyspace_misses")
             hits_ratio = (
-                float("%.2f" % (keyspace_hits * NumericConstants.PERCENTAGE / (keyspace_hits + keyspace_misses)))
+                float(
+                    "%.2f"
+                    % (
+                        keyspace_hits
+                        * NumericConstants.PERCENTAGE
+                        / (keyspace_hits + keyspace_misses)
+                    )
+                )
                 if (keyspace_hits + keyspace_misses) != 0
                 else Config.DEFAULT_HITS_RATIO
             )
             delta_hits_ratio = hits_ratio
             yesterday_current_statistic = retrieve_host_status_yesterday()
             if yesterday_current_statistic:
-                yesterday_keyspace_hits = yesterday_current_statistic.keyspace_hits
-                yesterday_keyspace_misses = yesterday_current_statistic.keyspace_misses
-                if yesterday_keyspace_hits is not None and yesterday_keyspace_misses is not None:
+                yesterday_keyspace_hits = (
+                    yesterday_current_statistic.keyspace_hits
+                )
+                yesterday_keyspace_misses = (
+                    yesterday_current_statistic.keyspace_misses
+                )
+                if (
+                    yesterday_keyspace_hits is not None
+                    and yesterday_keyspace_misses is not None
+                ):
                     be_divided_num = (
-                        keyspace_hits + keyspace_misses - (yesterday_keyspace_hits + yesterday_keyspace_misses)
+                        keyspace_hits
+                        + keyspace_misses
+                        - (yesterday_keyspace_hits + yesterday_keyspace_misses)
                     )
                     delta_hits_ratio = (
                         float(
                             "%.2f"
-                            % ((keyspace_hits - yesterday_keyspace_hits) * NumericConstants.PERCENTAGE / be_divided_num)
+                            % (
+                                (keyspace_hits - yesterday_keyspace_hits)
+                                * NumericConstants.PERCENTAGE
+                                / be_divided_num
+                            )
                         )
                         if be_divided_num != 0
                         else Config.DEFAULT_DELTA_HITS_RATIO
@@ -151,7 +179,11 @@ def record_flask_state_io_host(interval, target_time):
     """
     if get_current_s() - target_time > Config.ABANDON_IO_THRESHOLD:
         format_date = get_formatted_timestamp(target_time)
-        logger.error(ErrorMsg.RUN_TIME_ERROR.get_msg(". Target time is {}".format(format_date)))
+        logger.error(
+            ErrorMsg.RUN_TIME_ERROR.get_msg(
+                ". Target time is {}".format(format_date)
+            )
+        )
         return
 
     try:
@@ -163,7 +195,11 @@ def record_flask_state_io_host(interval, target_time):
         create_host_io(result_conf)
         now_time = get_current_s()
         new_day_utc = (
-            datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc).timestamp()
+            datetime.utcnow()
+            .replace(
+                hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
+            )
+            .timestamp()
         )
         if now_time <= new_day_utc + interval:
             delete_thirty_days_io_status()
@@ -185,11 +221,19 @@ def query_host_io_info():
     net_recv = net_io.bytes_recv if net_io else 0
     disk_read = disk_io.read_bytes if disk_io else 0
     disk_write = disk_io.write_bytes if disk_io else 0
+    packets_sent = net_io.packets_sent if net_io else 0
+    packets_recv = net_io.packets_recv if net_io else 0
+    read_count = disk_io.read_count if disk_io else 0
+    write_count = disk_io.write_count if disk_io else 0
     result = {
         "net_sent": net_sent,
         "net_recv": net_recv,
         "disk_read": disk_read,
         "disk_write": disk_write,
+        "packets_sent": packets_sent,
+        "packets_recv": packets_recv,
+        "read_count": read_count,
+        "write_count": write_count,
         "ts": get_current_ms(),
     }
     return result
@@ -208,10 +252,39 @@ def get_io_pers():
         interval = math.ceil((now_ts - latest_io.get("ts")) / 1000)
         io_data.update(
             {
-                "net_sent": (max(now_io.get("net_sent") - latest_io.get("net_sent"), 0)) / interval,
-                "net_recv": (max(now_io.get("net_recv") - latest_io.get("net_recv"), 0)) / interval,
-                "disk_read": (max(now_io.get("disk_read") - latest_io.get("disk_read"), 0)) / interval,
-                "disk_write": (max(now_io.get("disk_write") - latest_io.get("disk_write"), 0)) / interval,
+                "net_sent": (
+                    max(now_io.get("net_sent") - latest_io.get("net_sent"), 0)
+                )
+                / interval,
+                "net_recv": (
+                    max(now_io.get("net_recv") - latest_io.get("net_recv"), 0)
+                )
+                / interval,
+                "packets_sent": max(
+                    now_io.get("packets_sent") - latest_io.get("packets_sent"),
+                    0,
+                ),
+                "packets_recv": max(
+                    now_io.get("packets_recv") - latest_io.get("packets_recv"),
+                    0,
+                ),
+                "disk_read": (
+                    max(now_io.get("disk_read") - latest_io.get("disk_read"), 0)
+                )
+                / interval,
+                "disk_write": (
+                    max(
+                        now_io.get("disk_write") - latest_io.get("disk_write"),
+                        0,
+                    )
+                )
+                / interval,
+                "read_count": max(
+                    now_io.get("read_count") - latest_io.get("read_count"), 0
+                ),
+                "write_count": max(
+                    now_io.get("write_count") - latest_io.get("write_count"), 0
+                ),
             }
         )
     else:
@@ -219,8 +292,12 @@ def get_io_pers():
             {
                 "net_sent": 0,
                 "net_recv": 0,
+                "packets_sent": 0,
+                "packets_recv": 0,
                 "disk_read": 0,
                 "disk_write": 0,
+                "read_count": 0,
+                "write_count": 0,
             }
         )
     return io_data
@@ -235,26 +312,42 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     if str(days).isnumeric():
         days = int(days)
     else:
-        raise FlaskStateError(**MsgCode.PARAMETER_ERROR.value, status_code=HTTPStatus.BAD_REQUEST)
+        raise FlaskStateError(
+            **MsgCode.PARAMETER_ERROR.value, status_code=HTTPStatus.BAD_REQUEST
+        )
 
     if days not in TimeConstants.DAYS_SCOPE:
-        raise FlaskStateError(**MsgCode.OVERSTEP_DAYS_SCOPE.value, status_code=HTTPStatus.BAD_REQUEST)
+        raise FlaskStateError(
+            **MsgCode.OVERSTEP_DAYS_SCOPE.value,
+            status_code=HTTPStatus.BAD_REQUEST
+        )
     try:
         current_status = query_host_info()
         current_status.update(query_redis_info())
         current_status.update(get_io_pers())
     except Exception:
         current_status = retrieve_latest_host_status()
-    current_status["load_avg"] = (current_status.get("load_avg") or "").split(",")
+    current_status["load_avg"] = (current_status.get("load_avg") or "").split(
+        ","
+    )
     cpu_count = psutil.cpu_count()
     current_status["cpu_count"] = cpu_count
 
     host_result = control_result_counts(retrieve_host_status(days))
-    host_arr = {"ts": [], "cpu": [], "loadavg": [], "loadavg5": [], "loadavg15": [], "memory": []}
+    host_arr = {
+        "ts": [],
+        "cpu": [],
+        "loadavg": [],
+        "loadavg5": [],
+        "loadavg15": [],
+        "memory": [],
+    }
     for i in range(cpu_count):
         host_arr["cpu{num}".format(num=i)] = []
     for status in host_result:
-        host_arr["ts"].append(int(status.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
+        host_arr["ts"].append(
+            int(status.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE)
+        )
         loadavg_arr = status.load_avg.split(",")
         host_arr["loadavg"].append(loadavg_arr[0])
         host_arr["loadavg5"].append(loadavg_arr[1])
@@ -265,17 +358,35 @@ def query_flask_state_host(days) -> FlaskStateResponse:
             if i == -1:
                 host_arr["cpu"].append(status.cpu)
             else:
-                host_arr["cpu{num}".format(num=i)].append(cpus[i] if len(cpus) > i else 0)
+                host_arr["cpu{num}".format(num=i)].append(
+                    cpus[i] if len(cpus) > i else 0
+                )
 
     io_result = control_io_counts(retrieve_io_status())
     io_result.reverse()
-    io_arr = {"ts": [], "net_recv": [], "net_sent": [], "disk_read": [], "disk_write": []}
+    io_arr = {
+        "ts": [],
+        "net_recv": [],
+        "net_sent": [],
+        "disk_read": [],
+        "disk_write": [],
+        "packets_recv": [],
+        "packets_sent": [],
+        "read_count": [],
+        "write_count": [],
+    }
     for io_state in io_result:
-        io_arr["ts"].append(int(io_state.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE))
+        io_arr["ts"].append(
+            int(io_state.ts / TimeConstants.SECONDS_TO_MILLISECOND_MULTIPLE)
+        )
         io_arr["net_recv"].append(io_state.net_recv)
         io_arr["net_sent"].append(io_state.net_sent)
         io_arr["disk_read"].append(io_state.disk_read)
         io_arr["disk_write"].append(io_state.disk_write)
+        io_arr["packets_recv"].append(io_state.packets_recv)
+        io_arr["packets_sent"].append(io_state.packets_sent)
+        io_arr["read_count"].append(io_state.read_count)
+        io_arr["write_count"].append(io_state.write_count)
     data = {"currentStatistic": current_status, "host": host_arr, "io": io_arr}
     return SuccessResponse(msg="Search success", data=data)
 
@@ -291,7 +402,10 @@ def control_result_counts(result) -> list:
         refine_result = []
         interval = round(result_length / Config.MAX_RETURN_RECORDS, 2)
         index = 0
-        while index <= result_length - 1 and len(refine_result) < Config.MAX_RETURN_RECORDS:
+        while (
+            index <= result_length - 1
+            and len(refine_result) < Config.MAX_RETURN_RECORDS
+        ):
             refine_result.append(result[int(index)])
             index += interval
         result = refine_result
@@ -305,13 +419,22 @@ def control_io_counts(result) -> list:
     :return: result after treatment
     """
     result_length = len(result)
-    io_tuple = namedtuple("io", "net_recv, net_sent, disk_read, disk_write, ts")
+    io_tuple = namedtuple(
+        "io",
+        "net_recv, net_sent, disk_read, disk_write, packets_recv, packets_sent, read_count, write_count, ts",
+    )
     if result_length > Config.MAX_RETURN_RECORDS:
         refine_result = []
         interval = round(result_length / Config.MAX_RETURN_RECORDS, 2)
         index = 0
-        while index < result_length - 1 and len(refine_result) < Config.MAX_RETURN_RECORDS:
-            if result[int(index)].ts - result[int(index + 1)].ts > TimeConstants.FIF_SECOND_TO_MILLSECOND:
+        while (
+            index < result_length - 1
+            and len(refine_result) < Config.MAX_RETURN_RECORDS
+        ):
+            if (
+                result[int(index)].ts - result[int(index + 1)].ts
+                > TimeConstants.FIF_SECOND_TO_MILLSECOND
+            ):
                 index += interval
                 continue
             new_tmp = result[int(index)]
@@ -321,6 +444,10 @@ def control_io_counts(result) -> list:
                 max(new_tmp.net_sent - old_tmp.net_sent, 0),
                 max(new_tmp.disk_read - old_tmp.disk_read, 0),
                 max(new_tmp.disk_write - old_tmp.disk_write, 0),
+                max(new_tmp.packets_recv - old_tmp.packets_recv, 0),
+                max(new_tmp.packets_sent - old_tmp.packets_sent, 0),
+                max(new_tmp.read_count - old_tmp.read_count, 0),
+                max(new_tmp.write_count - old_tmp.write_count, 0),
                 new_tmp.ts,
             )
             refine_result.append(now_item)
@@ -329,13 +456,20 @@ def control_io_counts(result) -> list:
     else:
         refine_result = []
         for index in range(result_length - 1):
-            if result[index].ts - result[index + 1].ts > TimeConstants.FIF_SECOND_TO_MILLSECOND:
+            if (
+                result[index].ts - result[index + 1].ts
+                > TimeConstants.FIF_SECOND_TO_MILLSECOND
+            ):
                 continue
             now_item = io_tuple(
                 result[index].net_recv - result[index + 1].net_recv,
                 result[index].net_sent - result[index + 1].net_sent,
                 result[index].disk_read - result[index + 1].disk_read,
                 result[index].disk_write - result[index + 1].disk_write,
+                result[index].packets_recv - result[index + 1].packets_recv,
+                result[index].packets_sent - result[index + 1].packets_sent,
+                result[index].read_count - result[index + 1].read_count,
+                result[index].write_count - result[index + 1].write_count,
                 result[index].ts,
             )
             refine_result.append(now_item)
