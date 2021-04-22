@@ -128,6 +128,31 @@
     vertical-align: top;
 }
 
+.fs-users-fill {
+    position: absolute;
+    height: 3px;
+    width: 89px;
+}
+
+.fs-users-hover {
+    display: none;
+    position: absolute;
+    z-index: 2000;
+    padding: 8px;
+    margin-top: 3px;
+    border-radius: 5px;
+    background-color: #666;
+    color: #fff;
+}
+
+.fs-users-par {
+    clear: both;
+}
+
+.fs-users-par:hover div{
+    display: block;
+}
+
 .console-info-line-style {
     margin: -6px -15px 6px -15px;
     border-top: 1px solid #ddd;
