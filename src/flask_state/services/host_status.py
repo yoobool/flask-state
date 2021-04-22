@@ -85,7 +85,9 @@ def query_host_info():
         load_avg = ",".join([str(float("%.2f" % x)) for x in os.getloadavg()])
     disk_usage = psutil.disk_usage("/").percent
     boot_ts = psutil.boot_time()
-    users = len(psutil.users())
+    users = [
+        {"n": user.name, "t": user.terminal} for user in psutil.users() or []
+    ]
     result = {
         "ts": get_current_ms(),
         "cpu": cpu,
