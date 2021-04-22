@@ -1,4 +1,4 @@
-![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.1/src/flask_state/static/flask_state.png)
+![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.2/src/flask_state/static/flask_state.png)
 
 [![Contributor Badge](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
 [![Gitter Badge](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
@@ -20,7 +20,7 @@ built on top of lightweight dependencies.
 This project is in active development and thoroughly tested to ensure that Flask-State
 stays up-to-date with its project roadmap.
 
-![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.1/examples/static/flask_state.png)
+![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.2/examples/static/flask_state.png)
 
 ## Documentation
 
@@ -39,8 +39,8 @@ Alternatively, install Flask-State via NPM or include this script tag to the hea
 section of your HTML document:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.1.1/packages/umd/flask-state.min.js"></script>
-<link href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.1.1/packages/flask-state.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.1.2/packages/umd/flask-state.min.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/yoobool/flask-state@v1.1.2/packages/flask-state.min.css" rel="stylesheet">
 ```
 
 ```bash
