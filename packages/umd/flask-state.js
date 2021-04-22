@@ -209,7 +209,17 @@
                             hostInfoSpan[7].innerHTML = currentStatistic.users.length;
 
                             let userHovers = document.getElementsByClassName('fs-users-hover')[0];
-
+                            let userPar = document.getElementsByClassName('fs-users-par')[0];
+                            userPar.onmouseenter = () => {
+                                if (currentStatistic.users.length > 0) {
+                                    userHovers.classList.add('fs-show');
+                                }
+                            };
+                            userPar.onmouseleave = () => {
+                                if (currentStatistic.users.length > 0) {
+                                    userHovers.classList.remove('fs-show');
+                                }
+                            };
                             const innerHovers = [];
                             currentStatistic.users.some((user, i) => {
                                 if (i < 10) {

@@ -145,14 +145,6 @@
     color: #fff;
 }
 
-.fs-users-par {
-    clear: both;
-}
-
-.fs-users-par:hover div{
-    display: block;
-}
-
 .console-info-line-style {
     margin: -6px -15px 6px -15px;
     border-top: 1px solid #ddd;
