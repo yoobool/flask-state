@@ -71,12 +71,12 @@ class ExceptionMsg(Enum):
 
 
 class FlaskStateError(Exception):
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         :param int status_code: standard http status code use by FlaskState
         :param str msg:
         """
-        super().__init__(**kwargs)
+        super(FlaskStateError, self).__init__()
         self.status_code = int(kwargs.get("status_code"))
         self.msg = str(kwargs.get("msg"))
         self.reply_code = kwargs.get("code", self.status_code)
