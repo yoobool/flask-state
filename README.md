@@ -1,4 +1,4 @@
-![Project Logo](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
+![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.2/src/flask_state/static/flask_state.png)
 
 [![Contributor Badge](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
 [![Gitter Badge](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
@@ -20,7 +20,7 @@ built on top of lightweight dependencies.
 This project is in active development and thoroughly tested to ensure that Flask-State
 stays up-to-date with its project roadmap.
 
-![Screenshot](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.2/examples/static/flask_state.png)
+![Screenshot](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
 ## Documentation
 
