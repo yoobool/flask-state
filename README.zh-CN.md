@@ -1,6 +1,6 @@
 [English](https://github.com/yoobool/flask-state/blob/master/README.md) | 简体中文
 
-![Project Logo](https://cdn.jsdelivr.net/gh/yoobool/flask-state@1.1.2/src/flask_state/static/flask_state.png)
+![Project Logo](https://github.com/yoobool/flask-state/blob/master/examples/static/flask_state.png)
 
 [![Contributor Badge](https://img.shields.io/badge/Contributions-Welcome-0059b3)](https://github.com/yoobool/flask-state/tree/master/.github/ISSUE_TEMPLATE)
 [![Gitter Badge](https://img.shields.io/badge/Chat-Gitter-ff69b4.svg?label=Chat&logo=gitter)](https://gitter.im/flaskstate/community)
