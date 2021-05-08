@@ -1,10 +1,12 @@
 import os
 import platform
 import threading
+from functools import wraps
 
 from .constants import OperatingSystem
+from .logger import logger
 
-__all__ = ["Lock", "db_lock"]
+__all__ = ["Lock", "db_lock", "file_lock"]
 
 SYSTEM = (
     OperatingSystem.WINDOWS_SYSTEM
@@ -22,8 +24,12 @@ class Lock:
 
 
 class FileLock:
-    def __init__(self, service):
-        lock_file = "821e9dab54fec92e3d054b3367a50b70d328caed_{service}".format(service=service)
+    def __init__(self, lock_suffix):
+        lock_file = (
+            "821e9dab54fec92e3d054b3367a50b70d328caed_{lock_suffix}".format(
+                lock_suffix=lock_suffix
+            )
+        )
         if SYSTEM == OperatingSystem.WINDOWS_SYSTEM:
             lock_dir = os.environ["tmp"]
         else:
@@ -69,3 +75,24 @@ class DbLock:
 
 
 db_lock = DbLock()
+
+
+def file_lock(lock_name):
+    def reception(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            lock = FileLock(lock_name)
+            try:
+                lock.acquire()
+                return fn(*args, **kwargs)
+            except BlockingIOError as e:
+                pass
+            except Exception as e:
+                logger.exception(str(e))
+                raise e
+            else:
+                lock.release()
+
+        return wrapper
+
+    return reception
