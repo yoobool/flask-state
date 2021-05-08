@@ -17,5 +17,4 @@ class Config:
     MAX_RETURN_RECORDS = 480  # Return the maximum number of records
     ABANDON_THRESHOLD = 60  # Maximum timeout time of scheduled tasks
     ABANDON_IO_THRESHOLD = 10  # Maximum timeout time of scheduled tasks
-    ALEMBIC_VERSION = "alembic_version"  # alembic table name
-    DB_VERSION = "b6b1ecfc9524"  # the last db version
+    VERSION_LIST = ["637920a840f7", "b6b1ecfc9524"]

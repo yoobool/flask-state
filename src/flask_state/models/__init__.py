@@ -1,8 +1,9 @@
-import sqlalchemy as sa
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import String, func
 
 from ..conf.config import Config
-from ..migrate import upgrade
+from ..migrate import downgrade, upgrade
+from ..utils.file_lock import file_lock
 from ..utils.logger import logger
 
 db = SQLAlchemy()
@@ -12,7 +13,7 @@ class AlembicVersion(db.Model):
     __bind_key__ = Config.DEFAULT_BIND_SQLITE
     __tablename__ = "alembic_version"
 
-    version_num = db.Column(sa.String(32), unique=True)
+    version_num = db.Column(String(32), unique=True)
 
     __table_args__ = (
         db.PrimaryKeyConstraint("version_num"),
@@ -31,19 +32,31 @@ def model_init_app(app):
         db.init_app(app)
         app.extensions["migrate"] = _Migrate(db)
         engine = db.get_engine(app=app, bind=Config.DEFAULT_BIND_SQLITE)
-        tables = sa.inspect(engine).get_table_names()
-
-        if Config.ALEMBIC_VERSION not in tables:
-            AlembicVersion.__table__.create(engine)
-        try:
-            if tables:
-                is_new = (
-                    db.session.query(AlembicVersion)
-                    .filter(AlembicVersion.version_num == Config.DB_VERSION)
-                    .first()
-                )
-                if not is_new:
-                    upgrade(app)
-        except Exception as e:
-            logger.exception(e)
         db.create_all(bind=Config.DEFAULT_BIND_SQLITE, app=app)
+        upgrade_raw_db(app)
+
+
+@file_lock("db")
+def upgrade_raw_db(app):
+    is_empty = not db.session.query(
+        func.count(AlembicVersion.version_num)
+    ).scalar()
+    try:
+        if is_empty:
+            for version in Config.VERSION_LIST:
+                try:
+                    upgrade(app, version)
+                except:
+                    version_record = db.session.query(AlembicVersion).first()
+                    if version_record:
+                        version_record.version_num = version
+                        db.session.commit()
+                    else:
+                        alembic_version = AlembicVersion(version_num=version)
+                        db.session.add(alembic_version)
+                        db.session.commit()
+        else:
+            upgrade(app)
+    except Exception as e:
+        logger.exception(str(e))
+        db.session.rollback()
