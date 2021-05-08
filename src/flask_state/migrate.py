@@ -9,7 +9,9 @@ __all__ = ["upgrade", "downgrade"]
 
 
 def get_config():
-    path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "migrations")
+    path = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)), "migrations"
+    )
     config = AlembicConfig(os.path.join(path, "alembic.ini"))
     config.set_main_option("script_location", path)
     config.cmd_opts = argparse.Namespace()
@@ -17,13 +19,19 @@ def get_config():
     return config
 
 
-def upgrade(app):
+def upgrade(app, version="head"):
     config = get_config()
     with app.app_context():
-        command.upgrade(config, "head")
+        try:
+            command.upgrade(config, version)
+        except Exception as e:
+            raise e
 
 
-def downgrade(app):
+def downgrade(app, version="-1"):
     config = get_config()
     with app.app_context():
-        command.downgrade(config, "-1")
+        try:
+            command.downgrade(config, version)
+        except Exception as e:
+            raise e
