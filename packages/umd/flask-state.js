@@ -522,8 +522,7 @@
                     break;
                 case "memory":
                     baseData.color = ['#42a5f5'];
-                    baseData.legend.data = [lineName];
-                    baseData.series.push({name: lineName, type: 'line', symbol: 'none', hoverAnimation: false});
+                    baseData.series.push({name: 'memory', type: 'line', symbol: 'none', hoverAnimation: false});
             }
             return baseData;
         }
