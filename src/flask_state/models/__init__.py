@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, func
 
 from ..conf.config import Config
-from ..migrate import downgrade, upgrade
+from ..migrate import upgrade
 from ..utils.file_lock import file_lock
 from ..utils.logger import logger
 
@@ -38,11 +38,9 @@ def model_init_app(app):
 
 @file_lock("db")
 def upgrade_raw_db(app):
-    is_empty = not db.session.query(
-        func.count(AlembicVersion.version_num)
-    ).scalar()
+    record = db.session.query(AlembicVersion).first()
     try:
-        if is_empty:
+        if not record:
             for version in Config.VERSION_LIST:
                 try:
                     upgrade(app, version)
@@ -55,7 +53,7 @@ def upgrade_raw_db(app):
                         alembic_version = AlembicVersion(version_num=version)
                         db.session.add(alembic_version)
                         db.session.commit()
-        else:
+        elif record.version_num != Config.LATEST_VERSION:
             upgrade(app)
     except Exception as e:
         logger.exception(str(e))

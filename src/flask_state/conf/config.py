@@ -18,3 +18,4 @@ class Config:
     ABANDON_THRESHOLD = 60  # Maximum timeout time of scheduled tasks
     ABANDON_IO_THRESHOLD = 10  # Maximum timeout time of scheduled tasks
     VERSION_LIST = ["637920a840f7", "b6b1ecfc9524"]
+    LATEST_VERSION = "b6b1ecfc9524"
