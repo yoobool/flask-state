@@ -2,6 +2,8 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import mysql
 
+from flask_state.conf.config import Config
+
 # revision identifiers, used by Alembic.
 revision = "b6b1ecfc9524"
 down_revision = "637920a840f7"
@@ -10,13 +12,13 @@ depends_on = None
 
 
 def upgrade(engine_name):
-    if engine_name != "flask_state_sqlite":
+    if engine_name != Config.DEFAULT_BIND_SQLITE:
         return
     globals()["upgrade_%s" % engine_name]()
 
 
 def downgrade(engine_name):
-    if engine_name != "flask_state_sqlite":
+    if engine_name != Config.DEFAULT_BIND_SQLITE:
         return
     globals()["downgrade_%s" % engine_name]()
 
@@ -119,5 +121,5 @@ def downgrade_flask_state_sqlite():
     op.drop_table("flask_state_io")
     op.rename_table("flask_state_io_dg_tmp", "flask_state_io")
     op.create_index(
-        "idx_ts", "flask_state_io", [sa.text("ts DESC")], unique=False
+        "idx_io_ts", "flask_state_io", [sa.text("ts DESC")], unique=False
     )

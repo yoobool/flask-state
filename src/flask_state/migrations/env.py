@@ -7,6 +7,8 @@ from alembic import context
 from flask import current_app
 from sqlalchemy import MetaData
 
+from flask_state.conf.config import Config
+
 USE_TWOPHASE = False
 
 # this is the Alembic Config object, which provides
@@ -22,16 +24,25 @@ logger = logging.getLogger("alembic.env")
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-config.set_main_option("sqlalchemy.url", str(current_app.extensions["migrate"].db.engine.url).replace("%", "%%"))
+config.set_main_option(
+    "sqlalchemy.url",
+    str(current_app.extensions["migrate"].db.engine.url).replace("%", "%%"),
+)
 bind_names = []
 
-for bind in current_app.config.get("SQLALCHEMY_BINDS"):
-    context.config.set_section_option(
-        bind,
-        "sqlalchemy.url",
-        str(current_app.extensions["migrate"].db.get_engine(current_app, bind).url).replace("%", "%%"),
-    )
-    bind_names.append(bind)
+
+bind = Config.DEFAULT_BIND_SQLITE
+if bind not in current_app.config.get("SQLALCHEMY_BINDS"):
+    raise NameError("SQLALCHEMY_BINDS is missing `{}`".format(bind))
+context.config.set_section_option(
+    bind,
+    "sqlalchemy.url",
+    str(
+        current_app.extensions["migrate"].db.get_engine(current_app, bind).url
+    ).replace("%", "%%"),
+)
+bind_names.append(bind)
+
 target_metadata = current_app.extensions["migrate"].db.metadata
 
 
@@ -67,24 +78,23 @@ def run_migrations_offline():
     # for the --sql use case, run migrations for each URL into
     # individual files.
 
-    engines = {"": {"url": context.config.get_main_option("sqlalchemy.url")}}
-    for name in bind_names:
-        engines[name] = rec = {}
-        rec["url"] = context.config.get_section_option(name, "sqlalchemy.url")
+    engines = {}
+    name = Config.DEFAULT_BIND_SQLITE
+    engines[name] = rec = {}
+    rec["url"] = context.config.get_section_option(name, "sqlalchemy.url")
 
-    for name, rec in engines.items():
-        logger.info("Migrating database %s" % (name or "<default>"))
-        file_ = "%s.sql" % name
-        logger.info("Writing output to %s" % file_)
-        with open(file_, "w") as buffer:
-            context.configure(
-                url=rec["url"],
-                output_buffer=buffer,
-                target_metadata=get_metadata(name),
-                literal_binds=True,
-            )
-            with context.begin_transaction():
-                context.run_migrations(engine_name=name)
+    logger.info("Migrating database %s" % (name or "<default>"))
+    file_ = "%s.sql" % name
+    logger.info("Writing output to %s" % file_)
+    with open(file_, "w") as buffer:
+        context.configure(
+            url=rec["url"],
+            output_buffer=buffer,
+            target_metadata=get_metadata(name),
+            literal_binds=True,
+        )
+        with context.begin_transaction():
+            context.run_migrations(engine_name=name)
 
 
 def run_migrations_online():
@@ -112,32 +122,32 @@ def run_migrations_online():
 
     # for the direct-to-DB use case, start a transaction on all
     # engines, then run all migrations, then commit all transactions.
-    engines = {"": {"engine": current_app.extensions["migrate"].db.engine}}
-    for name in bind_names:
-        engines[name] = rec = {}
-        rec["engine"] = current_app.extensions["migrate"].db.get_engine(app=current_app, bind=name)
+    engines = {}
+    name = Config.DEFAULT_BIND_SQLITE
+    engines[name] = rec = {}
+    rec["engine"] = current_app.extensions["migrate"].db.get_engine(
+        app=current_app, bind=name
+    )
 
-    for name, rec in engines.items():
-        engine = rec["engine"]
-        rec["connection"] = conn = engine.connect()
+    engine = rec["engine"]
+    rec["connection"] = conn = engine.connect()
 
-        if USE_TWOPHASE:
-            rec["transaction"] = conn.begin_twophase()
-        else:
-            rec["transaction"] = conn.begin()
+    if USE_TWOPHASE:
+        rec["transaction"] = conn.begin_twophase()
+    else:
+        rec["transaction"] = conn.begin()
 
     try:
-        for name, rec in engines.items():
-            logger.info("Migrating database %s" % (name or "<default>"))
-            context.configure(
-                connection=rec["connection"],
-                upgrade_token="%s_upgrades" % name,
-                downgrade_token="%s_downgrades" % name,
-                target_metadata=get_metadata(name),
-                process_revision_directives=process_revision_directives,
-                **current_app.extensions["migrate"].configure_args
-            )
-            context.run_migrations(engine_name=name)
+        logger.info("Migrating database %s" % (name or "<default>"))
+        context.configure(
+            connection=rec["connection"],
+            upgrade_token="%s_upgrades" % name,
+            downgrade_token="%s_downgrades" % name,
+            target_metadata=get_metadata(name),
+            process_revision_directives=process_revision_directives,
+            **current_app.extensions["migrate"].configure_args
+        )
+        context.run_migrations(engine_name=name)
 
         if USE_TWOPHASE:
             for rec in engines.values():
