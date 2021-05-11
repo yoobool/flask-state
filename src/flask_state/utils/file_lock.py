@@ -90,7 +90,7 @@ def file_lock(lock_name):
             except Exception as e:
                 logger.exception(str(e))
                 raise e
-            else:
+            finally:
                 lock.release()
 
         return wrapper
