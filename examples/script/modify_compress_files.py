@@ -8,7 +8,7 @@ if __name__ == "__main__":
         license_text = l.read()
     l.close()
 
-    with open("./examples/static/initial.js", mode="r", encoding="utf-8") as i:
+    with open("./packages/initial.js", mode="r", encoding="utf-8") as i:
         content_text = i.readlines()
     i.close()
     content = ""
@@ -23,7 +23,9 @@ if __name__ == "__main__":
     f.close()
 
     # cjs.min
-    with open("./packages/cjs/flask-state.min.js", mode="r+", encoding="utf-8") as f:
+    with open(
+        "./packages/cjs/flask-state.min.js", mode="r+", encoding="utf-8"
+    ) as f:
         ori_text = f.read()
         new_text = license_text + ori_text
         f.seek(0)
@@ -42,7 +44,9 @@ if __name__ == "__main__":
     f.close()
 
     # umd.min
-    with open("./packages/umd/flask-state.min.js", mode="r+", encoding="utf-8") as f:
+    with open(
+        "./packages/umd/flask-state.min.js", mode="r+", encoding="utf-8"
+    ) as f:
         ori_text = f.read()
         new_text = license_text + ori_text
         f.seek(0)
