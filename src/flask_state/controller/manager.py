@@ -20,7 +20,7 @@ from ..services.host_status import (
 from ..utils.auth import auth_method, auth_user
 from ..utils.constants import HttpMethod, HTTPStatus
 from ..utils.file_lock import Lock
-from ..utils.logger import DefaultLogger, logger
+from ..utils.logger import init_logger, logger
 from .response_methods import make_response_content
 
 
@@ -87,7 +87,11 @@ def record_timer(app, function, interval, lock_group, lock_key, priority=1):
         try:
             current_app.locks[lock_group][lock_key].acquire()
             if lock_key == "host":
-                logger.info(InfoMsg.ACQUIRED_LOCK.get_msg(". process ID: {id}".format(id=os.getpid())))
+                logger.info(
+                    InfoMsg.ACQUIRED_LOCK.get_msg(
+                        ". process ID: {id}".format(id=os.getpid())
+                    )
+                )
 
             scheduler = sched.scheduler(time.time, time.sleep)
             event = {
@@ -122,11 +126,21 @@ def init_recorder_threads(app, interval):
     threads = {}
     threads["host"] = threading.Thread(
         target=record_timer,
-        kwargs={"function": record_flask_state_host, "interval": interval, "lock_key": "host", **target_kwargs},
+        kwargs={
+            "function": record_flask_state_host,
+            "interval": interval,
+            "lock_key": "host",
+            **target_kwargs,
+        },
     )
     threads["io"] = threading.Thread(
         target=record_timer,
-        kwargs={"function": record_flask_state_io_host, "interval": 10, "lock_key": "io", **target_kwargs},
+        kwargs={
+            "function": record_flask_state_io_host,
+            "interval": 10,
+            "lock_key": "io",
+            **target_kwargs,
+        },
     )
 
     return threads
@@ -139,12 +153,14 @@ def init_app(app, interval=60, log_instance=None):
     :param interval:
     :param log_instance: custom logger object
     """
-    logger.set(log_instance or DefaultLogger())
+    init_logger(log_instance)
 
     if not isinstance(interval, int):
         raise TypeError(
             ErrorMsg.DATA_TYPE_ERROR.get_msg(
-                ".The target type is {}, not {}".format(int.__name__, type(interval).__name__)
+                ".The target type is {}, not {}".format(
+                    int.__name__, type(interval).__name__
+                )
             )
         )
 
