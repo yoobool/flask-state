@@ -67,22 +67,24 @@
         // add EventListener
         setEventListener() {
             if (window.addEventListener) {
-                document.getElementById('fs-info-close').addEventListener('click', function clickClose() {
+                document.getElementById('fs-info-close').addEventListener('click', () => {
                     document.getElementById('fs-background').style.display = 'none';
                     document.getElementById('fs-info-container').style.display = 'none';
                     document.getElementsByTagName('body')[0].style.overflowX = 'auto';
                     document.getElementsByTagName('body')[0].style.overflowY = 'auto';
+                    this.clearChart();
                     if (document.getElementById('fs-state-circular')) {
                         document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
                     }
                 });
 
-                document.getElementById('fs-background').addEventListener('click', function clickBack(e) {
+                document.getElementById('fs-background').addEventListener('click', (e) => {
                     if (String(e.target.id) === 'fs-background') {
                         document.getElementById('fs-background').style.display = 'none';
                         document.getElementById('fs-info-container').style.display = 'none';
                         document.getElementsByTagName('body')[0].style.overflowX = 'auto';
                         document.getElementsByTagName('body')[0].style.overflowY = 'auto';
+                        this.clearChart();
                         if (document.getElementById('fs-state-circular')) {
                             document.getElementById('fs-state-circular').classList.remove('fs-circular-out');
                         }
@@ -521,6 +523,15 @@
                     baseData.series.push({name: 'memory', type: 'line', symbol: 'none', hoverAnimation: false});
             }
             return baseData;
+        }
+
+        clearChart() {
+            try {
+                this.consoleCpuChart.clear();
+                this.consoleMemoryChart.clear();
+                this.consoleLoadavgChart.clear();
+                this.IOChart.clear();
+            } catch (e) {}
         }
 
         /* Get format Bit */
