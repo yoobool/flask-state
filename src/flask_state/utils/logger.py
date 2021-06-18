@@ -60,19 +60,6 @@ class LoggerAllocator:
     def __init__(self):
         self._logger = logging.getLogger(FLASK_STATE)
 
-    def init_logger(self, out_logger: logging.Logger = None):
-        if out_logger:
-            self._logger = out_logger
-        if not _has_config(self._logger):
-            default_handler = logging.StreamHandler()
-            default_handler.setFormatter(
-                ColorizeFormatter(
-                    fmt="%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)d | %(message)s"
-                )
-            )
-            self._logger.setLevel(logging.INFO)
-            self._logger.addHandler(default_handler)
-
     @property
     def logger(self):
         return self._logger
