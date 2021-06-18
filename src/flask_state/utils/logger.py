@@ -3,7 +3,6 @@ import logging
 from logging import config
 
 from flask import app
-from flask.logging import _has_config
 
 from ..utils.constants import AnsiColor, LogLevels
 
@@ -46,6 +45,15 @@ class ColorizeFormatter(logging.Formatter):
     @staticmethod
     def _wrap_color(string: str, color):
         return COLOR_SEQ % (30 + color) + string + RESET_SEQ
+
+
+def _has_config(logger):
+    return (
+        logger.level != logging.NOTSET
+        or logger.handlers
+        or logger.filters
+        or not logger.propagate
+    )
 
 
 class LoggerAllocator:
