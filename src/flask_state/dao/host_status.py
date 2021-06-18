@@ -4,7 +4,7 @@ from ..models import db
 from ..models.flask_state_host import FlaskStateHost
 from ..models.flask_state_io import FlaskStateIO
 from ..utils.date import get_current_ms, get_query_ms
-from ..utils.logger import logger
+from ..utils.logger import flask_logger
 
 ONE_DAY = 1  # Days
 THIRTY_DAT = 30  # 30 Days
@@ -92,7 +92,7 @@ def create_host_status(kwargs):
         flask_state_host = FlaskStateHost(**kwargs)
         db.session.add(flask_state_host)
         db.session.commit()
-        logger.info(InfoMsg.INSERT_SUCCESS.get_msg())
+        flask_logger.logger.info(InfoMsg.INSERT_SUCCESS.get_msg())
     except Exception as e:
         db.session.rollback()
         raise e
@@ -123,7 +123,7 @@ def delete_thirty_days_status():
         ).delete(synchronize_session=False)
         if result:
             db.session.commit()
-            logger.info(InfoMsg.DELETE_SUCCESS.get_msg())
+            flask_logger.logger.info(InfoMsg.DELETE_SUCCESS.get_msg())
         else:
             db.session.rollback()
     except Exception as e:
@@ -143,7 +143,7 @@ def delete_thirty_days_io_status():
         ).delete(synchronize_session=False)
         if result:
             db.session.commit()
-            logger.info(InfoMsg.DELETE_SUCCESS.get_msg())
+            flask_logger.logger.info(InfoMsg.DELETE_SUCCESS.get_msg())
         else:
             db.session.rollback()
     except Exception as e:

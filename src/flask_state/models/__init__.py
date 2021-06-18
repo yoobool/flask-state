@@ -4,7 +4,7 @@ from sqlalchemy import String, func
 from ..conf.config import Config
 from ..migrate import upgrade
 from ..utils.file_lock import file_lock
-from ..utils.logger import logger
+from ..utils.logger import flask_logger
 
 db = SQLAlchemy()
 
@@ -56,5 +56,5 @@ def upgrade_raw_db(app):
         elif record.version_num != Config.LATEST_VERSION:
             upgrade(app)
     except Exception as e:
-        logger.exception(str(e))
+        flask_logger.logger.exception(str(e))
         db.session.rollback()

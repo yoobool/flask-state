@@ -25,7 +25,7 @@ from ..exceptions.log_msg import ErrorMsg
 from ..utils.constants import HTTPStatus, NumericConstants, TimeConstants
 from ..utils.date import get_current_ms, get_current_s, get_formatted_timestamp
 from ..utils.file_lock import db_lock
-from ..utils.logger import logger
+from ..utils.logger import flask_logger
 from . import redis_conn
 
 
@@ -36,7 +36,7 @@ def record_flask_state_host(interval, target_time):
     """
     if get_current_s() - target_time > Config.ABANDON_THRESHOLD:
         format_date = get_formatted_timestamp(target_time)
-        logger.error(
+        flask_logger.logger.error(
             ErrorMsg.RUN_TIME_ERROR.get_msg(
                 ". Target time is {}".format(format_date)
             )
@@ -64,7 +64,7 @@ def record_flask_state_host(interval, target_time):
         if now_time <= new_day_utc + interval:
             delete_thirty_days_status()
     except Exception as e:
-        logger.exception(str(e))
+        flask_logger.logger.exception(str(e))
     finally:
         db_lock.release()
 
@@ -173,7 +173,7 @@ def query_redis_info():
                 delta_hits_ratio=delta_hits_ratio,
             )
         except Exception as t:
-            logger.exception(str(t))
+            flask_logger.logger.exception(str(t))
     return result
 
 
@@ -184,7 +184,7 @@ def record_flask_state_io_host(interval, target_time):
     """
     if get_current_s() - target_time > Config.ABANDON_IO_THRESHOLD:
         format_date = get_formatted_timestamp(target_time)
-        logger.error(
+        flask_logger.logger.error(
             ErrorMsg.RUN_TIME_ERROR.get_msg(
                 ". Target time is {}".format(format_date)
             )
@@ -209,7 +209,7 @@ def record_flask_state_io_host(interval, target_time):
         if now_time <= new_day_utc + interval:
             delete_thirty_days_io_status()
     except Exception as e:
-        logger.exception(str(e))
+        flask_logger.logger.exception(str(e))
     finally:
         db_lock.release()
 

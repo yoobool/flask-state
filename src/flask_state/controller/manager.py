@@ -20,7 +20,7 @@ from ..services.host_status import (
 from ..utils.auth import auth_method, auth_user
 from ..utils.constants import HttpMethod, HTTPStatus
 from ..utils.file_lock import Lock
-from ..utils.logger import init_logger, logger
+from ..utils.logger import flask_logger
 from .response_methods import make_response_content
 
 
@@ -37,10 +37,10 @@ def query_flask_state():
         time_quantum = b2d.get("timeQuantum")
         return make_response_content(resp=query_flask_state_host(time_quantum))
     except FlaskStateError as e:
-        logger.warning(e)
+        flask_logger.logger.warning(e)
         return make_response_content(e, http_status=e.status_code)
     except Exception as e:
-        logger.exception(str(e))
+        flask_logger.logger.exception(str(e))
         error_response = ErrorResponse(MsgCode.UNKNOWN_ERROR)
         http_status = HTTPStatus.INTERNAL_SERVER_ERROR
         return make_response_content(error_response, http_status=http_status)
@@ -87,7 +87,7 @@ def record_timer(app, function, interval, lock_group, lock_key, priority=1):
         try:
             current_app.locks[lock_group][lock_key].acquire()
             if lock_key == "host":
-                logger.info(
+                flask_logger.logger.info(
                     InfoMsg.ACQUIRED_LOCK.get_msg(
                         ". process ID: {id}".format(id=os.getpid())
                     )
@@ -153,7 +153,7 @@ def init_app(app, interval=60, log_instance=None):
     :param interval:
     :param log_instance: custom logger object
     """
-    init_logger(log_instance)
+    flask_logger.logger = log_instance
 
     if not isinstance(interval, int):
         raise TypeError(

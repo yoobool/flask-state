@@ -48,19 +48,40 @@ class ColorizeFormatter(logging.Formatter):
         return COLOR_SEQ % (30 + color) + string + RESET_SEQ
 
 
-logger = logging.getLogger(FLASK_STATE)
+class LoggerAllocator:
+    def __init__(self):
+        self._logger = logging.getLogger(FLASK_STATE)
 
-
-def init_logger(out_logger: logging.Logger = None):
-    global logger
-    if out_logger:
-        logger = out_logger
-    if not _has_config(logger):
-        default_handler = logging.StreamHandler()
-        default_handler.setFormatter(
-            ColorizeFormatter(
-                fmt="%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)d | %(message)s"
+    def init_logger(self, out_logger: logging.Logger = None):
+        if out_logger:
+            self._logger = out_logger
+        if not _has_config(self._logger):
+            default_handler = logging.StreamHandler()
+            default_handler.setFormatter(
+                ColorizeFormatter(
+                    fmt="%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)d | %(message)s"
+                )
             )
-        )
-        logger.setLevel(logging.INFO)
-        logger.addHandler(default_handler)
+            self._logger.setLevel(logging.INFO)
+            self._logger.addHandler(default_handler)
+
+    @property
+    def logger(self):
+        return self._logger
+
+    @logger.setter
+    def logger(self, out_logger: logging.Logger = None):
+        if out_logger:
+            self._logger = out_logger
+        elif not _has_config(self._logger):
+            default_handler = logging.StreamHandler()
+            default_handler.setFormatter(
+                ColorizeFormatter(
+                    fmt="%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)d | %(message)s"
+                )
+            )
+            self._logger.setLevel(logging.INFO)
+            self._logger.addHandler(default_handler)
+
+
+flask_logger = LoggerAllocator()

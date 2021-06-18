@@ -4,7 +4,7 @@ import threading
 from functools import wraps
 
 from .constants import OperatingSystem
-from .logger import logger
+from .logger import flask_logger
 
 __all__ = ["Lock", "db_lock", "file_lock"]
 
@@ -88,7 +88,7 @@ def file_lock(lock_name):
             except BlockingIOError as e:
                 pass
             except Exception as e:
-                logger.exception(str(e))
+                flask_logger.logger.exception(str(e))
                 raise e
             finally:
                 lock.release()

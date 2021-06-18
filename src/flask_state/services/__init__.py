@@ -1,6 +1,6 @@
 from ..conf.config import Config
 from ..exceptions.log_msg import WarningMsg
-from ..utils.logger import logger
+from ..utils.logger import flask_logger
 
 
 # Create redis object
@@ -20,7 +20,7 @@ class RedisConn:
                 socket_timeout=Config.REDIS_TIMEOUT,
             )
         except ImportError:
-            logger.warning(WarningMsg.LACK_REDIS.get_msg())
+            flask_logger.logger.warning(WarningMsg.LACK_REDIS.get_msg())
             self.redis = None
 
     def get_redis(self):
