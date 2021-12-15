@@ -3,11 +3,11 @@ import sched
 import threading
 import time
 
-from flask import current_app, request
+from flask import current_app, jsonify, request
 
 from ..conf.config import Config
 from ..controller.interceptors import json_required
-from ..exceptions import ErrorResponse, FlaskStateError
+from ..exceptions import FlaskException
 from ..exceptions.error_code import MsgCode
 from ..exceptions.log_msg import ErrorMsg, InfoMsg
 from ..models import model_init_app
@@ -17,7 +17,7 @@ from ..services.host_status import (
     record_flask_state_host,
     record_flask_state_io_host,
 )
-from ..utils.auth import auth_method, auth_user
+from ..utils.auth import auth_user
 from ..utils.constants import HttpMethod, HTTPStatus
 from ..utils.file_lock import Lock
 from ..utils.logger import flask_logger
@@ -25,7 +25,6 @@ from .response_methods import make_response_content
 
 
 @auth_user
-@auth_method
 @json_required
 def query_flask_state():
     """
@@ -36,14 +35,15 @@ def query_flask_state():
         b2d = request.json
         time_quantum = b2d.get("timeQuantum")
         return make_response_content(resp=query_flask_state_host(time_quantum))
-    except FlaskStateError as e:
+    except FlaskException as e:
         flask_logger.logger.warning(e)
-        return make_response_content(e, http_status=e.status_code)
+        raise e
     except Exception as e:
         flask_logger.logger.exception(str(e))
-        error_response = ErrorResponse(MsgCode.UNKNOWN_ERROR)
-        http_status = HTTPStatus.INTERNAL_SERVER_ERROR
-        return make_response_content(error_response, http_status=http_status)
+        raise FlaskException(
+            error_message=MsgCode.UNKNOWN_ERROR,
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
 
 
 def init_url_rules(app):
@@ -168,6 +168,12 @@ def init_app(app, interval=60, log_instance=None):
     init_db(app)
     init_redis(app)
     model_init_app(app)
+
+    @app.errorhandler(FlaskException)
+    def handle_flask_error(error):
+        response = jsonify(error.to_dict())
+        response.status_code = error.status_code
+        return response
 
     recorder_threads = init_recorder_threads(app, interval)
     for thread in recorder_threads.values():

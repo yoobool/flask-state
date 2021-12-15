@@ -35,22 +35,6 @@ class SuccessResponse(FlaskStateResponse):
         return self.data
 
 
-# Error response
-class ErrorResponse(FlaskStateResponse):
-    def __init__(self, error_code):
-        self.error_code = error_code
-        self.data = []
-
-    def get_code(self):
-        return self.error_code.get_code()
-
-    def get_msg(self):
-        return self.error_code.get_msg()
-
-    def get_data(self):
-        return self.data
-
-
 # Enumeration function
 @unique
 class ErrorCode(Enum):
@@ -70,31 +54,29 @@ class ExceptionMsg(Enum):
         return self.value.get("msg") + supplement
 
 
-class FlaskStateError(Exception):
-    def __init__(self, *args, **kwargs):
-        """
-        :param int status_code: standard http status code use by FlaskState
-        :param str msg:
-        """
-        super(FlaskStateError, self).__init__()
-        self.status_code = int(kwargs.get("status_code"))
-        self.msg = str(kwargs.get("msg"))
-        self.reply_code = kwargs.get("code", self.status_code)
-        self.data = []
+class FlaskException(Exception):
+    status_code = 400
 
-    def get_msg(self):
-        return self.msg
+    def __init__(
+        self, error_message: ErrorCode, status_code=None, payload=None
+    ):
+        Exception.__init__(self)
+        self.message = error_message.get_msg()
+        self.code = error_message.get_code()
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
 
-    def get_code(self):
-        return self.reply_code
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv["msg"] = self.message
+        rv["code"] = self.code
+        return rv
 
-    def get_data(self):
-        return self.data
-
-    def __repr__(self):
+    def __str__(self):
         return "{}: ({}) {!r} {!r}".format(
             self.__class__.__name__,
             self.status_code,
-            self.reply_code,
-            self.msg,
+            self.code,
+            self.message,
         )

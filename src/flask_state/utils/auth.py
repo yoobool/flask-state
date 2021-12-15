@@ -1,12 +1,11 @@
 from functools import wraps
 
-from flask import _request_ctx_stack, current_app, request
+from flask import _request_ctx_stack, current_app
 from werkzeug.local import LocalProxy
 
-from ..controller.response_methods import make_response_content
-from ..exceptions import ErrorResponse
+from ..exceptions import FlaskException
 from ..exceptions.error_code import MsgCode
-from ..utils.constants import HttpMethod, HTTPStatus
+from ..utils.constants import HTTPStatus
 
 
 def auth_user(f):
@@ -26,29 +25,16 @@ def auth_user(f):
         current_user = LocalProxy(lambda: get_user())
 
         def get_user():
-            if _request_ctx_stack.top is not None and not hasattr(_request_ctx_stack.top, "user"):
+            if _request_ctx_stack.top is not None and not hasattr(
+                _request_ctx_stack.top, "user"
+            ):
                 cr._load_user()
             return getattr(_request_ctx_stack.top, "user", None)
 
         if not (current_user and current_user.is_authenticated):
-            return make_response_content(ErrorResponse(MsgCode.AUTH_FAIL), http_status=HTTPStatus.UNAUTHORIZED)
-        return f(*args, **kwargs)
-
-    return wrapper
-
-
-def auth_method(f):
-    """
-    Determine whether request methods is post
-    :return: auth result
-    :rtype: bool
-    """
-
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        if request.method != HttpMethod.POST.value:
-            return make_response_content(
-                ErrorResponse(MsgCode.REQUEST_METHOD_ERROR), http_status=HTTPStatus.METHOD_NOT_ALLOWED
+            raise FlaskException(
+                error_message=MsgCode.AUTH_FAIL,
+                status_code=HTTPStatus.UNAUTHORIZED,
             )
         return f(*args, **kwargs)
 

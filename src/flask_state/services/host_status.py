@@ -19,7 +19,7 @@ from ..dao.host_status import (
     retrieve_latest_host_status,
     retrieve_latest_io_status,
 )
-from ..exceptions import FlaskStateError, FlaskStateResponse, SuccessResponse
+from ..exceptions import FlaskException, FlaskStateResponse, SuccessResponse
 from ..exceptions.error_code import MsgCode
 from ..exceptions.log_msg import ErrorMsg
 from ..utils.constants import HTTPStatus, NumericConstants, TimeConstants
@@ -317,14 +317,15 @@ def query_flask_state_host(days) -> FlaskStateResponse:
     if str(days).isnumeric():
         days = int(days)
     else:
-        raise FlaskStateError(
-            **MsgCode.PARAMETER_ERROR.value, status_code=HTTPStatus.BAD_REQUEST
+        raise FlaskException(
+            error_message=MsgCode.PARAMETER_ERROR,
+            status_code=HTTPStatus.BAD_REQUEST,
         )
 
     if days not in TimeConstants.DAYS_SCOPE:
-        raise FlaskStateError(
-            **MsgCode.OVERSTEP_DAYS_SCOPE.value,
-            status_code=HTTPStatus.BAD_REQUEST
+        raise FlaskException(
+            error_message=MsgCode.OVERSTEP_DAYS_SCOPE,
+            status_code=HTTPStatus.BAD_REQUEST,
         )
     try:
         current_status = query_host_info()
