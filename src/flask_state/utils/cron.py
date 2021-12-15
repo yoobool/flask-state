@@ -1,133 +1,112 @@
-import time
-from bisect import bisect_left, bisect_right
+from datetime import datetime, timedelta
+import re
 
-from .constants import CronConstants, NumericConstants, TimeScale
-from .format_conf import format_cron, format_cron_sec
+
+class _TimeExpression:
+    time_regex = re.compile(r"^(\d+,|\d+-\d+,)*(\d+|\d+-\d+)$")
+
+    def __init__(self, range_str: str):
+        res = self.time_regex.fullmatch(range_str)
+        if not res or not self.check_range(range_str):
+            raise ValueError("The cron expression does not conform to the specification. Use default interval.")
+
+    def check_range(self, range_str) -> bool:
+        rlist = map(int, re.split(',|-', range_str))
+        tmp = self.min - 1
+        for r in rlist:
+            if r > self.max or r <= tmp:
+                return False
+            tmp = r
+        return True
+
+
+class HourExpression(_TimeExpression):
+    min = 0
+    max = 23
+
+    def __init__(self, range_str):
+        super(HourExpression, self).__init__(range_str=range_str)
+
+
+class MinuteExpression(_TimeExpression):
+    min = 0
+    max = 59
+
+    def __init__(self, range_str):
+        super(MinuteExpression, self).__init__(range_str=range_str)
 
 
 class Cron:
-    def __init__(self, second="0", minutes="0-59", hours="0-23", days="1-31"):
-        self.second = format_cron_sec(second)
-        self.minutes = format_cron((TimeScale.MINUTE.value, minutes))
-        self.hours = format_cron((TimeScale.HOUR.value, hours))
-        self.days = format_cron((TimeScale.DAY.value, days))
+    hour = [*range(24)]
+    minute = [*range(60)]
+    minute_index = 0
+    hour_index = 0
 
-        self.max_minute_index = len(self.minutes)
-        self.max_hour_index = len(self.hours)
+    def __init__(self, hour: str = None, minute: str = None):
+        if not hour:
+            self.hour = self.make_time(hour)
+        if not minute:
+            self.minute = self.make_time(minute)
 
-        self.max_day_index = self._get_max_day_index(int(time.strftime("%m")), int(time.strftime("%y")))
-        self.year, self.month, self.day_index, self.hour_index, self.minute_index = self._get_initial_index()
-
-    def get(self):
-        target_time_stamp = time.mktime(
-            time.strptime(
-                "{}-{}-{} {}:{}:{}".format(
-                    self.year,
-                    self.month,
-                    self.days[self.day_index],
-                    self.hours[self.hour_index],
-                    self.minutes[self.minute_index],
-                    self.second,
-                ),
-                "%Y-%m-%d %H:%M:%S",
-            )
-        )
-        self._update_index()
-        return target_time_stamp
-
-    def _update_index(self):
-        carry = NumericConstants.CARRY
-        no_carry = NumericConstants.NO_CARRY
-        initial_index = NumericConstants.INITIAL_INDEX
-        initial_month = CronConstants.INITIAL_MONTH
-
-        self.minute_index = (self.minute_index + carry) % self.max_minute_index
-        hour_carry = carry if self.minute_index == initial_index else no_carry
-        if hour_carry:
-            self.hour_index = (self.hour_index + hour_carry) % self.max_hour_index
-
-        day_carry = carry if hour_carry == carry and self.hour_index == initial_index else no_carry
-
-        if day_carry:
-            self.max_day_index = self._get_max_day_index(self.month, self.year)
-            self.day_index = (self.day_index + day_carry) % self.max_day_index
-
-        month_carry = carry if day_carry == carry and self.day_index == initial_index else no_carry
-
-        if month_carry:
-            new_month = self.month + month_carry
-            self.month = initial_month if new_month > CronConstants.MAX_MONTH else new_month
-
-        year_carry = carry if month_carry == carry and self.month == initial_month else no_carry
-        if year_carry:
-            self.year = self.year + year_carry
-
-    def _get_max_day_index(self, month, year):
-        month_name = CronConstants.MONTH_NAME.get(month)
-        common_max_index = len(self.days)
-        if month_name == CronConstants.SOLAR:
-            return common_max_index
-        elif month_name == CronConstants.LUNAR:
-            return common_max_index if self.days[-1] < CronConstants.SOLAR_MONTH_LAST_DAY else common_max_index - 1
-        else:
-            if (
-                year % NumericConstants.FOUR_TIMES == NumericConstants.REMAINDER_ZERO
-                and year % NumericConstants.A_HUNDRED_TIMES != NumericConstants.REMAINDER_ZERO
-            ):
-                # Determine whether this year is a leap year
-                return (
-                    common_max_index
-                    if self.days[-1] < CronConstants.LEAP_YEAR_FEBRUARY_DAY
-                    else bisect_right(self.days, CronConstants.LEAP_YEAR_FEBRUARY_DAY)
-                )
+    @staticmethod
+    def make_time(time_str: str):
+        res = [int]
+        time_list = time_str.split(",")
+        for t in time_list:
+            r = t.split("-")
+            if len(r) == 2:
+                res.extend([num for num in range(int(r[0]), int(r[1]) + 1)])
             else:
-                return (
-                    common_max_index
-                    if self.days[-1] < CronConstants.AVERAGE_YEAR_FEBRUARY_DAY
-                    else bisect_right(self.days, CronConstants.AVERAGE_YEAR_FEBRUARY_DAY)
-                )
+                res.append(int(r[0]))
+        return res
 
-    def _get_initial_index(self):
-        _year, _month, _day, _hour, _minute = map(int, time.strftime("%Y,%m,%d,%H,%M").split(","))
-        carry = NumericConstants.CARRY
-        no_carry = NumericConstants.NO_CARRY
-        initial_index = NumericConstants.INITIAL_INDEX
-        initial_month = CronConstants.INITIAL_MONTH
+    def get_first_wait_time(self):
+        now_datetime = datetime.now()
+        now_min = now_datetime.minute
+        now_hour = now_datetime.hour
+        carrier = 0
+        for i, m in enumerate(self.minute):
+            if m > now_min:
+                new_min = m
+                self.minute_index = i
+                break
+        else:
+            new_min = self.minute[0]
+            carrier = 1
 
-        minute_position = bisect_right(self.minutes, _minute)
-        hour_carry, minute_index = (
-            (carry, initial_index) if minute_position == self.max_minute_index else (no_carry, minute_position)
-        )
+        for i, h in enumerate(self.hour):
+            if now_hour + carrier <= h:
+                new_hour = h
+                self.hour_index = i
+                carrier = 0
+                break
+        else:
+            new_hour = self.hour[0]
 
-        hour_position = bisect_left(self.hours, _hour + hour_carry)
-        day_carry, hour_index = (
-            (carry, initial_index) if hour_position == self.max_hour_index else (no_carry, hour_position)
-        )
+        new_datetime = now_datetime.replace(hour=new_hour, minute=new_min) + timedelta(days=carrier)
+        timestamp_delta = new_datetime.timestamp() - now_datetime.timestamp()
+        return timestamp_delta
 
-        day_position = bisect_left(self.days, _day + day_carry)
-        month_carry, day_index = (
-            (carry, initial_index) if day_position == self.max_day_index else (no_carry, day_position)
-        )
+    def get_next_wait_time(self):
+        now_datetime = datetime.now()
+        carrier = 0
+        if self.minute_index == len(self.minute):
+            new_minute = self.minute[0]
+            self.minute_index = 0
+            carrier = 1
+        else:
+            new_minute = self.minute[self.minute_index]
+            self.minute_index += 1
 
-        year_carry, month = (
-            (carry, initial_month)
-            if month_carry and _month == CronConstants.MAX_MONTH
-            else (no_carry, _month + month_carry)
-        )
+        new_hour = self.hour[self.hour_index]
+        if carrier:
+            if self.hour_index == len(self.hour):
+                new_hour = self.hour[0]
+                self.hour_index = 0
+            else:
+                self.hour_index += 1
+                carrier = 0
 
-        year = _year + carry if year_carry else _year
-
-        if year_carry:
-            minute_index, hour_index, day_index, month = (
-                initial_index,
-                initial_index,
-                initial_index,
-                initial_index,
-            )
-        elif month_carry:
-            minute_index, hour_index, day_index = initial_index, initial_index, initial_index
-        elif day_carry:
-            minute_index, hour_index = initial_index, initial_index
-        elif hour_carry:
-            month = initial_index
-        return year, month, day_index, hour_index, minute_index
+        new_datetime = now_datetime.replace(hour=new_hour, minute=new_minute) + timedelta(days=carrier)
+        timestamp_delta = new_datetime.timestamp() - now_datetime.timestamp()
+        return timestamp_delta
